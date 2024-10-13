@@ -1,15 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import java.util.Objects;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -17,52 +14,104 @@ import javax.persistence.OneToMany;
  */
 @Entity
 public class RoomType implements Serializable {
-    
-    @Id
-    private String name;
-    
-    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL)
-    private List<RoomRate> rates;
-    
-//    @ElementCollection
-//    @CollectionTable(name = "published_rate", joinColumns = @JoinColumn(name = "room_type"))
-//    private List<RoomRate> publishedRates;
-//
-//    @ElementCollection
-//    @CollectionTable(name = "normal_rate", joinColumns = @JoinColumn(name = "room_type"))
-//    private List<RoomRate> normalRates;
-//
-//    @ElementCollection
-//    @CollectionTable(name = "peak_rate", joinColumns = @JoinColumn(name = "room_type"))
-//    private List<RoomRate> peakRates;
-//
-//    @ElementCollection
-//    @CollectionTable(name = "promo_rate", joinColumns = @JoinColumn(name = "room_type"))
-//    private List<RoomRate> promoRates;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Primary Key
+    private Long id;
+
+    @NotNull(message = "RoomType name cannot be null")
+    @Size(min = 1, max = 50, message = "RoomType name must be between 1 and 50 characters")
+    @Column(unique = true, nullable = false)  // Unique and Non-nullable Name
+    private String name;
+
+    @NotNull(message = "Published rate cannot be null")
+    @Column(nullable = false)  // Mandatory published rate
+    private Double publishedRate;
+
+    @NotNull(message = "Normal rate cannot be null")
+    @Column(nullable = false)  // Mandatory normal rate
+    private Double normalRate;
+
+    @OneToMany(mappedBy = "roomType", cascade = {CascadeType.ALL})
+    private List<RoomRate> rates = new ArrayList<>();  // List for peak and promo rates
+    
+//    @OneToMany(mappedBy = "name")
+//    private RoomType roomType;
+
+    // No-args constructor
+    public RoomType() {}
+
+    // Constructor
+    public RoomType(String name, Double publishedRate, Double normalRate) {
+        this.name = name;
+        this.publishedRate = publishedRate;
+        this.normalRate = normalRate;
+    }
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Double getPublishedRate() {
+        return publishedRate;
+    }
+
+    public void setPublishedRate(Double publishedRate) {
+        this.publishedRate = publishedRate;
+    }
+
+    public Double getNormalRate() {
+        return normalRate;
+    }
+
+    public void setNormalRate(Double normalRate) {
+        this.normalRate = normalRate;
+    }
+
+    public List<RoomRate> getRates() {
+        return rates;
+    }
+
+    public void setRates(List<RoomRate> rates) {
+        this.rates = rates;
+    }
+
+    // Equals and Hashcode based on id (Primary Key)
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (name != null ? name.hashCode() : 0);
-        return hash;
+        return Objects.hash(id);
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof RoomType)) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
         RoomType other = (RoomType) object;
-        if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name))) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     @Override
     public String toString() {
-        return "entity.RoomType[ name=" + name + " ]";
+        return String.format(
+            "RoomType [ID: %d, Name: %s, Normal Rate: %.2f, Published Rate: %.2f]",
+            id, name, normalRate, publishedRate
+        );
     }
-    
 }

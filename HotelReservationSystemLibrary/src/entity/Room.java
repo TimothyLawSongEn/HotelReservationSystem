@@ -5,11 +5,9 @@
 package entity;
 
 import java.io.Serializable;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 /**
  *
@@ -19,45 +17,75 @@ import javax.persistence.ManyToOne;
 public class Room implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roomId;
-    private int floor;
-    private int number;
+    private Long id;
+
+    @NotNull(message = "RoomNumber cannot be null")
+    @Pattern(regexp = "\\d{4}", message = "Room number must be a 4-digit number")
+    @Column(unique = true, nullable = false)
+    private String roomNumber;
+
+    @NotNull(message = "RoomType cannot be null")
     @ManyToOne
+    @JoinColumn(nullable = false)
     private RoomType roomType;
 
-    public Long getRoomId() {
-        return roomId;
+    // No-args constructor
+    public Room() {
     }
 
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+    // Constructor with parameters
+    public Room(String roomNumber, RoomType roomType) {
+        this.roomNumber = roomNumber;
+        this.roomType = roomType;
+    }
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
+
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public void setRoomNumber(String roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
+    public RoomType getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(RoomType roomType) {
+        this.roomType = roomType;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (roomId != null ? roomId.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the roomId fields are not set
         if (!(object instanceof Room)) {
             return false;
         }
         Room other = (Room) object;
-        if ((this.roomId == null && other.roomId != null) || (this.roomId != null && !this.roomId.equals(other.roomId))) {
-            return false;
-        }
-        return true;
+        return !((this.id == null && other.id != null) || 
+                 (this.id != null && !this.id.equals(other.id)));
     }
 
     @Override
     public String toString() {
-        return "entity.Room[ id=" + roomId + " ]";
+        return "entity.Room[ id=" + id + ", roomNumber=" + roomNumber + " ]";
     }
-    
 }
