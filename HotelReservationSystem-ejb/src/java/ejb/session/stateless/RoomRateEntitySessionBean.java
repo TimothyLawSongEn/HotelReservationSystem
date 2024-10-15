@@ -32,6 +32,7 @@ public class RoomRateEntitySessionBean implements RoomRateEntitySessionBeanRemot
     // Update an existing RoomRate
     @Override
     public RoomRate updateRoomRate(RoomRate roomRate) {
+        // todo: ensure roomrate id exists
         return em.merge(roomRate);
     }
 

@@ -53,7 +53,7 @@ public class RoomEntitySessionBean implements RoomEntitySessionBeanRemote, RoomE
 
     // View all rooms
     @Override
-    public List<Room> viewAllRooms() {
+    public List<Room> findAllRooms() {
         TypedQuery<Room> query = em.createQuery("SELECT r FROM Room r", Room.class);
         return query.getResultList();
     }

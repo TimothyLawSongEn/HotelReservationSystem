@@ -40,7 +40,7 @@ public class MainApp {
             System.out.println("Main menu:");
             System.out.println("1. Manage Rooms");
             System.out.println("2. Manage Room Types");
-            System.out.println("3. Manage Room Rates");
+            System.out.println("3. Manage Special Rates");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
@@ -53,7 +53,7 @@ public class MainApp {
                     manageRoomTypes(scanner);
                     break;
                 case 3:
-                    manageRoomRates(scanner);
+                    manageSpecialRates(scanner);
                     break;
                 case 0:
                     System.out.println("Exiting...");
@@ -83,7 +83,7 @@ public class MainApp {
                     viewAllRooms();
                     break;
                 case 2:
-                    viewRoomById(scanner);
+                    viewRoom(scanner);
                     break;
                 case 3:
                     createRoom(scanner);
@@ -120,7 +120,7 @@ public class MainApp {
                     viewAllRoomTypes();
                     break;
                 case 2:
-                    viewRoomTypeById(scanner);
+                    viewRoomType(scanner);
                     break;
                 case 3:
                     createRoomType(scanner);
@@ -140,33 +140,33 @@ public class MainApp {
     }
 
     // RoomRate Management Menu
-    private void manageRoomRates(Scanner scanner) {
+    private void manageSpecialRates(Scanner scanner) {
         while (true) {
-            System.out.println("\n--- Room Rate Management ---");
-            System.out.println("1. View All Rates");
-            System.out.println("2. View RoomType Rates");
-            System.out.println("3. Create Special Rate (Promo/Peak)");
-            System.out.println("4. Update Rate");
-            System.out.println("5. Delete Special Rate (Promo/Peak)");
+            System.out.println("\n--- Special Rate Management (Promo/Peak) ---");
+            System.out.println("1. View All Special Rates");
+            System.out.println("2. View Special Rate");
+            System.out.println("3. Create Special Rate ");
+            System.out.println("4. Update Special Rate");
+            System.out.println("5. Delete Special Rate");
             System.out.println("0. Back to Main Menu");
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
 
             switch (choice) {
                 case 1:
-                    viewAllRoomRates();
+                    viewAllSpecialRates();
                     break;
                 case 2:
-                    viewRoomRateById(scanner);
+                    viewSpecialRate(scanner);
                     break;
                 case 3:
-                    createRoomRate(scanner);
+                    createSpecialRate(scanner);
                     break;
                 case 4:
-                    updateRoomRate(scanner);
+                    updateSpecialRate(scanner);
                     break;
                 case 5:
-                    deleteRoomRate(scanner);
+                    deleteSpecialRate(scanner);
                     break;
                 case 0:
                     return;
@@ -179,7 +179,7 @@ public class MainApp {
     // Room methods
     public void viewAllRooms() {
         try {
-            List<Room> rooms = roomEntitySessionBeanRemote.viewAllRooms();
+            List<Room> rooms = roomEntitySessionBeanRemote.findAllRooms();
             if (rooms.isEmpty()) {
                 System.out.println("No rooms available.");
             } else {
@@ -195,10 +195,9 @@ public class MainApp {
         }
     }
 
-    // Method to view a room by ID
-    public void viewRoomById(Scanner scanner) {
+    public void viewRoom(Scanner scanner) {
         try {
-            System.out.print("Enter Room ID to view details: ");
+            System.out.print("Enter Room ID to view details: "); // todo: chg to enter roomnum instead of id
             Long roomId = scanner.nextLong();
             Room room = roomEntitySessionBeanRemote.findRoomById(roomId);
             if (room != null) {
@@ -212,7 +211,6 @@ public class MainApp {
         }
     }
 
-    // Method to create a new room
     public void createRoom(Scanner scanner) {
         try {
             // Get room number
@@ -240,13 +238,12 @@ public class MainApp {
         }
     }
 
-    // Method to update a room with the option to skip fields
     public void updateRoom(Scanner scanner) {
         try {
             System.out.print("Enter Room ID to update: ");
             Long roomId = scanner.nextLong();
-            scanner.nextLine(); // Consume newline
-
+            
+            scanner.nextLine();
             Room roomToUpdate = roomEntitySessionBeanRemote.findRoomById(roomId);
             if (roomToUpdate != null) {
                 // Update room number
@@ -284,8 +281,6 @@ public class MainApp {
         }
     }
 
-
-    // Method to delete a room
     public void deleteRoom(Scanner scanner) {
         try {
             System.out.print("Enter Room ID to delete: ");
@@ -295,6 +290,7 @@ public class MainApp {
             Room room = roomEntitySessionBeanRemote.findRoomById(roomId);
             if (room != null) {
                 // Confirm deletion
+                System.out.println("Room Details: " + room);
                 System.out.print("Are you sure you want to delete this Room? (y/n): ");
                 String confirmation = scanner.next();
 
@@ -335,9 +331,7 @@ public class MainApp {
         }
     }
 
-
-
-    private void viewRoomTypeById(Scanner scanner) {
+    private void viewRoomType(Scanner scanner) {
         try {
             System.out.print("Enter Room Type ID to view: ");
             Long roomTypeId = scanner.nextLong();
@@ -352,7 +346,6 @@ public class MainApp {
             System.out.println("An error occurred while fetching room type: " + e.getMessage());
         }
     }
-
 
     private void createRoomType(Scanner scanner) {
         try {
@@ -388,7 +381,6 @@ public class MainApp {
         }
     }
 
-
     private void updateRoomType(Scanner scanner) {
         try {
             // Display all room types for user to select
@@ -397,7 +389,6 @@ public class MainApp {
             // Prompt for RoomType ID to update
             System.out.print("Enter Room Type ID to update: ");
             Long roomTypeId = scanner.nextLong();
-            scanner.nextLine(); // Consume newline left-over
 
             // Fetch the room type to update
             RoomType roomType = roomTypeEntitySessionBeanRemote.findRoomType(roomTypeId);
@@ -413,6 +404,7 @@ public class MainApp {
             System.out.println("Current Published Rate: " + roomType.getPublishedRate());
 
             // Prompt for new values, allowing user to skip by pressing Enter
+            scanner.nextLine();
             System.out.print("Enter new Room Type name (leave blank to keep current): ");
             String newRoomTypeName = scanner.nextLine().trim();
             if (!newRoomTypeName.isEmpty()) {
@@ -483,7 +475,7 @@ public class MainApp {
 
 
     // View all Room Rates categorised by RoomType
-    private void viewAllRoomRates() {
+    private void viewAllSpecialRates() {
         try {
             List<RoomType> roomTypes = roomTypeEntitySessionBeanRemote.findAllRoomTypes(); // Fetch room types
             List<RoomRate> specialRoomRates = roomRateEntitySessionBeanRemote.findAllRoomRates(); // Fetch special rates
@@ -540,7 +532,7 @@ public class MainApp {
 
 
     // View a specific room rate by ID
-    private void viewRoomRateById(Scanner scanner) {
+    private void viewSpecialRate(Scanner scanner) {
         try {
             System.out.print("Enter Room Rate ID: ");
             Long roomRateId = scanner.nextLong();
@@ -564,7 +556,7 @@ public class MainApp {
 
 
     // Create a new room rate
-    private void createRoomRate(Scanner scanner) {
+    private void createSpecialRate(Scanner scanner) {
         try {
             // Get room type
             List<RoomType> roomTypes = roomTypeEntitySessionBeanRemote.findAllRoomTypes();
@@ -589,7 +581,6 @@ public class MainApp {
             // Get amount
             System.out.print("Enter amount: ");
             double amount = scanner.nextDouble();
-            
             scanner.nextLine();
 
             // Get period (start date and end date)
@@ -636,7 +627,7 @@ public class MainApp {
 
 
     // Update a room rate
-    private void updateRoomRate(Scanner scanner) {
+    private void updateSpecialRate(Scanner scanner) {
         try {
             System.out.print("Enter Room Rate ID to update: ");
             Long roomRateId = scanner.nextLong();
@@ -674,7 +665,7 @@ public class MainApp {
 
 
     // Delete room rate by ID
-    private void deleteRoomRate(Scanner scanner) {
+    private void deleteSpecialRate(Scanner scanner) {
         try {
             System.out.print("Enter Room Rate ID to delete: ");
             Long roomRateId = scanner.nextLong();

@@ -23,7 +23,7 @@ public interface RoomEntitySessionBeanLocal {
 
     public void deleteRoom(Long roomId);
 
-    public List<Room> viewAllRooms();
+    public List<Room> findAllRooms();
 
     public Room findRoomById(Long roomId);
 }
