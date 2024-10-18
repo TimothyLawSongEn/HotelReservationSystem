@@ -4,9 +4,12 @@
  */
 package ejb.session.singleton;
 
+import ejb.session.stateless.EmployeeEntitySessionBeanLocal;
 import ejb.session.stateless.RoomEntitySessionBeanLocal;
 import ejb.session.stateless.RoomRateEntitySessionBeanLocal;
 import ejb.session.stateless.RoomTypeEntitySessionBeanLocal;
+import entity.Employee;
+import entity.Employee.EmployeeType;
 import entity.Room;
 import entity.RoomType;
 import entity.RoomRate;
@@ -41,6 +44,9 @@ public class DataInitSessionBean {
 
     @EJB
     private RoomEntitySessionBeanLocal roomEntitySessionBeanLocal;
+    
+    @EJB
+    private EmployeeEntitySessionBeanLocal employeeEntitySessionBeanLocal;
 
     @PostConstruct  // Runs automatically after the bean is created
     public void initializeData() {
@@ -78,6 +84,12 @@ public class DataInitSessionBean {
         roomEntitySessionBeanLocal.createRoom(room102);
         roomEntitySessionBeanLocal.createRoom(room201);
 
+        // Create System Administrator
+        Employee systemAdmin = new Employee("password", EmployeeType.SYSTEMADMIN);
+        
+        // Persist system admin using session bean
+        employeeEntitySessionBeanLocal.createEmployee(systemAdmin);
+        
         // You can add more initialization logic here if needed
         System.out.println("Data initialization complete.");
     }
