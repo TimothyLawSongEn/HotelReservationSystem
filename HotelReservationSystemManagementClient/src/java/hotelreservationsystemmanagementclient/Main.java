@@ -32,7 +32,7 @@ public class Main {
     {
         MainApp mainApp = new MainApp(roomEntitySessionBeanRemote, roomTypeEntitySessionBeanRemote, roomRateEntitySessionBeanRemote, employeeEntitySessionBean);
 //        MainApp mainApp = new MainApp();
-        mainApp.start();
+        mainApp.timothyStart();
     }
     
 }

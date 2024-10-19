@@ -59,7 +59,7 @@ public class RoomTypeManagementModule {
         }
     }
     
-       // RoomType methods
+    // RoomType methods
     private void viewAllRoomTypes() {
         try {
             List<RoomType> roomTypes = roomTypeEntitySessionBeanRemote.findAllRoomTypes(); // Assuming session bean method
@@ -67,14 +67,16 @@ public class RoomTypeManagementModule {
                 System.out.println("No room types available.");
             } else {
                 System.out.println("\n--- List of Room Types ---");
-                System.out.printf("%-10s %-20s %-20s %-20s\n", "ID", "Room Type", "Normal Rate", "Published Rate");
-                System.out.println("--------------------------------------------------------------------------");
+                System.out.printf("%-10s %-20s %-20s %-20s %-15s\n", "ID", "Room Type", "Normal Rate", "Published Rate", "Disabled");
+                System.out.println("-----------------------------------------------------------------------------------------");
                 for (RoomType roomType : roomTypes) {
-                    System.out.printf("%-10d %-20s %-20.2f %-20.2f\n", 
+                    String disabledStatus = roomType.isDisabled() ? "Yes" : "No";
+                    System.out.printf("%-10d %-20s %-20.2f %-20.2f %-15s\n", 
                                       roomType.getId(), 
                                       roomType.getName(), 
                                       roomType.getNormalRate(), 
-                                      roomType.getPublishedRate());
+                                      roomType.getPublishedRate(),
+                                      disabledStatus);
                 }
             }
         } catch (Exception e) {
@@ -214,8 +216,8 @@ public class RoomTypeManagementModule {
             String confirmation = scanner.next();
 
             if ("y".equalsIgnoreCase(confirmation)) {
-                roomTypeEntitySessionBeanRemote.deleteRoomType(roomTypeId);
-                System.out.println("Room Type deleted successfully.");
+                RoomType deletedRoomType = roomTypeEntitySessionBeanRemote.deleteRoomType(roomTypeId);
+                System.out.println("Room Type deleted successfully: " + deletedRoomType);
             } else {
                 System.out.println("Room Type deletion canceled.");
             }

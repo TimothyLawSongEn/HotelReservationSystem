@@ -19,7 +19,7 @@ public interface RoomTypeEntitySessionBeanRemote {
 
     public RoomType updateRoomType(RoomType roomType);
 
-    public void deleteRoomType(Long roomTypeId);
+    public RoomType deleteRoomType(Long roomTypeId) throws Exception;
 
     public RoomType findRoomType(Long roomTypeId);
 

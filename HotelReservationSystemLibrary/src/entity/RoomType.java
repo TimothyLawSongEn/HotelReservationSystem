@@ -1,6 +1,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,8 +33,12 @@ public class RoomType implements Serializable {
     @Column(nullable = false)  // Mandatory normal rate
     private Double normalRate;
 
-    @OneToMany(mappedBy = "roomType", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "roomType", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<RoomRate> rates = new ArrayList<>();  // List for peak and promo rates
+    
+    @NotNull(message = "Disabled flag cannot be null")
+    @Column(nullable = false)
+    private boolean disabled;
     
 //    @OneToMany(mappedBy = "name")
 //    private RoomType roomType;
@@ -46,7 +51,27 @@ public class RoomType implements Serializable {
         this.name = name;
         this.publishedRate = publishedRate;
         this.normalRate = normalRate;
+        this.disabled = false;
     }
+    
+//    public int calculateTotalWalkinFee(LocalDate startDate, LocalDate endDate) {
+//        // sum publishedrates
+//    }
+//    
+////    The total reservation fee payable by the guest for a reservation is calculated by summing the
+////    prevailing rate per night of each night of stay for the entire duration of stay. For example, if a
+////    guest books a Deluxe Room for 3 nights, the reservation fee will be the sum of first day’s rate
+////    per night, second day’s rate per night and third day’s rate per night. If either peak rate or
+////    promotion rate is defined for a particular room type on a particular date, it will take
+////    precedence over the normal rate. If both peak rate and promotion rate are defined for a
+////    particular room type on a particular date, the promotion rate will take precedence.
+//    public int calculateTotalGuestReservationFee(LocalDate startDate, LocalDate endDate) {
+//        // for each date
+//        //  add promo rate
+//        //  else add peak rate
+//        //  else add normal rate
+//        // return sum
+//    }
 
     // Getters and Setters
     public Long getId() {
@@ -87,6 +112,14 @@ public class RoomType implements Serializable {
 
     public void setRates(List<RoomRate> rates) {
         this.rates = rates;
+    }
+    
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
     // Equals and Hashcode based on id (Primary Key)

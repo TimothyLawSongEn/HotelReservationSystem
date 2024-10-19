@@ -4,6 +4,7 @@
  */
 package ejb.session.stateless;
 
+import entity.Room;
 import entity.RoomType;
 
 import javax.ejb.Stateless;
@@ -27,7 +28,7 @@ public class RoomTypeEntitySessionBean implements RoomTypeEntitySessionBeanRemot
     public void createRoomType(RoomType roomType) {
         em.persist(roomType);
     }
-
+    
     // Update an existing RoomType
     @Override
     public RoomType updateRoomType(RoomType roomType) {
@@ -36,11 +37,28 @@ public class RoomTypeEntitySessionBean implements RoomTypeEntitySessionBeanRemot
 
     // Delete a RoomType by ID
     @Override
-    public void deleteRoomType(Long roomTypeId) {
+    public RoomType deleteRoomType(Long roomTypeId) throws Exception {
         RoomType roomType = em.find(RoomType.class, roomTypeId);
-        if (roomType != null) {
-            em.remove(roomType);
+        
+        if (roomType == null) {
+            throw new Exception("RoomType not found.");
         }
+
+        // Check if the RoomType is associated with any rooms
+        List<Room> rooms = em.createQuery("SELECT r FROM Room r WHERE r.roomType = :roomType", Room.class)
+                              .setParameter("roomType", roomType)
+                              .getResultList();
+
+        if (rooms.isEmpty()) {
+            em.remove(roomType); // roomrates are deleted because of cascade
+            System.out.println("RoomType and its associated RoomRates deleted successfully.");
+            return roomType;
+        } else {
+            // Handle case where RoomType is in use
+            roomType.setDisabled(true);
+            throw new Exception("Cannot delete RoomType with associated rooms. RoomType will be disabled.");
+        }
+
     }
 
     // Find a RoomType by ID

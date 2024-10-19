@@ -10,6 +10,7 @@ import entity.Room;
 import entity.RoomType;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -103,16 +104,27 @@ public class RoomManagementModule {
             scanner.nextLine();
             System.out.print("Enter Room Number: ");
             String roomNumber = scanner.nextLine().trim();
-            
-            // Get room type (choose from available room types)
+
+            // Get non-disabled room types
             System.out.println("Choose a Room Type:");
             List<RoomType> roomTypes = roomTypeEntitySessionBeanRemote.findAllRoomTypes();
-            for (int i = 0; i < roomTypes.size(); i++) {
-                System.out.printf("%d. %s\n", i + 1, roomTypes.get(i).getName());
+            List<RoomType> availableRoomTypes = roomTypes.stream()
+                                                          .filter(rt -> !rt.isDisabled())
+                                                          .collect(Collectors.toList());
+
+            if (availableRoomTypes.isEmpty()) {
+                System.out.println("No available room types.");
+                return;
             }
+
+            // Display available room types
+            for (int i = 0; i < availableRoomTypes.size(); i++) {
+                System.out.printf("%d. %s\n", i + 1, availableRoomTypes.get(i).getName());
+            }
+
             System.out.print("Select room type by number: ");
             int roomTypeChoice = scanner.nextInt();
-            RoomType selectedRoomType = roomTypes.get(roomTypeChoice - 1);
+            RoomType selectedRoomType = availableRoomTypes.get(roomTypeChoice - 1);
 
             // Create Room
             Room newRoom = new Room(roomNumber, selectedRoomType);
