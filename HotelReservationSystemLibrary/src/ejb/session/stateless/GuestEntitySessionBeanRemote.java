@@ -19,4 +19,6 @@ public interface GuestEntitySessionBeanRemote {
 
     public Guest logIn(String email, String password);
     
+    public Guest findGuestById(long id);
+    
 }

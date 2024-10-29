@@ -82,6 +82,14 @@ public class Room implements Serializable {
     public void setRoomType(RoomType roomType) {
         this.roomType = roomType;
     }
+    
+    public Booking getCurrentBooking() {
+        return currentBooking;
+    }
+
+    public void setCurrentBooking(Booking currentBooking) {
+        this.currentBooking = currentBooking;
+    }
 
     @Override
     public int hashCode() {

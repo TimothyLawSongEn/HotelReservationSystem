@@ -150,18 +150,63 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
         return allBookingsStartingToday;
     }
     
-    public void checkIn(Long guestId) {
-        // get guest
-        // get todays booking (might be >1)
-        // get allocatedRoom field in booking
-        // set room currBooking field
+    public void checkIn(Long bookingId) throws Exception {
+        Booking booking = em.find(Booking.class, bookingId);
+        if (booking == null || booking.isCheckedIn()) {
+            throw new Exception("Booking not found or already checked in.");
+        }
+
+        Room allocatedRoom = booking.getAllocatedRoom();
+        if (allocatedRoom == null) {
+            throw new Exception("Allocated room not found for this booking.");
+        }
+
+        // Mark booking as checked in and update room’s current booking
+        booking.setCheckedIn(true);
+        allocatedRoom.setCurrentBooking(booking);
+
+        em.merge(booking);
+        em.merge(allocatedRoom);
+    }
+
+    
+    public void checkOut(Long bookingId) throws Exception {
+        Booking booking = em.find(Booking.class, bookingId);
+        if (booking == null || !booking.isCheckedIn()) {
+            throw new Exception("Booking not found or not checked in.");
+        }
+
+        Room allocatedRoom = booking.getAllocatedRoom();
+        if (allocatedRoom == null) {
+            throw new Exception("Allocated room not found for this booking.");
+        }
+
+        // Mark booking as checked out and release the room
+        booking.setCheckedIn(false);
+        allocatedRoom.setCurrentBooking(null);
+
+        em.merge(booking);
+        em.merge(allocatedRoom);
     }
     
-    public void checkOut(Long guestId) {
-        // get guest
-        // get all active bookings
-        // get allocatedRoom field in booking
-        // set room currBooking field to null
+    public List<Booking> retrieveActiveBookingsForCheckIn(Long guestId) {
+        return em.createQuery(
+            "SELECT b FROM Booking b WHERE b.guest.id = :guestId AND b.checkedIn = false " +
+            "AND b.startDate <= CURRENT_DATE AND CURRENT_DATE < b.endDate",
+            Booking.class
+        )
+        .setParameter("guestId", guestId)
+        .getResultList();
+    }
+
+    public List<Booking> retrieveCheckedInBookings(Long guestId) {
+        return em.createQuery(
+            "SELECT b FROM Booking b WHERE b.guest.id = :guestId AND b.checkedIn = true " +
+            "AND b.startDate <= CURRENT_DATE AND CURRENT_DATE <= b.endDate",
+            Booking.class
+        )
+        .setParameter("guestId", guestId)
+        .getResultList();
     }
 
 }

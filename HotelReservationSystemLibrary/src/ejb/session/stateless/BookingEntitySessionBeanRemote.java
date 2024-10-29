@@ -26,4 +26,12 @@ public interface BookingEntitySessionBeanRemote {
     public List<Booking> getBookingByGuest(Guest guest);
     
     public Booking getBookingById(Long id);
+
+    public void checkIn(Long bookingId) throws Exception;
+
+    public void checkOut(Long bookingId) throws Exception;
+
+    public List<Booking> retrieveActiveBookingsForCheckIn(Long guestId);
+
+    public List<Booking> retrieveCheckedInBookings(Long guestId);
 }

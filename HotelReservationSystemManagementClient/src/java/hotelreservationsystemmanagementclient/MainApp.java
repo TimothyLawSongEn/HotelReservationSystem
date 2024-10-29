@@ -7,6 +7,7 @@ package hotelreservationsystemmanagementclient;
 import ejb.session.singleton.AvailabilitySessionBeanRemote;
 import ejb.session.stateless.BookingEntitySessionBeanRemote;
 import ejb.session.stateless.EmployeeEntitySessionBeanRemote;
+import ejb.session.stateless.GuestEntitySessionBeanRemote;
 import ejb.session.stateless.RoomEntitySessionBeanRemote;
 import ejb.session.stateless.RoomRateEntitySessionBeanRemote;
 import ejb.session.stateless.RoomTypeEntitySessionBeanRemote;
@@ -25,6 +26,7 @@ public class MainApp {
     private EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote;
     private AvailabilitySessionBeanRemote availabilitySessionBeanRemote;
     private BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote;
+    private GuestEntitySessionBeanRemote guestEntitySessionBeanRemote;
     
     private RoomManagementModule roomManagementModule;
     private RoomTypeManagementModule roomTypeManagementModule;
@@ -34,18 +36,19 @@ public class MainApp {
     public MainApp() {
     }
 
-    public MainApp(RoomEntitySessionBeanRemote roomEntitySessionBeanRemote, RoomTypeEntitySessionBeanRemote roomTypeEntitySessionBeanRemote, RoomRateEntitySessionBeanRemote roomRateTransactionEntitySessionBeanRemote, EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote, AvailabilitySessionBeanRemote availabilitySessionBeanRemote, BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote) {
+    public MainApp(RoomEntitySessionBeanRemote roomEntitySessionBeanRemote, RoomTypeEntitySessionBeanRemote roomTypeEntitySessionBeanRemote, RoomRateEntitySessionBeanRemote roomRateTransactionEntitySessionBeanRemote, EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote, AvailabilitySessionBeanRemote availabilitySessionBeanRemote, BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote, GuestEntitySessionBeanRemote guestEntitySessionBeanRemote) {
         this.roomEntitySessionBeanRemote = roomEntitySessionBeanRemote;
         this.roomTypeEntitySessionBeanRemote = roomTypeEntitySessionBeanRemote;
         this.roomRateEntitySessionBeanRemote = roomRateTransactionEntitySessionBeanRemote;
         this.employeeEntitySessionBeanRemote = employeeEntitySessionBeanRemote;
         this.availabilitySessionBeanRemote = availabilitySessionBeanRemote;
         this.bookingEntitySessionBeanRemote = bookingEntitySessionBeanRemote;
+        this.guestEntitySessionBeanRemote = guestEntitySessionBeanRemote;
         
         this.roomManagementModule = new RoomManagementModule(roomEntitySessionBeanRemote, roomTypeEntitySessionBeanRemote);
         this.roomTypeManagementModule = new RoomTypeManagementModule(roomTypeEntitySessionBeanRemote);
         this.specialRateManagementModule = new SpecialRateManagementModule(roomTypeEntitySessionBeanRemote, roomRateEntitySessionBeanRemote);
-        this.frontOfficeModule = new FrontOfficeModule(availabilitySessionBeanRemote, bookingEntitySessionBeanRemote);
+        this.frontOfficeModule = new FrontOfficeModule(availabilitySessionBeanRemote, bookingEntitySessionBeanRemote, guestEntitySessionBeanRemote);
     }
     
     public void start() {

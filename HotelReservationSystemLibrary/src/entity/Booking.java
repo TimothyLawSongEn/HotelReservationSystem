@@ -46,6 +46,10 @@ public class Booking implements Serializable {
     @ManyToOne
     @JoinColumn(name = "guestId", nullable = false)
     private Guest guest;
+    
+    @NotNull(message = "CheckedIn cannot be null")
+    @Column(nullable = false)
+    private Boolean checkedIn = false;
 
     public Booking() {
     }
@@ -103,6 +107,14 @@ public class Booking implements Serializable {
 
     public void setGuest(Guest guest) {
         this.guest = guest;
+    }
+    
+    public boolean isCheckedIn() {
+        return checkedIn;
+    }
+
+    public void setCheckedIn(boolean checkedIn) {
+        this.checkedIn = checkedIn;
     }
 
     @Override

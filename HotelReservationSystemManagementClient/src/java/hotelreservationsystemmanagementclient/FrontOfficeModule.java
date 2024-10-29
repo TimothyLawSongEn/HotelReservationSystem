@@ -6,9 +6,13 @@ package hotelreservationsystemmanagementclient;
 
 import ejb.session.singleton.AvailabilitySessionBeanRemote;
 import ejb.session.stateless.BookingEntitySessionBeanRemote;
+import ejb.session.stateless.GuestEntitySessionBeanRemote;
 import entity.Booking;
+import entity.Guest;
 import entity.RoomType;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import javafx.util.Pair;
@@ -21,11 +25,14 @@ public class FrontOfficeModule {
 
     private AvailabilitySessionBeanRemote availabilitySessionBeanRemote;
     private BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote;
+    private GuestEntitySessionBeanRemote guestEntitySessionBeanRemote;
 
     public FrontOfficeModule(AvailabilitySessionBeanRemote availabilitySessionBeanRemote,
-                             BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote) {
+                             BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote,
+                             GuestEntitySessionBeanRemote guestEntitySessionBeanRemote) {
         this.availabilitySessionBeanRemote = availabilitySessionBeanRemote;
         this.bookingEntitySessionBeanRemote = bookingEntitySessionBeanRemote;
+        this.guestEntitySessionBeanRemote = guestEntitySessionBeanRemote;
     }
 
     public void frontOfficeMenu(Scanner scanner) {
@@ -47,12 +54,10 @@ public class FrontOfficeModule {
                     walkInSearchRoom(scanner);
                     break;
                 case 2:
-                    // Placeholder for check-in functionality
-                    System.out.println("Check-In functionality is not yet implemented.");
+                    checkIn(scanner);
                     break;
                 case 3:
-                    // Placeholder for check-out functionality
-                    System.out.println("Check-Out functionality is not yet implemented.");
+                    checkOut(scanner);
                     break;
                 case 4:
                     allocateBookings(scanner);
@@ -66,6 +71,98 @@ public class FrontOfficeModule {
             }
         }
     }
+    
+    private void checkIn(Scanner scanner) {
+        // get guest
+        // display all active bookings that are not checkedin yet
+        // allow user to select bookings to checkin (provide select all option)
+        // call bookingBean.checkin() (get allocatedRoom field in booking, set room's currBooking field, set booking checkin boolean to true)
+
+        System.out.print("Enter guestId (or 0 to cancel): ");
+        long guestId = scanner.nextLong();
+        Guest guest = guestEntitySessionBeanRemote.findGuestById(guestId);
+
+        // Fetch all active bookings for the guest that have not been checked in
+        List<Booking> activeBookings = bookingEntitySessionBeanRemote.retrieveActiveBookingsForCheckIn(guestId);
+
+        if (activeBookings.isEmpty()) {
+            System.out.println("No active bookings available for check-in.");
+            return;
+        }
+
+        // Display bookings
+        System.out.println("Select bookings to check in:");
+        for (int i = 0; i < activeBookings.size(); i++) {
+            System.out.println((i + 1) + ": " + activeBookings.get(i));
+        }
+        System.out.println((activeBookings.size() + 1) + ": Select All");
+
+        // Get user selection
+        int selection = scanner.nextInt();
+        List<Booking> selectedBookings;
+        if (selection == activeBookings.size() + 1) { // Select all bookings
+            selectedBookings = new ArrayList<>(activeBookings);
+        } else {
+            selectedBookings = Arrays.asList(activeBookings.get(selection - 1));
+        }
+
+        // Check-in the selected bookings
+        for (Booking booking : selectedBookings) {
+            try {
+                bookingEntitySessionBeanRemote.checkIn(booking.getId());
+                System.out.println("Checked in booking: " + booking);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+    }
+
+    
+    private void checkOut(Scanner scanner) {
+        // get guest
+        // display all active bookings that are checkedin
+        // allow user to select bookings to checkout (provide select all option)
+        // call bookingBean.checkin() (get allocatedRoom field in booking, set room's currBooking field to null, set booking checkin boolean to false)
+
+        System.out.print("Enter guestId (or 0 to cancel): ");
+        long guestId = scanner.nextLong();
+        Guest guest = guestEntitySessionBeanRemote.findGuestById(guestId);
+
+        // Fetch all checked-in bookings for the guest
+        List<Booking> checkedInBookings = bookingEntitySessionBeanRemote.retrieveCheckedInBookings(guestId);
+
+        if (checkedInBookings.isEmpty()) {
+            System.out.println("No checked-in bookings available for check-out.");
+            return;
+        }
+
+        // Display bookings
+        System.out.println("Select bookings to check out:");
+        for (int i = 0; i < checkedInBookings.size(); i++) {
+            System.out.println((i + 1) + ": " + checkedInBookings.get(i));
+        }
+        System.out.println((checkedInBookings.size() + 1) + ": Select All");
+
+        // Get user selection
+        int selection = scanner.nextInt();
+        List<Booking> selectedBookings;
+        if (selection == checkedInBookings.size() + 1) { // Select all bookings
+            selectedBookings = new ArrayList<>(checkedInBookings);
+        } else {
+            selectedBookings = Arrays.asList(checkedInBookings.get(selection - 1));
+        }
+
+        // Check-out the selected bookings
+        for (Booking booking : selectedBookings) {
+            try {
+                bookingEntitySessionBeanRemote.checkOut(booking.getId());
+                System.out.println("Checked out booking: " + booking);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+    }
+
     
     private void allocateBookings(Scanner scanner) {
         System.out.print("Enter date (YYYY-MM-DD): ");
