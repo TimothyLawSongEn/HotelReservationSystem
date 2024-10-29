@@ -17,10 +17,9 @@ import javax.validation.constraints.Pattern;
 @NamedQueries({
     @NamedQuery(
         name = "Room.findAvailableRoomsForRoomTypeAndDate",
-//        query = "SELECT r FROM Room r WHERE r.roomType = :roomType"
         query = "SELECT r FROM Room r WHERE r.roomType = :roomType AND (r.currentBooking IS NULL)"
 //        query = "SELECT r FROM Room r WHERE r.roomType = :roomType AND " +
-//                "(r.currentBooking IS NULL OR r.currentBooking.endDate <= :date)"
+//                "(r.currentBooking IS NULL OR r.currentBooking.endDate <= :date)" // TODO: make date comparison work
     )
 })
 public class Room implements Serializable {

@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 /**
  *
@@ -25,7 +24,7 @@ public class Booking implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @NotNull(message = "StartDate cannot be null")
@@ -43,14 +42,19 @@ public class Booking implements Serializable {
     @ManyToOne
     @JoinColumn()
     private Room allocatedRoom; // can be null, until alloc() is called
+    
+    @ManyToOne
+    @JoinColumn(name = "guestId", nullable = false)
+    private Guest guest;
 
     public Booking() {
     }
 
-    public Booking(LocalDate startDate, LocalDate endDate, RoomType roomType) {
+    public Booking(LocalDate startDate, LocalDate endDate, RoomType roomType, Guest guest) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.roomType = roomType;
+        this.guest = guest;
     }
 
     public Long getId() {
@@ -61,7 +65,7 @@ public class Booking implements Serializable {
 //        this.id = id;
 //    }
     
-        public LocalDate getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
@@ -93,6 +97,14 @@ public class Booking implements Serializable {
         this.allocatedRoom = allocatedRoom;
     }
 
+    public Guest getGuest() {
+        return guest;
+    }
+
+    public void setGuest(Guest guest) {
+        this.guest = guest;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -121,6 +133,7 @@ public class Booking implements Serializable {
                 ", endDate=" + endDate +
                 ", roomType=" + (roomType != null ? roomType.getName() : "null") +
                 ", allocatedRoom=" + (allocatedRoom != null ? allocatedRoom.getRoomNumber() : "null") +
+                ", guest=" + (guest != null ? guest.getId() : "null") +
                 '}';
     }
 

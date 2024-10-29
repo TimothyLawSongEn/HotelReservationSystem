@@ -6,6 +6,7 @@
     <class>entity.RoomRate</class>
     <class>entity.RoomType</class>
     <class>entity.Employee</class>
+    <class>entity.Guest</class>
     <class>entity.Booking</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>

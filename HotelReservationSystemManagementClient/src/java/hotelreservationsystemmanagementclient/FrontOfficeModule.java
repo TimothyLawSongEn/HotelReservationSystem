@@ -147,10 +147,13 @@ public class FrontOfficeModule {
                     System.out.println("Room type does not exist. Try again.");
                     continue;
                 }
+                
+                System.out.print("Enter guestId (or 0 to cancel): ");
+                long guestId = scanner.nextLong();
 
                 Pair<RoomType, Integer> selectedRoomTypePair = availableRoomTypes.get(roomTypeChoice - 1);
                 Long selectedRoomTypeId = selectedRoomTypePair.getKey().getId();
-                Booking booking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, selectedRoomTypeId);
+                Booking booking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, selectedRoomTypeId, guestId);
                 System.out.println("Room successfully reserved. Your booking details: " + booking);
                 return;
             }

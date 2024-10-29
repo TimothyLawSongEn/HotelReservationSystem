@@ -5,6 +5,7 @@
 package ejb.session.stateless;
 
 import entity.Booking;
+import entity.Guest;
 import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.Remote;
@@ -16,8 +17,13 @@ import javax.ejb.Remote;
 @Remote
 public interface BookingEntitySessionBeanRemote {
 
-    public Booking reserveRoomType(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception;
+    public Booking reserveRoomType(LocalDate startDate, LocalDate endDate, long roomTypeId, long guestId) throws Exception;
 
     public List<Booking> allocateRoomToBookings(LocalDate date);
     
+//    public Booking createBooking(Booking newBooking) throws ConstraintViolationException;
+
+    public List<Booking> getBookingByGuest(Guest guest);
+    
+    public Booking getBookingById(Long id);
 }

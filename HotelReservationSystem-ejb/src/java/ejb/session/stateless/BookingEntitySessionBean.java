@@ -6,6 +6,7 @@ package ejb.session.stateless;
 
 import ejb.session.singleton.AvailabilitySessionBeanLocal;
 import entity.Booking;
+import entity.Guest;
 import entity.Room;
 import entity.RoomType;
 import java.time.LocalDate;
@@ -31,6 +32,8 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
     RoomTypeEntitySessionBeanLocal roomTypeEntitySessionBeanLocal;
     @EJB
     RoomEntitySessionBeanLocal roomEntitySessionBeanLocal;
+    @EJB
+    GuestEntitySessionBeanLocal guestEntitySessionBeanLocal;
     
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
@@ -38,8 +41,9 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
     public BookingEntitySessionBean() {
     }
     
+    // TODO: set rollback with child createBooking method
     @Override
-    public Booking reserveRoomType(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception {
+    public Booking reserveRoomType(LocalDate startDate, LocalDate endDate, long roomTypeId, long guestId) throws Exception {
         // Increment booked count for the given room type and dates
         try {
             availabilitySessionBeanLocal.incrementBookedCount(startDate, endDate, roomTypeId);
@@ -48,24 +52,40 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
         }
 
         // Create and persist the new booking
-        return createBooking(startDate, endDate, roomTypeId);
+        return createBooking(startDate, endDate, roomTypeId, guestId);
     }
 
-    private Booking createBooking(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception {
-//        Guest guest = guestEntitySessionBeanLocal.findGuestById(guestId);
-//        if (guest == null) {
-//            throw new Exception("Guest not found.");
-//        }
+    private Booking createBooking(LocalDate startDate, LocalDate endDate, long roomTypeId, long guestId) throws Exception {
+        Guest guest = guestEntitySessionBeanLocal.findGuestById(guestId);
+        if (guest == null) {
+            throw new Exception("Guest not found.");
+        }
 
         RoomType roomType = roomTypeEntitySessionBeanLocal.findRoomType(roomTypeId); // Implement this method to find a room type by ID
         if (roomType == null) {
             throw new Exception("Room type not found.");
         }
 
-        Booking newBooking = new Booking(startDate, endDate, roomType);
+        Booking newBooking = new Booking(startDate, endDate, roomType, guest);
         em.persist(newBooking);
-
         return newBooking;
+    }
+
+//    @Override
+//    public Booking createBooking(Booking newBooking) throws ConstraintViolationException {
+//        em.persist(newBooking);
+//        return newBooking;
+//    }
+
+    public List<Booking> getBookingByGuest(Guest guest) {
+        return em.createQuery("SELECT b FROM Booking b WHERE b.guest = :guest", Booking.class)
+                .setParameter("guest", guest)
+                .getResultList();
+    }
+    
+    @Override
+    public Booking getBookingById(Long id) {
+        return em.find(Booking.class, id);
     }
     
     @Override
