@@ -4,6 +4,7 @@
  */
 package ejb.session.singleton;
 
+import ejb.session.stateless.BookingEntitySessionBeanLocal;
 import ejb.session.stateless.EmployeeEntitySessionBeanLocal;
 import ejb.session.stateless.RoomEntitySessionBeanLocal;
 import ejb.session.stateless.RoomRateEntitySessionBeanLocal;
@@ -47,6 +48,9 @@ public class DataInitSessionBean {
     
     @EJB
     private EmployeeEntitySessionBeanLocal employeeEntitySessionBeanLocal;
+    
+    @EJB
+    private AvailabilitySessionBeanLocal availabilitySessionBeanLocal;
 
     @PostConstruct  // Runs automatically after the bean is created
     public void initializeData() {
@@ -92,5 +96,7 @@ public class DataInitSessionBean {
         
         // You can add more initialization logic here if needed
         System.out.println("Data initialization complete.");
+        
+        availabilitySessionBeanLocal.loadRoomTypesAndBookings();
     }
 }

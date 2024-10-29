@@ -4,6 +4,8 @@
  */
 package hotelreservationsystemmanagementclient;
 
+import ejb.session.singleton.AvailabilitySessionBeanRemote;
+import ejb.session.stateless.BookingEntitySessionBeanRemote;
 import ejb.session.stateless.EmployeeEntitySessionBeanRemote;
 import ejb.session.stateless.RoomEntitySessionBeanRemote;
 import ejb.session.stateless.RoomRateEntitySessionBeanRemote;
@@ -21,22 +23,29 @@ public class MainApp {
     private RoomTypeEntitySessionBeanRemote roomTypeEntitySessionBeanRemote;
     private RoomRateEntitySessionBeanRemote roomRateEntitySessionBeanRemote;
     private EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote;
+    private AvailabilitySessionBeanRemote availabilitySessionBeanRemote;
+    private BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote;
     
     private RoomManagementModule roomManagementModule;
     private RoomTypeManagementModule roomTypeManagementModule;
     private SpecialRateManagementModule specialRateManagementModule;
+    private FrontOfficeModule frontOfficeModule;
 
     public MainApp() {
     }
 
-    public MainApp(RoomEntitySessionBeanRemote roomEntitySessionBeanRemote, RoomTypeEntitySessionBeanRemote roomTypeEntitySessionBeanRemote, RoomRateEntitySessionBeanRemote roomRateTransactionEntitySessionBeanRemote, EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote) {
+    public MainApp(RoomEntitySessionBeanRemote roomEntitySessionBeanRemote, RoomTypeEntitySessionBeanRemote roomTypeEntitySessionBeanRemote, RoomRateEntitySessionBeanRemote roomRateTransactionEntitySessionBeanRemote, EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote, AvailabilitySessionBeanRemote availabilitySessionBeanRemote, BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote) {
         this.roomEntitySessionBeanRemote = roomEntitySessionBeanRemote;
         this.roomTypeEntitySessionBeanRemote = roomTypeEntitySessionBeanRemote;
         this.roomRateEntitySessionBeanRemote = roomRateTransactionEntitySessionBeanRemote;
         this.employeeEntitySessionBeanRemote = employeeEntitySessionBeanRemote;
+        this.availabilitySessionBeanRemote = availabilitySessionBeanRemote;
+        this.bookingEntitySessionBeanRemote = bookingEntitySessionBeanRemote;
+        
         this.roomManagementModule = new RoomManagementModule(roomEntitySessionBeanRemote, roomTypeEntitySessionBeanRemote);
         this.roomTypeManagementModule = new RoomTypeManagementModule(roomTypeEntitySessionBeanRemote);
         this.specialRateManagementModule = new SpecialRateManagementModule(roomTypeEntitySessionBeanRemote, roomRateEntitySessionBeanRemote);
+        this.frontOfficeModule = new FrontOfficeModule(availabilitySessionBeanRemote, bookingEntitySessionBeanRemote);
     }
     
     public void start() {
@@ -72,6 +81,7 @@ public class MainApp {
             System.out.println("1. Manage Rooms");
             System.out.println("2. Manage Room Types");
             System.out.println("3. Manage Special Rates");
+            System.out.println("4. Front Office");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
@@ -85,6 +95,9 @@ public class MainApp {
                     break;
                 case 3:
                     specialRateManagementModule.manageSpecialRates(scanner);
+                    break;
+                case 4:
+                    frontOfficeModule.frontOfficeMenu(scanner);
                     break;
                 case 0:
                     System.out.println("Exiting...");

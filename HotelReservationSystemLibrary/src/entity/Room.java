@@ -14,6 +14,15 @@ import javax.validation.constraints.Pattern;
  * @author timothy
  */
 @Entity
+@NamedQueries({
+    @NamedQuery(
+        name = "Room.findAvailableRoomsForRoomTypeAndDate",
+//        query = "SELECT r FROM Room r WHERE r.roomType = :roomType"
+        query = "SELECT r FROM Room r WHERE r.roomType = :roomType AND (r.currentBooking IS NULL)"
+//        query = "SELECT r FROM Room r WHERE r.roomType = :roomType AND " +
+//                "(r.currentBooking IS NULL OR r.currentBooking.endDate <= :date)"
+    )
+})
 public class Room implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,6 +40,14 @@ public class Room implements Serializable {
     @ManyToOne
     @JoinColumn(nullable = false)
     private RoomType roomType;
+    
+    @OneToOne
+    @JoinColumn
+    private Booking currentBooking; // alloc: get avail rooms, set allocroom in booking, upon chkin edit this currBooking
+    
+    @NotNull(message = "Disabled flag cannot be null")
+    @Column(nullable = false)
+    private boolean disabled; // todo: add getter setter etc!!!
 
     // No-args constructor
     public Room() {

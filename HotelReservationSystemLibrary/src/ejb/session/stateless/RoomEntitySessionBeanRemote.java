@@ -19,7 +19,7 @@ public interface RoomEntitySessionBeanRemote {
 
     public Room createRoom(Room newRoom) throws ConstraintViolationException;
 
-    public Room updateRoom(Long roomId, String roomNumber, RoomType roomType);
+    public Room updateRoom(Room room);
 
     public void deleteRoom(Long roomId);
 

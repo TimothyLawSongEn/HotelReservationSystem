@@ -6,10 +6,12 @@ package ejb.session.stateless;
 
 import entity.Room;
 import entity.RoomType;
+import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolationException;
 
@@ -32,13 +34,13 @@ public class RoomEntitySessionBean implements RoomEntitySessionBeanRemote, RoomE
 
     // Update room details
     @Override
-    public Room updateRoom(Long roomId, String roomNumber, RoomType roomType) {
-        Room room = em.find(Room.class, roomId);
-        if (room != null) {
-            room.setRoomNumber(roomNumber);
-            room.setRoomType(roomType);
-            em.merge(room);  // Update the room in the database
+    public Room updateRoom(Room room) {
+        Room origRoom = em.find(Room.class, room.getId());
+        if (origRoom == null) {
+            System.out.println("Programming error: RoomId " + room.getId() + " cannot be found. Did not update!");
+            return null;
         }
+        em.merge(room);  // Update the room in the database
         return room;
     }
 
@@ -63,4 +65,21 @@ public class RoomEntitySessionBean implements RoomEntitySessionBeanRemote, RoomE
     public Room findRoomById(Long roomId) {
         return em.find(Room.class, roomId);
     }
+
+    @Override
+    public int getNonDisabledRoomCountForRoomType(Long roomTypeId) {
+        Query query = em.createQuery("SELECT COUNT(r) FROM Room r WHERE r.roomType.id = :roomTypeId AND r.disabled = FALSE");
+        query.setParameter("roomTypeId", roomTypeId);
+
+        return ((Long) query.getSingleResult()).intValue();
+    }
+    
+    @Override
+    public List<Room> getAvailableRoomsForRoomTypeAndDate(RoomType roomType, LocalDate date) {
+        return em.createNamedQuery("Room.findAvailableRoomsForRoomTypeAndDate", Room.class)
+                 .setParameter("roomType", roomType)
+//                 .setParameter("date", date)
+                 .getResultList();
+    }
+
 }

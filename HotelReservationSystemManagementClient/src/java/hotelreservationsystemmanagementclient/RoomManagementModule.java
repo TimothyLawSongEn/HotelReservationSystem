@@ -147,8 +147,8 @@ public class RoomManagementModule {
                 // Update room number
                 System.out.print("Enter new Room Number (current: " + roomToUpdate.getRoomNumber() + ") or press Enter to skip: ");
                 String newRoomNumber = scanner.nextLine().trim();
-                if (newRoomNumber.isEmpty()) {
-                    newRoomNumber = roomToUpdate.getRoomNumber(); // Keep the old value if the user skips
+                if (!newRoomNumber.isEmpty()) { // Keep the old value if the user skips
+                    roomToUpdate.setRoomNumber(newRoomNumber);
                 }
 
                 // Update room type (choose from available room types or skip)
@@ -161,15 +161,14 @@ public class RoomManagementModule {
                 String roomTypeInput = scanner.nextLine().trim();
 
                 RoomType selectedRoomType;
-                if (roomTypeInput.isEmpty()) {
-                    selectedRoomType = roomToUpdate.getRoomType(); // Keep the old value if the user skips
-                } else {
+                if (!roomTypeInput.isEmpty()) { // Keep the old value if the user skips
                     int roomTypeChoice = Integer.parseInt(roomTypeInput);
                     selectedRoomType = roomTypes.get(roomTypeChoice - 1);
+                    roomToUpdate.setRoomType(selectedRoomType);
                 }
 
                 // Apply changes
-                roomEntitySessionBeanRemote.updateRoom(roomId, newRoomNumber, selectedRoomType);
+                roomEntitySessionBeanRemote.updateRoom(roomToUpdate);
                 System.out.println("Room updated successfully.");
             } else {
                 System.out.println("Room not found with ID " + roomId);

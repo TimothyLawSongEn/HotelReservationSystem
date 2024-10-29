@@ -6,6 +6,7 @@ package ejb.session.stateless;
 
 import entity.Room;
 import entity.RoomType;
+import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.Local;
 import javax.validation.ConstraintViolationException;
@@ -19,11 +20,16 @@ public interface RoomEntitySessionBeanLocal {
     
     public Room createRoom(Room newRoom) throws ConstraintViolationException;
 
-    public Room updateRoom(Long roomId, String roomNumber, RoomType roomType);
+    public Room updateRoom(Room room);
 
     public void deleteRoom(Long roomId);
 
     public List<Room> findAllRooms();
 
     public Room findRoomById(Long roomId);
+    
+    public int getNonDisabledRoomCountForRoomType(Long roomTypeId);
+
+    public List<Room> getAvailableRoomsForRoomTypeAndDate(RoomType roomType, LocalDate date);
+
 }

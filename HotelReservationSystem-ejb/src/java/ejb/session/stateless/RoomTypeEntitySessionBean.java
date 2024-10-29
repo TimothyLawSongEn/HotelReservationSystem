@@ -54,7 +54,7 @@ public class RoomTypeEntitySessionBean implements RoomTypeEntitySessionBeanRemot
             System.out.println("RoomType and its associated RoomRates deleted successfully.");
             return roomType;
         } else {
-            // Handle case where RoomType is in use
+            // Handle case where RoomType is in use 
             roomType.setDisabled(true);
             throw new Exception("Cannot delete RoomType with associated rooms. RoomType will be disabled.");
         }
