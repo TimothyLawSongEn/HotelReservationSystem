@@ -44,7 +44,7 @@ public class Booking implements Serializable {
     private Room allocatedRoom; // can be null, until alloc() is called
     
     @ManyToOne
-    @JoinColumn(name = "guestId", nullable = false)
+    @JoinColumn(nullable = false)
     private Guest guest;
     
     @NotNull(message = "CheckedIn cannot be null")

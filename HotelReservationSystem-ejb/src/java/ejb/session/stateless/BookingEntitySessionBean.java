@@ -189,23 +189,29 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
         em.merge(allocatedRoom);
     }
     
+    @Override
     public List<Booking> retrieveActiveBookingsForCheckIn(Long guestId) {
+        LocalDate today = LocalDate.now();
         return em.createQuery(
             "SELECT b FROM Booking b WHERE b.guest.id = :guestId AND b.checkedIn = false " +
-            "AND b.startDate <= CURRENT_DATE AND CURRENT_DATE < b.endDate",
+            "AND b.startDate <= :today AND :today < b.endDate",
             Booking.class
         )
         .setParameter("guestId", guestId)
+        .setParameter("today", today)
         .getResultList();
     }
 
+    @Override
     public List<Booking> retrieveCheckedInBookings(Long guestId) {
+        LocalDate today = LocalDate.now();
         return em.createQuery(
             "SELECT b FROM Booking b WHERE b.guest.id = :guestId AND b.checkedIn = true " +
-            "AND b.startDate <= CURRENT_DATE AND CURRENT_DATE <= b.endDate",
+            "AND b.startDate <= :today AND :today <= b.endDate",
             Booking.class
         )
         .setParameter("guestId", guestId)
+        .setParameter("today", today)
         .getResultList();
     }
 

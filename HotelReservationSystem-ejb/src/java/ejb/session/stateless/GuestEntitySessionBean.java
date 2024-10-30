@@ -4,7 +4,9 @@
  */
 package ejb.session.stateless;
 
+import entity.Booking;
 import entity.Guest;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

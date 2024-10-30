@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,8 +35,8 @@ public class Guest implements Serializable {
     @Column(nullable = false)
     private String password;
     
-    @OneToMany(mappedBy = "guest")
-    private List<Booking> bookings = new ArrayList<>();
+//    @OneToMany(mappedBy = "guest")
+//    private List<Booking> bookings = new ArrayList<>();
 
     public Guest() {
     }
@@ -45,7 +44,7 @@ public class Guest implements Serializable {
     public Guest(String email, String password) {
         this.email = email;
         this.password = password;
-        this.bookings = new ArrayList<>();
+//        this.bookings = new ArrayList<>();
     }
 
     public Long getId() {
@@ -62,14 +61,6 @@ public class Guest implements Serializable {
 
     public String getPassword() {
         return password;
-    }
-
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
     }
 
     @Override
