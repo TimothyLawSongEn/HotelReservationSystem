@@ -204,7 +204,7 @@ public class FrontOfficeModule {
                         RoomType roomType = roomTypePair.getKey();
                         int availableCount = roomTypePair.getValue();
 
-                        System.out.printf("%d: %s (Available: %d)\n", i + 1, roomType.getName(), availableCount);
+                        System.out.printf("%d: %s (Available: %d) $%.2f\n", i + 1, roomType.getName(), availableCount, roomType.calculateTotalWalkinFee(startDate, endDate));
                     }
 
                     // Provide option to reserve or search again

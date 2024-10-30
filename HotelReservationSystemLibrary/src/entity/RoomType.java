@@ -2,6 +2,7 @@ package entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -54,24 +55,40 @@ public class RoomType implements Serializable {
         this.disabled = false;
     }
     
-//    public int calculateTotalWalkinFee(LocalDate startDate, LocalDate endDate) {
-//        // sum publishedrates
-//    }
-//    
-////    The total reservation fee payable by the guest for a reservation is calculated by summing the
-////    prevailing rate per night of each night of stay for the entire duration of stay. For example, if a
-////    guest books a Deluxe Room for 3 nights, the reservation fee will be the sum of first day’s rate
-////    per night, second day’s rate per night and third day’s rate per night. If either peak rate or
-////    promotion rate is defined for a particular room type on a particular date, it will take
-////    precedence over the normal rate. If both peak rate and promotion rate are defined for a
-////    particular room type on a particular date, the promotion rate will take precedence.
-//    public int calculateTotalGuestReservationFee(LocalDate startDate, LocalDate endDate) {
-//        // for each date
-//        //  add promo rate
-//        //  else add peak rate
-//        //  else add normal rate
-//        // return sum
-//    }
+    public double calculateTotalWalkinFee(LocalDate startDate, LocalDate endDate) {
+        long days = ChronoUnit.DAYS.between(startDate, endDate);
+        return days * publishedRate;
+    }
+    
+//    The total reservation fee payable by the guest for a reservation is calculated by summing the
+//    prevailing rate per night of each night of stay for the entire duration of stay. For example, if a
+//    guest books a Deluxe Room for 3 nights, the reservation fee will be the sum of first day’s rate
+//    per night, second day’s rate per night and third day’s rate per night. If either peak rate or
+//    promotion rate is defined for a particular room type on a particular date, it will take
+//    precedence over the normal rate. If both peak rate and promotion rate are defined for a
+//    particular room type on a particular date, the promotion rate will take precedence.
+    // Calculate the total reservation fee with precedence: promo > peak > normal rate
+    public double calculateTotalGuestReservationFee(LocalDate startDate, LocalDate endDate) {
+        double totalFee = 0.0;
+
+        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
+            Double dailyRate = normalRate;
+
+            for (RoomRate rate : rates) {
+                if (rate.isWithinPeriod(date)) {
+                    if (rate.getSpecialRateType().equals(RoomRate.SpecialRateType.PROMO)) {
+                        dailyRate = rate.getAmount();
+                        break;  // Promo rate has the highest precedence
+                    } else if (rate.getSpecialRateType().equals(RoomRate.SpecialRateType.PEAK)) {
+                        dailyRate = rate.getAmount();
+                    }
+                }
+            }
+            totalFee += dailyRate;
+        }
+
+        return totalFee;
+    }
 
     // Getters and Setters
     public Long getId() {

@@ -55,6 +55,12 @@ public class RoomRate implements Serializable {
         this.specialRateType = specialRateType;
         this.roomType = roomType;
     }
+    
+    public boolean isWithinPeriod(LocalDate date) {
+        return (date.isEqual(startDate) || date.isAfter(startDate)) &&
+               (date.isEqual(endDate) || date.isBefore(endDate));
+    }
+
 
     // Getters and Setters
     public Long getId() {
