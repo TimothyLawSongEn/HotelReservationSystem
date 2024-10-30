@@ -6,6 +6,7 @@ package ejb.session.stateless;
 
 import entity.Booking;
 import entity.Guest;
+import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.Local;
 import javax.validation.ConstraintViolationException;
@@ -24,5 +25,7 @@ public interface BookingEntitySessionBeanLocal {
     public List<Booking> getBookingByGuest(Guest guest);
 
     public Booking getBookingById(Long id);
+
+    public List<Booking> allocateRoomToBookings(LocalDate date);
     
 }

@@ -5,6 +5,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -17,9 +18,9 @@ import javax.validation.constraints.Pattern;
 @NamedQueries({
     @NamedQuery(
         name = "Room.findAvailableRoomsForRoomTypeAndDate",
-        query = "SELECT r FROM Room r WHERE r.roomType = :roomType AND (r.currentBooking IS NULL)"
+        query = "SELECT r FROM Room r WHERE r.roomType = :roomType AND (r.currentBooking IS NULL) AND (r.expectedBooking IS NULL)"
 //        query = "SELECT r FROM Room r WHERE r.roomType = :roomType AND " +
-//                "(r.currentBooking IS NULL OR r.currentBooking.endDate <= :date)" // TODO: make date comparison work
+//                "(r.currentBooking IS NULL OR r.currentBooking.endDate <= :date) AND r.expectedBooking IS NULL" // TODO: make date comparison work
     )
 })
 public class Room implements Serializable {
@@ -42,11 +43,15 @@ public class Room implements Serializable {
     
     @OneToOne
     @JoinColumn
-    private Booking currentBooking; // alloc: get avail rooms, set allocroom in booking, upon chkin edit this currBooking
+    private Booking currentBooking; // set on start date at 12 noon till end date at 12 noon
+   
+    @OneToOne
+    @JoinColumn
+    private Booking expectedBooking; // allocated for current day at 2am and removed at 12noon
     
     @NotNull(message = "Disabled flag cannot be null")
     @Column(nullable = false)
-    private boolean disabled; // todo: add getter setter etc!!!
+    private Boolean disabled = false; // todo: add getter setter etc!!!
 
     // No-args constructor
     public Room() {
@@ -56,6 +61,14 @@ public class Room implements Serializable {
     public Room(String roomNumber, RoomType roomType) {
         this.roomNumber = roomNumber;
         this.roomType = roomType;
+    }
+    
+    public void updateBookingsAtCheckoutTime() { // if currentBooking.endDate>= TODAY, replace it with room.getExpectedBooking(), set expected to null
+        LocalDate today = LocalDate.now();
+        if (currentBooking != null && (currentBooking.getEndDate().isAfter(today) || currentBooking.getEndDate().isEqual(today))) {
+            currentBooking = expectedBooking;
+            expectedBooking = null;
+        }
     }
 
     // Getters and Setters
@@ -89,6 +102,14 @@ public class Room implements Serializable {
 
     public void setCurrentBooking(Booking currentBooking) {
         this.currentBooking = currentBooking;
+    }
+    
+    public Booking getExpectedBooking() {
+        return expectedBooking;
+    }
+
+    public void setExpectedBooking(Booking expectedBooking) {
+        this.expectedBooking = expectedBooking;
     }
 
     @Override

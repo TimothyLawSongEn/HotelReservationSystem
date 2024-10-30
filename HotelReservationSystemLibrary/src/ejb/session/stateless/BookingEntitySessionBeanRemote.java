@@ -34,4 +34,6 @@ public interface BookingEntitySessionBeanRemote {
     public List<Booking> retrieveActiveBookingsForCheckIn(Long guestId);
 
     public List<Booking> retrieveCheckedInBookings(Long guestId);
+
+    public Booking allocateRoomToBooking(long bookingId);
 }

@@ -11,6 +11,7 @@ import entity.Booking;
 import entity.Guest;
 import entity.RoomType;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -252,6 +253,14 @@ public class FrontOfficeModule {
                 Long selectedRoomTypeId = selectedRoomTypePair.getKey().getId();
                 Booking booking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, selectedRoomTypeId, guestId);
                 System.out.println("Room successfully reserved. Your booking details: " + booking);
+                
+                // if same day, allocate room immediately!!
+                LocalDate today = LocalDate.now();
+                LocalTime currentTime = LocalTime.now();
+                LocalTime twoAM = LocalTime.of(2, 0); // 2:00 AM
+                if (booking.getStartDate().isEqual(today) && currentTime.isAfter(twoAM)) {
+                    bookingEntitySessionBeanRemote.allocateRoomToBooking(booking.getId());
+                }
                 return;
             }
         } catch (Exception e) {

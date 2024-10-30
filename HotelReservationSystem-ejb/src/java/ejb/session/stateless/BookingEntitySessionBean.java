@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -113,9 +114,6 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
         return booking;
     }
     
-    // scheduled
-    // chk which rooms clear beforehand
-//    alloc: get avail rooms, set allocroom in booking, upon chkin edit this currBooking    
     @Override
     public List<Booking> allocateRoomToBookings(LocalDate date) {
         // for each roomtype
@@ -137,8 +135,7 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
             for (Booking booking : bookingsStartingToday) {
                 if (roomIterator.hasNext()) {
                     Room room = roomIterator.next();
-                    booking.setAllocatedRoom(room); // Set the allocated room for the booking
-                    updateBooking(booking); // Save booking with the allocated room
+                    associateBookingAndRoom(booking, room);
                 } else {
                     // No more available rooms for this room type; any remaining bookings will be unallocated
                     // save into exception report (dont implement yet)
@@ -148,6 +145,33 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
             allBookingsStartingToday.addAll(bookingsStartingToday);
         }
         return allBookingsStartingToday;
+    }
+    
+    @Override
+    public Booking allocateRoomToBooking(long bookingId) {
+        Booking booking = getBookingById(bookingId);
+        if (booking == null) {
+            throw new IllegalArgumentException("Booking not found for ID: " + bookingId);
+        }
+
+        List<Room> availableRooms = roomEntitySessionBeanLocal.getAvailableRoomsForRoomTypeAndDate(
+            booking.getRoomType(), booking.getStartDate()
+        );
+
+        if (availableRooms.isEmpty()) {
+            throw new IllegalStateException("No available rooms for the specified room type and date.");
+        }
+        Room room = availableRooms.get(0);
+        associateBookingAndRoom(booking, room);
+
+        return booking;
+    }
+    
+    private void associateBookingAndRoom(Booking booking, Room room) {
+        booking.setAllocatedRoom(room); // Set the allocated room for the booking
+        updateBooking(booking); // Save booking with the allocated room
+        room.setExpectedBooking(booking);
+        roomEntitySessionBeanLocal.updateRoom(room);
     }
     
     public void checkIn(Long bookingId) throws Exception {
@@ -163,10 +187,10 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
 
         // Mark booking as checked in and update room’s current booking
         booking.setCheckedIn(true);
-        allocatedRoom.setCurrentBooking(booking);
+//        allocatedRoom.setCurrentBooking(booking);
 
         em.merge(booking);
-        em.merge(allocatedRoom);
+//        em.merge(allocatedRoom);
     }
 
     
@@ -183,10 +207,10 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
 
         // Mark booking as checked out and release the room
         booking.setCheckedIn(false);
-        allocatedRoom.setCurrentBooking(null);
+//        allocatedRoom.setCurrentBooking(null);
 
         em.merge(booking);
-        em.merge(allocatedRoom);
+//        em.merge(allocatedRoom);
     }
     
     @Override
