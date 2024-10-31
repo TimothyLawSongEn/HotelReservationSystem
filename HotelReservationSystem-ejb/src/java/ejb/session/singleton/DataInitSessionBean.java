@@ -94,9 +94,15 @@ public class DataInitSessionBean {
 
         // Create System Administrator
         Employee systemAdmin = new Employee("password", EmployeeType.SYSTEMADMIN);
+        Employee opsManager = new Employee("password", EmployeeType.OPSMANAGER);
+        Employee salesManager = new Employee("password", EmployeeType.SALESMANAGER);
+        Employee guestOfficer = new Employee("password", EmployeeType.GUESTRELATIONOFFICER);
         
         // Persist system admin using session bean
         employeeEntitySessionBeanLocal.createEmployee(systemAdmin);
+        employeeEntitySessionBeanLocal.createEmployee(opsManager);
+        employeeEntitySessionBeanLocal.createEmployee(salesManager);
+        employeeEntitySessionBeanLocal.createEmployee(guestOfficer);
         
         // You can add more initialization logic here if needed
         System.out.println("Data initialization complete.");
