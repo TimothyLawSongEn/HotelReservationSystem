@@ -11,8 +11,6 @@ import entity.Booking;
 import entity.Guest;
 import entity.RoomType;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 import javafx.util.Pair;
@@ -139,43 +137,46 @@ public class MainApp {
     }
     
     public void searchRooms(Scanner scanner, Guest guest) {
-        System.out.println("\n--- Search Rooms ---");
-        System.out.print("Enter Booking Start Date (dd/MM/yyyy): ");
-        LocalDate startDate = dateFormatter(scanner.nextLine());
-        
-        System.out.print("Enter Booking End Date (dd/MM/yyyy): ");
-        LocalDate endDate = dateFormatter(scanner.nextLine());
-        
-        //TODO: Show Available Room Types Between Start and End Date
-        List<Pair<RoomType, Integer>> rooms = availabilitySessionBeanRemote.getAvailableRoomTypesWithCount(startDate, endDate);
-        
-        for (Pair<RoomType, Integer> room:rooms) {
-            System.out.println(room);
-        }
-        
-        if (guest != null) {
-            System.out.println("Proceed to book room?");
-            System.out.println("1. Yes");
-            System.out.println("2. No");
-            System.out.print("Choose an option: ");
+        try {
+            System.out.println("\n--- Search Rooms ---");
+            System.out.print("Enter Booking Start Date (YYYY-MM-DD): ");
+            LocalDate startDate = LocalDate.parse(scanner.nextLine());
 
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            System.out.print("Enter Booking End Date (YYYY-MM-DD): ");
+            LocalDate endDate = LocalDate.parse(scanner.nextLine()); 
+            
+            // Show Available Room Types Between Start and End Date
+            List<Pair<RoomType, Integer>> rooms = availabilitySessionBeanRemote.getAvailableRoomTypesWithCount(startDate, endDate);
 
-            if (choice == 1) {
-                createReservation(scanner, startDate, endDate, guest);
+            for (Pair<RoomType, Integer> room:rooms) {
+                System.out.println(room);
             }
+
+            if (guest != null) {
+                System.out.println("Proceed to book room?");
+                System.out.println("1. Yes");
+                System.out.println("2. No");
+                System.out.print("Choose an option: ");
+
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+
+                if (choice == 1) {
+                    createReservation(scanner, startDate, endDate, guest);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred while searching room");
         }
-        
     }
     
     public void createReservation(Scanner scanner, LocalDate startDate, LocalDate endDate, Guest guest) {
         System.out.println("\n--- Create Reservation ---");
         
-        System.out.print("Enter Room Type ID for Reservation: ");
-        Long roomTypeId = Long.parseLong(scanner.nextLine());
-        
         try {
+            System.out.print("Enter Room Type ID for Reservation: ");
+            Long roomTypeId = Long.parseLong(scanner.nextLine());
+            
             Booking persistedBooking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, roomTypeId, guest.getId());
 
             System.out.println("Reservation successfully created " + persistedBooking);
@@ -207,28 +208,5 @@ public class MainApp {
         for (Booking booking:bookings) {
             System.out.println(booking);
         }
-    }
-    
-    private LocalDate dateFormatter(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate formattedDate = null;
-        
-        // TODO: Fix this
-        while (formattedDate == null) {
-            try {
-                formattedDate = LocalDate.parse(date, formatter);
-
-                if (formattedDate.isBefore(LocalDate.now())) {
-                    System.out.println("Date cannot be in the past!");
-                    formattedDate = null;
-                    continue;
-                }
-                
-            } catch (DateTimeParseException e) {
-                System.out.println("Invalid date format! Please use dd/MM/yyyy (e.g., 27/03/2024)");
-            }
-        }
-        
-        return formattedDate;
     }
 }
