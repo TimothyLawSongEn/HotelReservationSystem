@@ -4,11 +4,9 @@
  */
 package hotelreservationsystemreservationclient;
 
+import ejb.session.singleton.AvailabilitySessionBeanRemote;
 import ejb.session.stateless.BookingEntitySessionBeanRemote;
 import ejb.session.stateless.GuestEntitySessionBeanRemote;
-import ejb.session.stateless.RoomEntitySessionBeanRemote;
-import ejb.session.stateless.RoomRateEntitySessionBeanRemote;
-import ejb.session.stateless.RoomTypeEntitySessionBeanRemote;
 import entity.Booking;
 import entity.Guest;
 import entity.RoomType;
@@ -17,23 +15,24 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
+import javafx.util.Pair;
 
 /**
  *
  * @author clara
  */
 public class MainApp {
-    private RoomTypeEntitySessionBeanRemote roomTypeEntitySessionBeanRemote;
     private GuestEntitySessionBeanRemote guestEntitySessionBeanRemote;
     private BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote;
+    private AvailabilitySessionBeanRemote availabilitySessionBeanRemote;
 
     public MainApp() {
     }
 
-    public MainApp(RoomTypeEntitySessionBeanRemote roomTypeEntitySessionBeanRemote, GuestEntitySessionBeanRemote guestEntitySessionBean, BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote) {
-        this.roomTypeEntitySessionBeanRemote = roomTypeEntitySessionBeanRemote;
+    public MainApp(GuestEntitySessionBeanRemote guestEntitySessionBean, BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote, AvailabilitySessionBeanRemote availabilitySessionBeanRemote) {
         this.guestEntitySessionBeanRemote = guestEntitySessionBean;
         this.bookingEntitySessionBeanRemote = bookingEntitySessionBeanRemote;
+        this.availabilitySessionBeanRemote = availabilitySessionBeanRemote;
     }
     
     public void start() {
@@ -148,6 +147,11 @@ public class MainApp {
         LocalDate endDate = dateFormatter(scanner.nextLine());
         
         //TODO: Show Available Room Types Between Start and End Date
+        List<Pair<RoomType, Integer>> rooms = availabilitySessionBeanRemote.getAvailableRoomTypesWithCount(startDate, endDate);
+        
+        for (Pair<RoomType, Integer> room:rooms) {
+            System.out.println(room);
+        }
         
         if (guest != null) {
             System.out.println("Proceed to book room?");
@@ -172,9 +176,6 @@ public class MainApp {
         Long roomTypeId = Long.parseLong(scanner.nextLine());
         
         try {
-//            RoomType roomType = roomTypeEntitySessionBeanRemote.findRoomType(roomTypeId);
-//            Booking newBooking = new Booking(startDate, endDate, roomType, guest);
-
             Booking persistedBooking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, roomTypeId, guest.getId());
 
             System.out.println("Reservation successfully created " + persistedBooking);
@@ -212,6 +213,7 @@ public class MainApp {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate formattedDate = null;
         
+        // TODO: Fix this
         while (formattedDate == null) {
             try {
                 formattedDate = LocalDate.parse(date, formatter);
