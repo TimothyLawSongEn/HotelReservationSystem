@@ -4,13 +4,17 @@
  */
 package hotelreservationsystemmanagementclient;
 
+import ejb.session.stateless.BookingEntitySessionBeanRemote;
 import ejb.session.stateless.RoomEntitySessionBeanRemote;
 import ejb.session.stateless.RoomTypeEntitySessionBeanRemote;
+import entity.Booking;
 import entity.Room;
 import entity.RoomType;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import javafx.util.Pair;
 
 /**
  *
@@ -20,10 +24,12 @@ public class RoomManagementModule {
     
     private RoomEntitySessionBeanRemote roomEntitySessionBeanRemote;
     private RoomTypeEntitySessionBeanRemote roomTypeEntitySessionBeanRemote;
+    private BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote;
     
-    public RoomManagementModule(RoomEntitySessionBeanRemote roomEntitySessionBeanRemote, RoomTypeEntitySessionBeanRemote roomTypeEntitySessionBeanRemote) {
+    public RoomManagementModule(RoomEntitySessionBeanRemote roomEntitySessionBeanRemote, RoomTypeEntitySessionBeanRemote roomTypeEntitySessionBeanRemote, BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote) {
         this.roomEntitySessionBeanRemote = roomEntitySessionBeanRemote;
         this.roomTypeEntitySessionBeanRemote = roomTypeEntitySessionBeanRemote;
+        this.bookingEntitySessionBeanRemote = bookingEntitySessionBeanRemote;
     }
 
     // Room Management Menu
@@ -35,6 +41,7 @@ public class RoomManagementModule {
             System.out.println("3. Create Room");
             System.out.println("4. Update Room");
             System.out.println("5. Delete Room");
+            System.out.println("6. Generate Room Allocation Exception Report");
             System.out.println("0. Back to Main Menu");
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
@@ -54,6 +61,9 @@ public class RoomManagementModule {
                     break;
                 case 5:
                     deleteRoom(scanner);
+                    break;
+                case 6:
+                    generateRoomAllocationExceptionReport(scanner);
                     break;
                 case 0:
                     return;
@@ -202,6 +212,42 @@ public class RoomManagementModule {
             }
         } catch (Exception e) {
             System.out.println("An error occurred while deleting the room: " + e.getMessage());
+        }
+    }
+    
+    private void generateRoomAllocationExceptionReport(Scanner scanner) {
+        try {
+            System.out.print("Enter date (YYYY-MM-DD): ");
+            LocalDate date = LocalDate.parse(scanner.next());
+            // Generate the report
+            Pair<List<Booking>, List<Booking>> report = bookingEntitySessionBeanRemote.getBookingsWithRoomAllocException(date);
+            List<Booking> bookingsWithoutRoom = report.getKey();
+            List<Booking> bookingsWithHigherRoom = report.getValue();
+
+            // Print out the report details
+            System.out.println("Room Allocation Exception Report");
+            System.out.println("--------------------------------");
+            System.out.println("Bookings Without Room (No Upgrade Available):");
+            if (bookingsWithoutRoom.isEmpty()) {
+                System.out.println("  - None");
+            } else {
+                for (Booking booking : bookingsWithoutRoom) {
+                    System.out.println("  - Booking ID: " + booking.getId() + ", Reserved Room Type: " + booking.getRoomType());
+                }
+            }
+
+            System.out.println("\nBookings With Higher Room (Upgrade Available):");
+            if (bookingsWithHigherRoom.isEmpty()) {
+                System.out.println("  - None");
+            } else {
+                for (Booking booking : bookingsWithHigherRoom) {
+                    System.out.println("  - Booking ID: " + booking.getId() + ", Reserved Room Type: " + booking.getRoomType() + ", Allocated Room Type: " + booking.getAllocatedRoom().getRoomType());
+                }
+            }
+
+        } catch (Exception e) {
+            System.err.println("An error occurred while generating the report: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

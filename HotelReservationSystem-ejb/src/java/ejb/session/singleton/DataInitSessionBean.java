@@ -61,6 +61,7 @@ public class DataInitSessionBean {
         // Create some RoomType objects
         RoomType standardRoomType = new RoomType("Standard Room", 200.0, 180.0);
         RoomType deluxeRoomType = new RoomType("Deluxe Room", 350.0, 320.0);
+        standardRoomType.setNextHigherRoomType(deluxeRoomType);
 
         // Persist the RoomTypes using the session bean
         roomTypeEntitySessionBeanLocal.createRoomType(standardRoomType);
@@ -84,12 +85,12 @@ public class DataInitSessionBean {
 
         // Create some Room objects linked to RoomTypes
         Room room101 = new Room("0101", standardRoomType);
-        Room room102 = new Room("0102", standardRoomType);
+//        Room room102 = new Room("0102", standardRoomType);
         Room room201 = new Room("0201", deluxeRoomType);
 
         // Persist the rooms using the session bean
         roomEntitySessionBeanLocal.createRoom(room101);
-        roomEntitySessionBeanLocal.createRoom(room102);
+//        roomEntitySessionBeanLocal.createRoom(room102);
         roomEntitySessionBeanLocal.createRoom(room201);
 
         // Create System Administrator

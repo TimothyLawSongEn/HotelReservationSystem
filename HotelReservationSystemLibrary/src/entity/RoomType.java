@@ -37,6 +37,8 @@ public class RoomType implements Serializable {
     @OneToMany(mappedBy = "roomType", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<RoomRate> rates = new ArrayList<>();  // List for peak and promo rates
     
+    private RoomType nextHigherRoomType;
+    
     @NotNull(message = "Disabled flag cannot be null")
     @Column(nullable = false)
     private boolean disabled;
@@ -129,6 +131,14 @@ public class RoomType implements Serializable {
 
     public void setRates(List<RoomRate> rates) {
         this.rates = rates;
+    }
+    
+    public RoomType getNextHigherRoomType() {
+        return nextHigherRoomType;
+    }
+
+    public void setNextHigherRoomType(RoomType nextHigherRoomType) {
+        this.nextHigherRoomType = nextHigherRoomType;
     }
     
     public boolean isDisabled() {

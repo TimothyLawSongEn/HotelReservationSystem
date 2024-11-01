@@ -10,11 +10,12 @@ import entity.Guest;
 import entity.Room;
 import entity.RoomType;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javafx.util.Pair;
 import javax.ejb.EJB;
-import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -53,7 +54,15 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
         }
 
         // Create and persist the new booking
-        return createBooking(startDate, endDate, roomTypeId, guestId);
+        Booking booking = createBooking(startDate, endDate, roomTypeId, guestId);
+        
+        // if same day after 2am, allocate room immediately!!
+        LocalDate today = LocalDate.now(); LocalTime currentTime = LocalTime.now();
+        LocalTime twoAM = LocalTime.of(2, 0); // 2:00 AM
+        if (booking.getStartDate().isEqual(today) && currentTime.isAfter(twoAM)) {
+            allocateRoomToBooking(booking);
+        }
+        return booking;
     }
 
     private Booking createBooking(LocalDate startDate, LocalDate endDate, long roomTypeId, long guestId) throws Exception {
@@ -90,15 +99,15 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
     }
     
     @Override
-    public List<Booking> findAllBookings() {
+    public List<Booking> getAllBookings() {
         Query query = em.createQuery("SELECT b FROM Booking b");
         return query.getResultList();
     }
     
-    private List<Booking> findBookingsByRoomTypeAndStartDate(RoomType roomType, LocalDate startDate) {
+    private List<Booking> findUnallocatedBookingsByRoomTypeAndStartDate(RoomType roomType, LocalDate startDate) {
         // Query to find bookings for the given room type that start on the specified date.
         return em.createQuery(
-            "SELECT b FROM Booking b WHERE b.roomType = :roomType AND b.startDate = :startDate", Booking.class)
+            "SELECT b FROM Booking b WHERE b.allocatedRoom IS NULL AND b.roomType = :roomType AND b.startDate = :startDate", Booking.class)
             .setParameter("roomType", roomType)
             .setParameter("startDate", startDate)
             .getResultList();
@@ -122,36 +131,56 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
         // set allocroom field for the booking
         List<RoomType> roomTypes = roomTypeEntitySessionBeanLocal.findAllRoomTypes();
         List<Booking> allBookingsStartingToday = new ArrayList<>();
+        List<Booking> failedAllocBookings = new ArrayList<>();
 
         for (RoomType roomType : roomTypes) {
             // Step 1: Get available rooms for this room type
             List<Room> availableRooms = roomEntitySessionBeanLocal.getAvailableRoomsForRoomTypeAndDate(roomType, date);
 
             // Step 2: Get bookings for this room type that start on the given date
-            List<Booking> bookingsStartingToday = findBookingsByRoomTypeAndStartDate(roomType, date);
+            List<Booking> unallocatedBookingsStartingToday = findUnallocatedBookingsByRoomTypeAndStartDate(roomType, date);
 
             // Allocate rooms to bookings
             Iterator<Room> roomIterator = availableRooms.iterator();
-            for (Booking booking : bookingsStartingToday) {
+            for (Booking booking : unallocatedBookingsStartingToday) {
                 if (roomIterator.hasNext()) {
                     Room room = roomIterator.next();
                     associateBookingAndRoom(booking, room);
                 } else {
                     // No more available rooms for this room type; any remaining bookings will be unallocated
                     // save into exception report (dont implement yet)
-                    break;
+                    failedAllocBookings.add(booking);
+//                    break;
                 }
             }
-            allBookingsStartingToday.addAll(bookingsStartingToday);
+            allBookingsStartingToday.addAll(unallocatedBookingsStartingToday);
+        }
+        
+        for (Booking failedAllocBooking : failedAllocBookings) {
+            allocateHigherRoomToBooking(failedAllocBooking);
         }
         return allBookingsStartingToday;
     }
     
-    @Override
-    public Booking allocateRoomToBooking(long bookingId) {
-        Booking booking = getBookingById(bookingId);
+    private void allocateHigherRoomToBooking(Booking booking) {
+        RoomType nextHigherRoomType = booking.getRoomType().getNextHigherRoomType();
+        if (nextHigherRoomType == null) {
+            return;
+        }
+        List<Room> availableHigherRooms = roomEntitySessionBeanLocal.getAvailableRoomsForRoomTypeAndDate(
+            nextHigherRoomType, booking.getStartDate()
+        );
+
+        if (availableHigherRooms.isEmpty()) {
+            return;
+        }
+        Room room = availableHigherRooms.get(0);
+        associateBookingAndRoom(booking, room);
+    }
+
+    private Booking allocateRoomToBooking(Booking booking) {
         if (booking == null) {
-            throw new IllegalArgumentException("Booking not found for ID: " + bookingId);
+            throw new IllegalArgumentException("Booking is null when trying to allocate a room");
         }
 
         List<Room> availableRooms = roomEntitySessionBeanLocal.getAvailableRoomsForRoomTypeAndDate(
@@ -173,6 +202,50 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
         room.setExpectedBooking(booking);
         roomEntitySessionBeanLocal.updateRoom(room);
     }
+    
+//    • Generate a report showing two types of room allocation
+//    exception.
+//    • First type is no available room for reserved room type but
+//    upgrade to next higher room type is available – A room is
+//    automatically allocated by the system.
+//    • Second type is no available room for reserved room type
+//    and no upgrade to next higher room type is available – No
+//    room is automatically allocated by the system.
+    public Pair<List<Booking>, List<Booking>> getBookingsWithRoomAllocExceptionForLastAlloc() {
+        LocalDate date;
+        // Check if current time is between 12am and 2am
+        if (LocalTime.now().isAfter(LocalTime.MIDNIGHT) && LocalTime.now().isBefore(LocalTime.of(2, 0))) {
+            date = LocalDate.now().minusDays(1);  // Yesterday’s date
+        } else {
+            date = LocalDate.now();  // Today’s date
+        }
+        return getBookingsWithRoomAllocException(date);
+    }
+    
+    public Pair<List<Booking>, List<Booking>> getBookingsWithRoomAllocException(LocalDate date) {
+        List<Booking> bookingsWoRoom = getBookingsWithoutRoom(date);
+        List<Booking> bookingsWHigherRoom = getBookingsWithHigherRoom(date);
+
+        return new Pair<>(bookingsWoRoom, bookingsWHigherRoom);
+    }
+    
+    private List<Booking> getBookingsWithoutRoom(LocalDate date) {
+        return em.createQuery(
+            "SELECT b FROM Booking b " +
+            "WHERE b.startDate = :date AND b.allocatedRoom IS NULL", Booking.class)
+            .setParameter("date", date)
+            .getResultList();
+    }
+
+    private List<Booking> getBookingsWithHigherRoom(LocalDate date) {
+        return em.createQuery(
+            "SELECT b FROM Booking b " +
+            "WHERE b.startDate = :date AND b.allocatedRoom IS NOT NULL " +
+            "AND b.allocatedRoom.roomType != b.roomType", Booking.class)
+            .setParameter("date", date)
+            .getResultList();
+    }
+
     
     public void checkIn(Long bookingId) throws Exception {
         Booking booking = em.find(Booking.class, bookingId);

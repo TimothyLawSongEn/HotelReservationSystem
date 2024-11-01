@@ -4,6 +4,7 @@
  */
 package ejb.session.singleton;
 
+import entity.RoomType;
 import java.time.LocalDate;
 import java.util.List;
 import javafx.util.Pair;
@@ -19,5 +20,7 @@ public interface AvailabilitySessionBeanLocal {
     public void loadRoomTypesAndBookings();
     
     public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception;
+    
+    public List<Pair<RoomType, Integer>> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate);
     
 }

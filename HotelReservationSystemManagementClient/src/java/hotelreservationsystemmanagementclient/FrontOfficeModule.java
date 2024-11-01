@@ -172,9 +172,9 @@ public class FrontOfficeModule {
         List<Booking> allocatedBookings = bookingEntitySessionBeanRemote.allocateRoomToBookings(date);
 
         if (allocatedBookings.isEmpty()) {
-            System.out.println("No bookings were allocated for date " + date);
+            System.out.println("No bookings starts on " + date);
         } else {
-            System.out.println("Bookings allocated for date " + date + ":");
+            System.out.println("Bookings starting on " + date + ":");
 
             for (Booking booking : allocatedBookings) {
                 System.out.println(booking);
@@ -196,6 +196,21 @@ public class FrontOfficeModule {
 
                 if (availableRoomTypes.isEmpty()) {
                     System.out.println("No available rooms for the given dates.");
+                    // Provide option to search again
+                    System.out.println("1: Search again");
+                    System.out.println("2: Exit");
+                    System.out.print("> ");
+                    int choice = scanner.nextInt();
+
+                    if (choice == 1) {
+                        System.out.println("Searching again...");
+                        continue; // Restart search process
+                    } else if (choice == 2) {
+                        System.out.println("Exiting...");
+                        return;
+                    } else {
+                        System.out.println("Invalid option, please try again.");
+                    }
                 } else {
                     // Display the available room types and their counts
                     System.out.println("Available room types:");
@@ -210,6 +225,7 @@ public class FrontOfficeModule {
                     // Provide option to reserve or search again
                     System.out.println("1: Reserve a room");
                     System.out.println("2: Search again");
+                    System.out.println("3: Exit");
                     System.out.print("> ");
                     int choice = scanner.nextInt();
 
@@ -220,6 +236,9 @@ public class FrontOfficeModule {
                     } else if (choice == 2) {
                         System.out.println("Searching again...");
                         continue; // Restart search process
+                    } else if (choice == 3) {
+                        System.out.println("Exiting...");
+                        return;
                     } else {
                         System.out.println("Invalid option, please try again.");
                     }
@@ -232,9 +251,10 @@ public class FrontOfficeModule {
 
     private void reserveRoomType(List<Pair<RoomType, Integer>> availableRoomTypes, LocalDate startDate, LocalDate endDate, Scanner scanner) {
         try {
+            int roomTypeChoice;
             while (true) {
                 System.out.print("Enter the number of the room type to reserve (or 0 to cancel): ");
-                int roomTypeChoice = scanner.nextInt();
+                roomTypeChoice = scanner.nextInt();
 
                 if (roomTypeChoice == 0) {
                     System.out.println("Reservation cancelled.");
@@ -243,26 +263,23 @@ public class FrontOfficeModule {
 
                 if (roomTypeChoice < 0 || roomTypeChoice > availableRoomTypes.size()) {
                     System.out.println("Room type does not exist. Try again.");
-                    continue;
+                } else {
+                    break;
                 }
-                
-                System.out.print("Enter guestId (or 0 to cancel): ");
-                long guestId = scanner.nextLong();
+            }
 
-                Pair<RoomType, Integer> selectedRoomTypePair = availableRoomTypes.get(roomTypeChoice - 1);
-                Long selectedRoomTypeId = selectedRoomTypePair.getKey().getId();
-                Booking booking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, selectedRoomTypeId, guestId);
-                System.out.println("Room successfully reserved. Your booking details: " + booking);
-                
-                // if same day, allocate room immediately!!
-                LocalDate today = LocalDate.now();
-                LocalTime currentTime = LocalTime.now();
-                LocalTime twoAM = LocalTime.of(2, 0); // 2:00 AM
-                if (booking.getStartDate().isEqual(today) && currentTime.isAfter(twoAM)) {
-                    bookingEntitySessionBeanRemote.allocateRoomToBooking(booking.getId());
-                }
+            System.out.print("Enter guestId (or 0 to cancel): ");
+            long guestId = scanner.nextLong();
+            if (guestId == 0) {
+                System.out.println("Reservation cancelled.");
                 return;
             }
+
+            Pair<RoomType, Integer> selectedRoomTypePair = availableRoomTypes.get(roomTypeChoice - 1);
+            Long selectedRoomTypeId = selectedRoomTypePair.getKey().getId();
+            Booking booking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, selectedRoomTypeId, guestId);
+            System.out.println("Room successfully reserved. Your booking details: " + booking);
+
         } catch (Exception e) {
             System.out.println("Failed to reserve room: " + e.getMessage());
         }

@@ -8,6 +8,7 @@ import entity.Booking;
 import entity.Guest;
 import java.time.LocalDate;
 import java.util.List;
+import javafx.util.Pair;
 import javax.ejb.Remote;
 
 /**
@@ -21,8 +22,6 @@ public interface BookingEntitySessionBeanRemote {
 
     public List<Booking> allocateRoomToBookings(LocalDate date);
     
-//    public Booking createBooking(Booking newBooking) throws ConstraintViolationException;
-
     public List<Booking> getBookingByGuest(Guest guest);
     
     public Booking getBookingById(Long id);
@@ -35,5 +34,5 @@ public interface BookingEntitySessionBeanRemote {
 
     public List<Booking> retrieveCheckedInBookings(Long guestId);
 
-    public Booking allocateRoomToBooking(long bookingId);
+    public Pair<List<Booking>, List<Booking>> getBookingsWithRoomAllocException(LocalDate date);
 }

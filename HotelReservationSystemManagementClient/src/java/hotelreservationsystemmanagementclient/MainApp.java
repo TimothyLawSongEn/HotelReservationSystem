@@ -45,7 +45,7 @@ public class MainApp {
         this.bookingEntitySessionBeanRemote = bookingEntitySessionBeanRemote;
         this.guestEntitySessionBeanRemote = guestEntitySessionBeanRemote;
         
-        this.roomManagementModule = new RoomManagementModule(roomEntitySessionBeanRemote, roomTypeEntitySessionBeanRemote);
+        this.roomManagementModule = new RoomManagementModule(roomEntitySessionBeanRemote, roomTypeEntitySessionBeanRemote, bookingEntitySessionBeanRemote);
         this.roomTypeManagementModule = new RoomTypeManagementModule(roomTypeEntitySessionBeanRemote);
         this.specialRateManagementModule = new SpecialRateManagementModule(roomTypeEntitySessionBeanRemote, roomRateEntitySessionBeanRemote);
         this.frontOfficeModule = new FrontOfficeModule(availabilitySessionBeanRemote, bookingEntitySessionBeanRemote, guestEntitySessionBeanRemote);

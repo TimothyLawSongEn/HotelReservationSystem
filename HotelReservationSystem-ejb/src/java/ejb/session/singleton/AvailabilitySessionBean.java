@@ -38,7 +38,7 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
     
     // caller: DataInitSessionBean postConstruct
     @Override
-    public void loadRoomTypesAndBookings() {
+    public void loadRoomTypesAndBookings() { // TODO: can call this at postconstruct instead
         initializeRoomTypeToBookedCountMap();
         populateBookingsIntoMap();
     }
@@ -52,7 +52,7 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
     }
     
     private void populateBookingsIntoMap() {
-        List<Booking> bookings = bookingEntitySessionBeanLocal.findAllBookings();
+        List<Booking> bookings = bookingEntitySessionBeanLocal.getAllBookings();
         LocalDate today = LocalDate.now();
 
         for (Booking booking : bookings) {

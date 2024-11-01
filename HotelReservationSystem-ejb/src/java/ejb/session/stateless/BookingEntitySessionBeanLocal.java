@@ -18,7 +18,7 @@ import javax.validation.ConstraintViolationException;
 @Local
 public interface BookingEntitySessionBeanLocal {
 
-    public List<Booking> findAllBookings();
+    public List<Booking> getAllBookings();
 
 //    public Booking createBooking(Booking newBooking) throws ConstraintViolationException;
 
@@ -28,4 +28,6 @@ public interface BookingEntitySessionBeanLocal {
 
     public List<Booking> allocateRoomToBookings(LocalDate date);
     
+    public Booking reserveRoomType(LocalDate startDate, LocalDate endDate, long roomTypeId, long guestId) throws Exception;
+
 }
