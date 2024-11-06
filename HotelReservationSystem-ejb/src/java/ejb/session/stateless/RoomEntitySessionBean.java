@@ -84,7 +84,7 @@ public class RoomEntitySessionBean implements RoomEntitySessionBeanRemote, RoomE
     }
     
     @Override
-    public List<Room> getAvailableRoomsForRoomTypeAndDate(RoomType roomType, LocalDate date) {
+    public List<Room> getAvailableRoomsForRoomTypeAndDate(RoomType roomType, LocalDate date) { // FIXME
         return em.createQuery("SELECT r FROM Room r WHERE r.roomType = :roomType AND (r.currentBooking IS NULL) AND (r.expectedBooking IS NULL)", Room.class)
                  .setParameter("roomType", roomType)
                  .setParameter("date", date)

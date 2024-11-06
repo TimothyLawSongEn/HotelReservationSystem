@@ -313,6 +313,7 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
         .getResultList();
     }
     
+    // caller: deleteRoom() in room bean
     @Override
     public boolean existBookingWithRoom(Long roomId) {
         // Construct the query to count bookings with the given room ID

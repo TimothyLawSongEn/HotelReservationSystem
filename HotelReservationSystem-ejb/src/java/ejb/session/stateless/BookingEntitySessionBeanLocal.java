@@ -20,8 +20,6 @@ public interface BookingEntitySessionBeanLocal {
 
     public List<Booking> getAllBookings();
 
-//    public Booking createBooking(Booking newBooking) throws ConstraintViolationException;
-
     public List<Booking> getBookingByGuest(Guest guest);
 
     public Booking getBookingById(Long id);

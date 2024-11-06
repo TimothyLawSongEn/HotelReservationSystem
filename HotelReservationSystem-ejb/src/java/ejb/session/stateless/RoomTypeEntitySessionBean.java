@@ -62,7 +62,7 @@ public class RoomTypeEntitySessionBean implements RoomTypeEntitySessionBeanRemot
                     em.merge(rt); // Note: redundant merge call since rt is already managed
                 }
             }
-            
+            //FIXME
 //            em.remove(roomTypeToDelete); // roomrates are deleted because of cascade
 //            System.out.println("RoomType and its associated RoomRates deleted successfully.");
 //            return roomTypeToDelete;

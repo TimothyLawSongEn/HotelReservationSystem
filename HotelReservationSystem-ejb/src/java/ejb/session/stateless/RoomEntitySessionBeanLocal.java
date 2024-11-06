@@ -22,8 +22,6 @@ public interface RoomEntitySessionBeanLocal {
 
     public Room updateRoom(Room room);
 
-//    public void deleteRoom(Long roomId) throws Exception;
-
     public List<Room> findAllRooms();
 
     public Room findRoomById(Long roomId);

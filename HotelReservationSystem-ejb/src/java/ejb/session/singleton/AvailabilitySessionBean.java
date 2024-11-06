@@ -39,7 +39,7 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
     
     // caller: DataInitSessionBean postConstruct
     @Override
-    public void loadRoomTypesAndBookings() { // TODO: can call this at postconstruct instead
+    public void loadRoomTypesAndBookings() { // TODO: can call this at postconstruct instead, since datainit instantiated at start while availability instantiated later
         initializeRoomTypeToBookedCountMap();
         populateBookingsIntoMap();
     }
@@ -87,7 +87,7 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
 
         // Iterate over all room types
         for (Long roomTypeId : roomTypeIds) {
-            roomTypeToBookedCountMap.computeIfAbsent(roomTypeId, k -> new HashMap<>()); 
+            roomTypeToBookedCountMap.computeIfAbsent(roomTypeId, k -> new HashMap<>()); // add roomtypeid into map if absent
             Map<LocalDate, Integer> bookedCountMap = roomTypeToBookedCountMap.get(roomTypeId);
 
             int roomCount = roomEntitySessionBeanLocal.getNonDisabledRoomCountForRoomType(roomTypeId);
@@ -121,16 +121,14 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
     // must be atomic
     @Override
     @Lock(LockType.WRITE)
-    public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception {
-        // todo: perhaps check that all dates available before editing map, ideally if one of the dates unavailable, show the offending date
-        
+    public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception {        
         // chk that roomtypeid can be found via roomtypebean
         RoomType roomType = roomTypeEntitySessionBeanLocal.findRoomType(roomTypeId);
         if (roomType == null) {
             throw new Exception("RoomType with ID " + roomTypeId + " not found.");
         }
         
-        roomTypeToBookedCountMap.computeIfAbsent(roomTypeId, k -> new HashMap<>());
+        roomTypeToBookedCountMap.computeIfAbsent(roomTypeId, k -> new HashMap<>()); // add roomtypeid into map if absent
         Map<LocalDate, Integer> roomTypeBookingsMap = roomTypeToBookedCountMap.get(roomTypeId);
 
         int roomCount = roomEntitySessionBeanLocal.getNonDisabledRoomCountForRoomType(roomTypeId);

@@ -17,10 +17,10 @@ import javax.ejb.Local;
 @Local
 public interface AvailabilitySessionBeanLocal {
     
-    public void loadRoomTypesAndBookings();
+    public void loadRoomTypesAndBookings(); // caller: data init bean
     
-    public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception;
+    public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception; // caller: booking bean
     
-    public List<Pair<RoomType, Integer>> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate);
+    public List<Pair<RoomType, Integer>> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate); // caller: web service
 
 }
