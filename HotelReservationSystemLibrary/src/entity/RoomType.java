@@ -37,11 +37,13 @@ public class RoomType implements Serializable {
     @OneToMany(mappedBy = "roomType", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<RoomRate> rates = new ArrayList<>();  // List for peak and promo rates
     
+    @OneToOne
+    @JoinColumn
     private RoomType nextHigherRoomType;
     
     @NotNull(message = "Disabled flag cannot be null")
     @Column(nullable = false)
-    private boolean disabled;
+    private Boolean disabled = false;
     
 //    @OneToMany(mappedBy = "name")
 //    private RoomType roomType;
@@ -75,9 +77,8 @@ public class RoomType implements Serializable {
 
         for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
             Double dailyRate = normalRate;
-
             for (RoomRate rate : rates) {
-                if (rate.isWithinPeriod(date)) {
+                if (!rate.getDisabled() && rate.isWithinPeriod(date)) {
                     if (rate.getSpecialRateType().equals(RoomRate.SpecialRateType.PROMO)) {
                         dailyRate = rate.getAmount();
                         break;  // Promo rate has the highest precedence

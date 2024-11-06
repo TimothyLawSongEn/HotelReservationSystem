@@ -22,7 +22,7 @@ public interface RoomEntitySessionBeanLocal {
 
     public Room updateRoom(Room room);
 
-    public void deleteRoom(Long roomId);
+//    public void deleteRoom(Long roomId) throws Exception;
 
     public List<Room> findAllRooms();
 

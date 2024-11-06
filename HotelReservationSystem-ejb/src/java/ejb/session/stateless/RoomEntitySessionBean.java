@@ -8,6 +8,7 @@ import entity.Room;
 import entity.RoomType;
 import java.time.LocalDate;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,6 +25,9 @@ public class RoomEntitySessionBean implements RoomEntitySessionBeanRemote, RoomE
 
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
+    
+    @EJB
+    BookingEntitySessionBeanLocal bookingEntitySessionBeanLocal;
 
     // Create a new room
     @Override
@@ -46,11 +50,16 @@ public class RoomEntitySessionBean implements RoomEntitySessionBeanRemote, RoomE
 
     // Delete a room by ID
     @Override
-    public void deleteRoom(Long roomId) {
+    public void deleteRoom(Long roomId) throws Exception {
         Room room = em.find(Room.class, roomId);
-        if (room != null) {
-            em.remove(room);
+        if (room == null) {
+            throw new Exception("Room with roomId " + roomId + "does not exist.");
         }
+        if (bookingEntitySessionBeanLocal.existBookingWithRoom(roomId)) {
+            room.setDisabled(true);
+            throw new Exception("Cannot delete RoomType with associated rooms. RoomType will be disabled.");
+        }
+        em.remove(room);
     }
 
     // View all rooms
@@ -76,10 +85,13 @@ public class RoomEntitySessionBean implements RoomEntitySessionBeanRemote, RoomE
     
     @Override
     public List<Room> getAvailableRoomsForRoomTypeAndDate(RoomType roomType, LocalDate date) {
-        return em.createNamedQuery("Room.findAvailableRoomsForRoomTypeAndDate", Room.class)
+        return em.createQuery("SELECT r FROM Room r WHERE r.roomType = :roomType AND (r.currentBooking IS NULL) AND (r.expectedBooking IS NULL)", Room.class)
                  .setParameter("roomType", roomType)
-//                 .setParameter("date", date)
+                 .setParameter("date", date)
                  .getResultList();
+        
+    //        query = "SELECT r FROM Room r WHERE r.roomType = :roomType AND " +
+    //                "(r.currentBooking IS NULL OR r.currentBooking.endDate <= :date) AND r.expectedBooking IS NULL" // TODO: make date comparison work
     }
 
 }

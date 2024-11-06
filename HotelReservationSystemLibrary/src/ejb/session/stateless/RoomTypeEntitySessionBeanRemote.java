@@ -15,7 +15,7 @@ import javax.ejb.Remote;
 @Remote
 public interface RoomTypeEntitySessionBeanRemote {
 
-    public void createRoomType(RoomType roomType);
+    public RoomType createRoomType(RoomType roomType);
 
     public RoomType updateRoomType(RoomType roomType);
 
@@ -24,5 +24,7 @@ public interface RoomTypeEntitySessionBeanRemote {
     public RoomType findRoomType(Long roomTypeId);
 
     public List<RoomType> findAllRoomTypes();
+
+    public List<RoomType> findAllNonDisabledRoomTypes();
     
 }

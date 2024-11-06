@@ -15,7 +15,7 @@ import javax.ejb.Local;
 @Local
 public interface RoomTypeEntitySessionBeanLocal {
     
-    public void createRoomType(RoomType roomType);
+    public RoomType createRoomType(RoomType roomType);
 
     public RoomType updateRoomType(RoomType roomType);
 

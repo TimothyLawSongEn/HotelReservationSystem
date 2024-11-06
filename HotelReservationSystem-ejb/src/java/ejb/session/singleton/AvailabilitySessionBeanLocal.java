@@ -22,5 +22,5 @@ public interface AvailabilitySessionBeanLocal {
     public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception;
     
     public List<Pair<RoomType, Integer>> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate);
-    
+
 }

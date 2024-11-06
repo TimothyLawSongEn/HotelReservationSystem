@@ -37,10 +37,14 @@ public class RoomRate implements Serializable {
     @Enumerated(EnumType.STRING)
     private SpecialRateType specialRateType;  // e.g., Peak, Promo
 
-    // Optional: ManyToOne relationship to RoomType
+    // needed in management client
     @ManyToOne
     @JoinColumn(nullable = false)
-    private RoomType roomType;  // Relationship to RoomType
+    private RoomType roomType;
+    
+    @NotNull(message = "Disabled flag cannot be null")
+    @Column(nullable = false)
+    private Boolean disabled = false;
 
     // No-args constructor
     public RoomRate() {
@@ -117,6 +121,14 @@ public class RoomRate implements Serializable {
 
     public void setRoomType(RoomType roomType) {
         this.roomType = roomType;
+    }
+
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
     }
 
     @Override

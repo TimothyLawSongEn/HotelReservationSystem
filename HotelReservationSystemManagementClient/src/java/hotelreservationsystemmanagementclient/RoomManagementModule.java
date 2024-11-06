@@ -117,24 +117,21 @@ public class RoomManagementModule {
 
             // Get non-disabled room types
             System.out.println("Choose a Room Type:");
-            List<RoomType> roomTypes = roomTypeEntitySessionBeanRemote.findAllRoomTypes();
-            List<RoomType> availableRoomTypes = roomTypes.stream()
-                                                          .filter(rt -> !rt.isDisabled())
-                                                          .collect(Collectors.toList());
+            List<RoomType> nonDisabledRoomTypes = roomTypeEntitySessionBeanRemote.findAllNonDisabledRoomTypes();
 
-            if (availableRoomTypes.isEmpty()) {
+            if (nonDisabledRoomTypes.isEmpty()) {
                 System.out.println("No available room types.");
                 return;
             }
 
             // Display available room types
-            for (int i = 0; i < availableRoomTypes.size(); i++) {
-                System.out.printf("%d. %s\n", i + 1, availableRoomTypes.get(i).getName());
+            for (int i = 0; i < nonDisabledRoomTypes.size(); i++) {
+                System.out.printf("%d. %s\n", i + 1, nonDisabledRoomTypes.get(i).getName());
             }
 
             System.out.print("Select room type by number: ");
             int roomTypeChoice = scanner.nextInt();
-            RoomType selectedRoomType = availableRoomTypes.get(roomTypeChoice - 1);
+            RoomType selectedRoomType = nonDisabledRoomTypes.get(roomTypeChoice - 1);
 
             // Create Room
             Room newRoom = new Room(roomNumber, selectedRoomType);
@@ -163,9 +160,9 @@ public class RoomManagementModule {
 
                 // Update room type (choose from available room types or skip)
                 System.out.println("Choose a new Room Type or press Enter to skip:");
-                List<RoomType> roomTypes = roomTypeEntitySessionBeanRemote.findAllRoomTypes();
-                for (int i = 0; i < roomTypes.size(); i++) {
-                    System.out.printf("%d. %s\n", i + 1, roomTypes.get(i).getName());
+                List<RoomType> nonDisabledRoomTypes = roomTypeEntitySessionBeanRemote.findAllNonDisabledRoomTypes();
+                for (int i = 0; i < nonDisabledRoomTypes.size(); i++) {
+                    System.out.printf("%d. %s\n", i + 1, nonDisabledRoomTypes.get(i).getName());
                 }
                 System.out.print("Select room type by number (current: " + roomToUpdate.getRoomType().getName() + ") or press Enter to skip: ");
                 String roomTypeInput = scanner.nextLine().trim();
@@ -173,7 +170,7 @@ public class RoomManagementModule {
                 RoomType selectedRoomType;
                 if (!roomTypeInput.isEmpty()) { // Keep the old value if the user skips
                     int roomTypeChoice = Integer.parseInt(roomTypeInput);
-                    selectedRoomType = roomTypes.get(roomTypeChoice - 1);
+                    selectedRoomType = nonDisabledRoomTypes.get(roomTypeChoice - 1);
                     roomToUpdate.setRoomType(selectedRoomType);
                 }
 

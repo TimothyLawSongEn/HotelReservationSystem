@@ -30,4 +30,6 @@ public interface BookingEntitySessionBeanLocal {
     
     public Booking reserveRoomType(LocalDate startDate, LocalDate endDate, long roomTypeId, long guestId) throws Exception;
 
+    public boolean existBookingWithRoom(Long roomId);
+
 }

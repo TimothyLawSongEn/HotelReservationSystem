@@ -15,14 +15,6 @@ import javax.validation.constraints.Pattern;
  * @author timothy
  */
 @Entity
-@NamedQueries({
-    @NamedQuery(
-        name = "Room.findAvailableRoomsForRoomTypeAndDate",
-        query = "SELECT r FROM Room r WHERE r.roomType = :roomType AND (r.currentBooking IS NULL) AND (r.expectedBooking IS NULL)"
-//        query = "SELECT r FROM Room r WHERE r.roomType = :roomType AND " +
-//                "(r.currentBooking IS NULL OR r.currentBooking.endDate <= :date) AND r.expectedBooking IS NULL" // TODO: make date comparison work
-    )
-})
 public class Room implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -110,6 +102,14 @@ public class Room implements Serializable {
 
     public void setExpectedBooking(Booking expectedBooking) {
         this.expectedBooking = expectedBooking;
+    }
+
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
     }
 
     @Override

@@ -20,6 +20,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -310,6 +311,19 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
         .setParameter("guestId", guestId)
         .setParameter("today", today)
         .getResultList();
+    }
+    
+    @Override
+    public boolean existBookingWithRoom(Long roomId) {
+        // Construct the query to count bookings with the given room ID
+        TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(b) FROM Booking b WHERE b.allocatedRoom.id = :roomId", Long.class);
+
+        query.setParameter("roomId", roomId);
+
+        Long count = query.getSingleResult();
+
+        return count > 0;
     }
 
 }

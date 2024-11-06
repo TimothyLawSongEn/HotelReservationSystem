@@ -21,7 +21,7 @@ public interface RoomEntitySessionBeanRemote {
 
     public Room updateRoom(Room room);
 
-    public void deleteRoom(Long roomId);
+    public void deleteRoom(Long roomId) throws Exception;
 
     public List<Room> findAllRooms();
 

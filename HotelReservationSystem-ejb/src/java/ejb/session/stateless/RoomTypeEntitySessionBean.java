@@ -5,6 +5,7 @@
 package ejb.session.stateless;
 
 import entity.Room;
+import entity.RoomRate;
 import entity.RoomType;
 
 import javax.ejb.Stateless;
@@ -25,8 +26,10 @@ public class RoomTypeEntitySessionBean implements RoomTypeEntitySessionBeanRemot
 
     // Create a new RoomType
     @Override
-    public void createRoomType(RoomType roomType) {
+    public RoomType createRoomType(RoomType roomType) {
         em.persist(roomType);
+        em.flush();
+        return roomType;
     }
     
     // Update an existing RoomType
@@ -38,27 +41,47 @@ public class RoomTypeEntitySessionBean implements RoomTypeEntitySessionBeanRemot
     // Delete a RoomType by ID
     @Override
     public RoomType deleteRoomType(Long roomTypeId) throws Exception {
-        RoomType roomType = em.find(RoomType.class, roomTypeId);
+        RoomType roomTypeToDelete = em.find(RoomType.class, roomTypeId);
         
-        if (roomType == null) {
+        if (roomTypeToDelete == null) {
             throw new Exception("RoomType not found.");
         }
 
         // Check if the RoomType is associated with any rooms
         List<Room> rooms = em.createQuery("SELECT r FROM Room r WHERE r.roomType = :roomType", Room.class)
-                              .setParameter("roomType", roomType)
+                              .setParameter("roomType", roomTypeToDelete)
                               .getResultList();
 
         if (rooms.isEmpty()) {
-            em.remove(roomType); // roomrates are deleted because of cascade
+            // set nextHigherRoomType for entities that are pointing to this roomTypeToDelete
+            List<RoomType> allRoomTypes = findAllRoomTypes();
+            RoomType newNextHigherRoomType = roomTypeToDelete.getNextHigherRoomType();
+            for (RoomType rt : allRoomTypes) {
+                if (rt.getNextHigherRoomType() != null && rt.getNextHigherRoomType().equals(roomTypeToDelete)) {
+                    rt.setNextHigherRoomType(newNextHigherRoomType);
+                    em.merge(rt); // Note: redundant merge call since rt is already managed
+                }
+            }
+            
+//            em.remove(roomTypeToDelete); // roomrates are deleted because of cascade
+//            System.out.println("RoomType and its associated RoomRates deleted successfully.");
+//            return roomTypeToDelete;
+
+            for (RoomRate rate : roomTypeToDelete.getRates()) {
+                em.remove(rate);  // Remove each RoomRate explicitly
+            }
+
+            roomTypeToDelete.getRates().clear();  // Clear the collection to ensure orphan removal
+            em.flush();  // Flush to ensure all changes are synchronized with the database
+
+            em.remove(roomTypeToDelete); // RoomType can be safely deleted now
             System.out.println("RoomType and its associated RoomRates deleted successfully.");
-            return roomType;
+            return roomTypeToDelete;
         } else {
             // Handle case where RoomType is in use 
-            roomType.setDisabled(true);
+            roomTypeToDelete.setDisabled(true);
             throw new Exception("Cannot delete RoomType with associated rooms. RoomType will be disabled.");
         }
-
     }
 
     // Find a RoomType by ID
@@ -71,6 +94,12 @@ public class RoomTypeEntitySessionBean implements RoomTypeEntitySessionBeanRemot
     @Override
     public List<RoomType> findAllRoomTypes() {
         TypedQuery<RoomType> query = em.createQuery("SELECT rt FROM RoomType rt", RoomType.class);
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<RoomType> findAllNonDisabledRoomTypes() {
+        TypedQuery<RoomType> query = em.createQuery("SELECT rt FROM RoomType rt WHERE rt.disabled = false", RoomType.class);
         return query.getResultList();
     }
 }
