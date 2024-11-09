@@ -40,8 +40,8 @@ public class Main {
     public static void main(String[] args)
     {
         MainApp mainApp = new MainApp(roomEntitySessionBeanRemote, roomTypeEntitySessionBeanRemote, roomRateEntitySessionBeanRemote, employeeEntitySessionBean, availabilitySessionBeanRemote, bookingEntitySessionBeanRemote, guestEntitySessionBeanRemote);
-//        MainApp mainApp = new MainApp();
-        mainApp.timothyStart();
+//        mainApp.timothyStart();
+        mainApp.start();
     }
     
 }

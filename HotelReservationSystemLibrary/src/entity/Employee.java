@@ -96,7 +96,8 @@ public class Employee implements Serializable {
         SYSTEMADMIN,
         OPSMANAGER,
         SALESMANAGER,
-        GUESTRELATIONOFFICER
+        GUESTRELATIONOFFICER,
+        ALLACCESS
     }
     
 }

@@ -25,11 +25,11 @@ public class Room implements Serializable {
 
     @NotNull(message = "RoomNumber cannot be null")
     @Pattern(regexp = "\\d{4}", message = "Room number must be a 4-digit number")
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 4)
     private String roomNumber;
 
     @NotNull(message = "RoomType cannot be null")
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private RoomType roomType;
     

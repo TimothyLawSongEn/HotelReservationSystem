@@ -91,12 +91,14 @@ public class DataInitSessionBean {
 //        roomEntitySessionBeanLocal.createRoom(room201);
 
         // Create System Administrator
+        Employee allAccess = new Employee("password", EmployeeType.ALLACCESS);
         Employee systemAdmin = new Employee("password", EmployeeType.SYSTEMADMIN);
         Employee opsManager = new Employee("password", EmployeeType.OPSMANAGER);
         Employee salesManager = new Employee("password", EmployeeType.SALESMANAGER);
         Employee guestOfficer = new Employee("password", EmployeeType.GUESTRELATIONOFFICER);
         
         // Persist system admin using session bean
+        employeeEntitySessionBeanLocal.createEmployee(allAccess);
         employeeEntitySessionBeanLocal.createEmployee(systemAdmin);
         employeeEntitySessionBeanLocal.createEmployee(opsManager);
         employeeEntitySessionBeanLocal.createEmployee(salesManager);

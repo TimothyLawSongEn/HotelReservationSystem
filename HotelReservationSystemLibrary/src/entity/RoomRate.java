@@ -3,7 +3,10 @@ package entity;
 import java.io.Serializable;
 import java.time.LocalDate;
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -19,11 +22,14 @@ public class RoomRate implements Serializable {
     private Long id;
     
     @NotNull(message = "Name cannot be null")
-    @Column(nullable = false)
+    @Size(min = 1, max = 50, message = "RoomRate name must be between 1 and 50 characters")
+    @Column(nullable = false, length = 50)
     private String name;
 
     @NotNull(message = "Amount cannot be null")
-    @Column(nullable = false) // TODO: might want to use bigdecimal with precision and scale
+    @DecimalMin("0.00")
+    @Digits(integer = 9, fraction = 2)
+    @Column(nullable = false, precision = 11, scale = 2) // TODO: might want to use bigdecimal with precision and scale
     private Double amount;
 
     @NotNull(message = "Start date cannot be null")
@@ -38,7 +44,7 @@ public class RoomRate implements Serializable {
     private SpecialRateType specialRateType;  // e.g., Peak, Promo
 
     // needed in management client
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private RoomType roomType;
     

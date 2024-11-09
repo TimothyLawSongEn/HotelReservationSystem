@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -23,15 +25,19 @@ public class RoomType implements Serializable {
 
     @NotNull(message = "RoomType name cannot be null")
     @Size(min = 1, max = 50, message = "RoomType name must be between 1 and 50 characters")
-    @Column(unique = true, nullable = false)  // Unique and Non-nullable Name
+    @Column(unique = true, nullable = false, length = 50)  // Unique and Non-nullable Name
     private String name;
 
+    @DecimalMin("0.00")
+    @Digits(integer = 9, fraction = 2)
     @NotNull(message = "Published rate cannot be null")
-    @Column(nullable = false)  // Mandatory published rate
+    @Column(nullable = false, precision = 11, scale = 2) // Mandatory published rate
     private Double publishedRate;
 
+    @DecimalMin("0.00")
+    @Digits(integer = 9, fraction = 2)
     @NotNull(message = "Normal rate cannot be null")
-    @Column(nullable = false)  // Mandatory normal rate
+    @Column(nullable = false, precision = 11, scale = 2)  // Mandatory normal rate
     private Double normalRate;
 
     @OneToMany(mappedBy = "roomType", cascade = {CascadeType.ALL}, orphanRemoval = true)

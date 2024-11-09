@@ -12,7 +12,6 @@ import ejb.session.stateless.RoomEntitySessionBeanRemote;
 import ejb.session.stateless.RoomRateEntitySessionBeanRemote;
 import ejb.session.stateless.RoomTypeEntitySessionBeanRemote;
 import entity.Employee;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -20,35 +19,25 @@ import java.util.Scanner;
  * @author timothy
  */
 public class MainApp {
-    private RoomEntitySessionBeanRemote roomEntitySessionBeanRemote;
-    private RoomTypeEntitySessionBeanRemote roomTypeEntitySessionBeanRemote;
-    private RoomRateEntitySessionBeanRemote roomRateEntitySessionBeanRemote;
     private EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote;
-    private AvailabilitySessionBeanRemote availabilitySessionBeanRemote;
-    private BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote;
-    private GuestEntitySessionBeanRemote guestEntitySessionBeanRemote;
     
     private RoomManagementModule roomManagementModule;
     private RoomTypeManagementModule roomTypeManagementModule;
     private SpecialRateManagementModule specialRateManagementModule;
     private FrontOfficeModule frontOfficeModule;
+    private EmployeePartnerManagementModule employeePartnerManagementModule;
 
     public MainApp() {
     }
 
-    public MainApp(RoomEntitySessionBeanRemote roomEntitySessionBeanRemote, RoomTypeEntitySessionBeanRemote roomTypeEntitySessionBeanRemote, RoomRateEntitySessionBeanRemote roomRateTransactionEntitySessionBeanRemote, EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote, AvailabilitySessionBeanRemote availabilitySessionBeanRemote, BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote, GuestEntitySessionBeanRemote guestEntitySessionBeanRemote) {
-        this.roomEntitySessionBeanRemote = roomEntitySessionBeanRemote;
-        this.roomTypeEntitySessionBeanRemote = roomTypeEntitySessionBeanRemote;
-        this.roomRateEntitySessionBeanRemote = roomRateTransactionEntitySessionBeanRemote;
+    public MainApp(RoomEntitySessionBeanRemote roomEntitySessionBeanRemote, RoomTypeEntitySessionBeanRemote roomTypeEntitySessionBeanRemote, RoomRateEntitySessionBeanRemote roomRateEntitySessionBeanRemote, EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote, AvailabilitySessionBeanRemote availabilitySessionBeanRemote, BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote, GuestEntitySessionBeanRemote guestEntitySessionBeanRemote) {
         this.employeeEntitySessionBeanRemote = employeeEntitySessionBeanRemote;
-        this.availabilitySessionBeanRemote = availabilitySessionBeanRemote;
-        this.bookingEntitySessionBeanRemote = bookingEntitySessionBeanRemote;
-        this.guestEntitySessionBeanRemote = guestEntitySessionBeanRemote;
         
         this.roomManagementModule = new RoomManagementModule(roomEntitySessionBeanRemote, roomTypeEntitySessionBeanRemote, bookingEntitySessionBeanRemote);
         this.roomTypeManagementModule = new RoomTypeManagementModule(roomTypeEntitySessionBeanRemote);
         this.specialRateManagementModule = new SpecialRateManagementModule(roomTypeEntitySessionBeanRemote, roomRateEntitySessionBeanRemote);
         this.frontOfficeModule = new FrontOfficeModule(availabilitySessionBeanRemote, bookingEntitySessionBeanRemote, guestEntitySessionBeanRemote);
+        this.employeePartnerManagementModule = new EmployeePartnerManagementModule(employeeEntitySessionBeanRemote);
     }
     
     public void start() {
@@ -123,6 +112,9 @@ public class MainApp {
         Employee.EmployeeType type = employeeEntitySessionBeanRemote.logIn(employeeId, password);
         
         switch (type) {
+            case ALLACCESS:
+                allAccess(scanner);
+                break;
             case SYSTEMADMIN:
                 systemAdmin(scanner);
                 break;
@@ -141,28 +133,62 @@ public class MainApp {
         }
     }
     
+    private void allAccess(Scanner scanner) {
+        boolean loggedIn = true;
+        
+        while (loggedIn) {
+            System.out.println("\n--- Hotel Management System [ALL ACCESS] ---");
+            System.out.println("Main menu:");
+            System.out.println("1. Manage Rooms");
+            System.out.println("2. Manage Room Types");
+            System.out.println("3. Manage Special Rates");
+            System.out.println("4. Front Office");
+            System.out.println("5. Manage Employees and Partners");
+            System.out.println("0. Log Out");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    roomManagementModule.manageRooms(scanner);
+                    break;
+                case 2:
+                    roomTypeManagementModule.manageRoomTypes(scanner);
+                    break;
+                case 3:
+                    specialRateManagementModule.manageSpecialRates(scanner);
+                    break;
+                case 4:
+                    frontOfficeModule.frontOfficeMenu(scanner);
+                    break;
+                case 5:
+                    employeePartnerManagementModule.manageEmployeesAndPartners(scanner);
+                    break;
+                case 0:
+                    System.out.println("Logging Out...");
+                    return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+    
     // System Admin Menu
     private void systemAdmin(Scanner scanner) {
         boolean loggedIn = true;
         
         while (loggedIn) {
             System.out.println("\n--- System Admin Menu---");
-            System.out.println("1. Create New Employee");
-            System.out.println("2. View All Employees");
-            System.out.println("3. Create New Partner");
-            System.out.println("4. View All Partners");
+            System.out.println("1. Manage Employees and Partners");
             System.out.println("0. Log Out");
             System.out.print("Choose an option: ");
-
+            
             int choice = scanner.nextInt();
             scanner.nextLine();
-
+            
             switch (choice) {
                 case 1:
-                    createNewEmployee(scanner);
-                    break;
-                case 2:
-                    viewAllEmployees();
+                    employeePartnerManagementModule.manageEmployeesAndPartners(scanner);
                     break;
                 case 0:
                     System.out.println("Logging out...");
@@ -171,61 +197,6 @@ public class MainApp {
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
-        }
-        
-    }
-    
-    // Create New Employee for System Admin
-    private void createNewEmployee(Scanner scanner) {
-        System.out.println("\n---Select Employee Type---");
-        System.out.println("1. Create New System Admin");
-        System.out.println("2. Create New Operations Manager");
-        System.out.println("3. Create New Sales Manager");
-        System.out.println("4. Create New Guest Relation Manager");
-        System.out.print("Choose an option: ");
-        
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-        
-        Employee.EmployeeType newType = null;
-        
-        switch (choice) {
-            case 1:
-                newType = Employee.EmployeeType.SYSTEMADMIN;
-                break;
-            case 2:
-                newType = Employee.EmployeeType.OPSMANAGER;
-                break;
-            case 3:
-                newType = Employee.EmployeeType.SALESMANAGER;
-                break;
-            case 4: 
-                newType = Employee.EmployeeType.GUESTRELATIONOFFICER;
-                break;
-            default:
-                System.out.println("Invalid option. Please try again.");
-        }
-        
-        System.out.print("Create Password for Employee: ");
-        String password = scanner.nextLine();
-        
-        Employee newEmployee = new Employee(password, newType);
-        Employee persistedEmployee = employeeEntitySessionBeanRemote.createEmployee(newEmployee);
-        
-        System.out.println("Employee Successfully Created: " + persistedEmployee);
-    }
-    
-    // View all Employees for System Admin
-    private void viewAllEmployees() {
-        try {
-            List<Employee> employees = employeeEntitySessionBeanRemote.viewAllEmployees();
-            
-            for (Employee e:employees) {
-                System.out.println(e);
-            }
-            
-        } catch (Exception e) {
-            System.out.println("An error occurred while fetching employees: " + e.getMessage());
         }
     }
     

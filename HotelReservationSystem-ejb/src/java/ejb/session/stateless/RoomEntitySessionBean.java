@@ -14,7 +14,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.validation.ConstraintViolationException;
 
 /**
  *
@@ -31,7 +30,7 @@ public class RoomEntitySessionBean implements RoomEntitySessionBeanRemote, RoomE
 
     // Create a new room
     @Override
-    public Room createRoom(Room newRoom) throws ConstraintViolationException {
+    public Room createRoom(Room newRoom) {
         em.persist(newRoom);
         return newRoom;
     }

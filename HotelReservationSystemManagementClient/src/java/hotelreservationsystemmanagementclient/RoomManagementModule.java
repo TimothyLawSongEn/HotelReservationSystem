@@ -13,8 +13,10 @@ import entity.RoomType;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 import javafx.util.Pair;
+import javax.ejb.EJBException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 /**
  *
@@ -136,12 +138,25 @@ public class RoomManagementModule {
             // Create Room
             Room newRoom = new Room(roomNumber, selectedRoomType);
 
+            // Try to create the room
             Room createdRoom = roomEntitySessionBeanRemote.createRoom(newRoom);
             System.out.println("Room created successfully: " + createdRoom.getRoomNumber() + " of type " + createdRoom.getRoomType().getName());
+
+        } catch (EJBException e) {
+            // Check if the cause of the EJBException is a ConstraintViolationException
+            if (e.getCause() instanceof ConstraintViolationException) {
+                ConstraintViolationException cve = (ConstraintViolationException) e.getCause();
+                handleValidationException(cve);
+            } else {
+                // Handle other types of EJB exceptions
+                System.out.println("An unexpected error occurred while creating the room: " + e.getMessage());
+            }
         } catch (Exception e) {
+            // Catch any other unexpected errors
             System.out.println("An error occurred while creating the room: " + e.getMessage());
         }
     }
+
 
     private void updateRoom(Scanner scanner) {
         try {
@@ -179,6 +194,15 @@ public class RoomManagementModule {
                 System.out.println("Room updated successfully.");
             } else {
                 System.out.println("Room not found with ID " + roomId);
+            }
+        } catch (EJBException e) {
+            // Check if the cause of the EJBException is a ConstraintViolationException
+            if (e.getCause() != null && e.getCause().getCause() instanceof ConstraintViolationException) {
+                ConstraintViolationException cve = (ConstraintViolationException) e.getCause().getCause();
+                handleValidationException(cve);
+            } else {
+                // Handle other types of EJB exceptions
+                System.out.println("An unexpected error occurred while updating the room: " + e.getMessage());
             }
         } catch (Exception e) {
             System.out.println("An error occurred while updating the room: " + e.getMessage());
@@ -246,5 +270,22 @@ public class RoomManagementModule {
             System.err.println("An error occurred while generating the report: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+    
+    
+    private void handleValidationException(ConstraintViolationException e) {
+        StringBuilder errorMessage = new StringBuilder("Validation failed:\n");
+
+        for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+            errorMessage.append(" - ")
+                        .append(violation.getPropertyPath())
+                        .append(" ")
+                        .append(violation.getMessage())
+                        .append(" (invalid value: ")
+                        .append(violation.getInvalidValue())
+                        .append(")\n");
+        }
+
+        System.out.println(errorMessage.toString());
     }
 }
