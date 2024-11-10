@@ -91,12 +91,15 @@ public class MainApp {
         
             System.out.print("Enter Username: ");
             String username = scanner.nextLine();
+            
+            System.out.print("Enter Email Address: ");
+            String email = scanner.nextLine();
 
             System.out.print("Create Password: ");
             String password = scanner.nextLine();
 
-            Account newGuest = new Account(username, password);
-            Account persistedGuest = accountEntitySessionBeanRemote.createGuest(newGuest);
+            Account newGuest = new Account(username, email, password);
+            Account persistedGuest = accountEntitySessionBeanRemote.createAccount(newGuest);
 
             System.out.println("Guest Account Successfully Created: " + persistedGuest);
         } catch (Exception e) {

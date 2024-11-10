@@ -15,7 +15,7 @@ import javax.validation.ConstraintViolationException;
 @Local
 public interface AccountEntitySessionBeanLocal {
 
-    public Account createGuest(Account newGuest) throws ConstraintViolationException;
+    public Account createAccount(Account account) throws ConstraintViolationException;
 
     public Account logIn(String username, String password);
     

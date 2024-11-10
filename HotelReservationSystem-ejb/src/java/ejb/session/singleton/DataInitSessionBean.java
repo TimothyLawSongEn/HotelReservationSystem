@@ -112,7 +112,10 @@ public class DataInitSessionBean {
         
         availabilitySessionBeanLocal.loadRoomTypesAndBookings(); // call after roomtypes and bookings created
         
-        Account guest1 = new Account("tommy", "password");
-        accountEntitySessionBeanLocal.createGuest(guest1);
+        Account guest1 = new Account("tommy", "tommy@gmail.com", "password");
+        accountEntitySessionBeanLocal.createAccount(guest1);
+        
+        Account partner = new Account("partner1", "password");
+        accountEntitySessionBeanLocal.createAccount(partner);
     }
 }

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,16 +37,36 @@ public class Account implements Serializable {
     @Column(nullable = false)
     private String password;
     
+    @NotNull(message = "Email cannot be null")
+    @Column(nullable = false)
+    private String email;
+    
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Employee Type cannot be null")
+    @Column(nullable = false)
+    private AccountType accountType;
+    
 //    @OneToMany(mappedBy = "guest")
 //    private List<Booking> bookings = new ArrayList<>();
 
     public Account() {
     }
 
-    public Account(String email, String password) {
-        this.username = email;
+    // Constructor for Guest
+    public Account(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
         this.password = password;
+        this.accountType = AccountType.GUEST;
 //        this.bookings = new ArrayList<>();
+    }
+
+    // Constructor for Partner
+    public Account(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.email = "";
+        this.accountType = AccountType.PARTNER;
     }
 
     public Long getId() {
@@ -61,6 +83,22 @@ public class Account implements Serializable {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public AccountType getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(AccountType accountType) {
+        this.accountType = accountType;
     }
 
     @Override

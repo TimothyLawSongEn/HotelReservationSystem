@@ -23,19 +23,19 @@ public class AccountEntitySessionBean implements AccountEntitySessionBeanRemote,
     private EntityManager em;
     
     @Override
-    public Account createGuest(Account newGuest) throws ConstraintViolationException {
-        em.persist(newGuest);
-        return newGuest;
+    public Account createAccount(Account account) throws ConstraintViolationException {
+        em.persist(account);
+        return account;
     }
     
     @Override
     public Account logIn(String username, String password) {
-        Account guest = em.createQuery("SELECT a FROM Account a WHERE a.username = :username", Account.class)
+        Account account = em.createQuery("SELECT a FROM Account a WHERE a.username = :username", Account.class)
                 .setParameter("username", username)
                 .getSingleResult();
         
-        if (guest != null && guest.getPassword().equals(password)) {
-            return guest;
+        if (account != null && account.getPassword().equals(password)) {
+            return account;
         }
         
         return null;
