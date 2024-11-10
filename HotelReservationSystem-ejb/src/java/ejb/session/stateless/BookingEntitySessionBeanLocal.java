@@ -20,7 +20,7 @@ public interface BookingEntitySessionBeanLocal {
 
     public List<Booking> getAllBookings();
 
-    public List<Booking> getBookingByGuest(Account guest);
+    public List<Booking> getBookingByGuest(Account account);
 
     public Booking getBookingById(Long id);
 

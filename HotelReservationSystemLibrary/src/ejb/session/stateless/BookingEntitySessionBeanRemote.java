@@ -25,7 +25,7 @@ public interface BookingEntitySessionBeanRemote {
 
     public List<Booking> allocateRoomToBookings(LocalDate date);
     
-    public List<Booking> getBookingByGuest(Account guest);
+    public List<Booking> getBookingByGuest(Account account);
     
     public Booking getBookingById(Long id);
 
