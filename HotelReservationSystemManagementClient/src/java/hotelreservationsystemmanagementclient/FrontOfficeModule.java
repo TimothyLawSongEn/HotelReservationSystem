@@ -11,12 +11,14 @@ import entity.Booking;
 import entity.Guest;
 import entity.RoomType;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import javafx.util.Pair;
+import util.exception.BookingAlreadyCheckedInException;
+import util.exception.BookingNoAllocatedRoomException;
+import util.exception.EntityMissingException;
 
 /**
  *
@@ -112,8 +114,14 @@ public class FrontOfficeModule {
             try {
                 bookingEntitySessionBeanRemote.checkIn(booking.getId());
                 System.out.println("Checked in booking: " + booking);
-            } catch (Exception e) {
-                System.out.println(e);
+                System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
+            } catch (EntityMissingException enfe) {
+                System.out.println(enfe.getMessage());
+            } catch (BookingAlreadyCheckedInException bacie) {
+                System.out.println("Booking has already been checked in!");
+                System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
+            } catch (BookingNoAllocatedRoomException bnare) {
+                System.out.println("No room allocated for this booking with id " + booking.getId() + ". Please resolve manually.");
             }
         }
     }

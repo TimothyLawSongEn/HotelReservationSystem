@@ -10,6 +10,9 @@ import java.time.LocalDate;
 import java.util.List;
 import javafx.util.Pair;
 import javax.ejb.Remote;
+import util.exception.BookingAlreadyCheckedInException;
+import util.exception.BookingNoAllocatedRoomException;
+import util.exception.EntityMissingException;
 
 /**
  *
@@ -26,7 +29,7 @@ public interface BookingEntitySessionBeanRemote {
     
     public Booking getBookingById(Long id);
 
-    public void checkIn(Long bookingId) throws Exception;
+    public void checkIn(Long bookingId) throws EntityMissingException, BookingAlreadyCheckedInException, BookingNoAllocatedRoomException;
 
     public void checkOut(Long bookingId) throws Exception;
 

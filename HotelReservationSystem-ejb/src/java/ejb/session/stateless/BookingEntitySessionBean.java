@@ -21,6 +21,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import util.exception.BookingAlreadyCheckedInException;
+import util.exception.BookingNoAllocatedRoomException;
+import util.exception.EntityMissingException;
 
 /**
  *
@@ -247,24 +250,24 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
             .getResultList();
     }
 
-    
-    public void checkIn(Long bookingId) throws Exception {
+    @Override
+    public void checkIn(Long bookingId) throws EntityMissingException, BookingAlreadyCheckedInException, BookingNoAllocatedRoomException {
         Booking booking = em.find(Booking.class, bookingId);
-        if (booking == null || booking.isCheckedIn()) {
-            throw new Exception("Booking not found or already checked in.");
+        if (booking == null) {
+            throw new EntityMissingException("Booking with ID " + bookingId + " not found when checking in.");
+        }
+        if (booking.isCheckedIn()) {
+            throw new BookingAlreadyCheckedInException();
         }
 
         Room allocatedRoom = booking.getAllocatedRoom();
         if (allocatedRoom == null) {
-            throw new Exception("Allocated room not found for this booking.");
+            throw new BookingNoAllocatedRoomException();
         }
 
-        // Mark booking as checked in and update room’s current booking
+        // Mark booking as checked in
         booking.setCheckedIn(true);
-//        allocatedRoom.setCurrentBooking(booking);
-
         em.merge(booking);
-//        em.merge(allocatedRoom);
     }
 
     
