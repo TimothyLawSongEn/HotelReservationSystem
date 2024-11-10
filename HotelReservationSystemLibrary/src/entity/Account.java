@@ -123,7 +123,7 @@ public class Account implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Guest[ id=" + id + " ]";
+        return "entity.Account[ id=" + id + " ]";
     }
     
     public enum AccountType {

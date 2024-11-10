@@ -6,6 +6,7 @@ package ejb.session.stateless;
 
 import entity.Booking;
 import entity.Account;
+import entity.Account.AccountType;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -44,5 +45,10 @@ public class AccountEntitySessionBean implements AccountEntitySessionBeanRemote,
     @Override
     public Account findGuestById(long id) {
         return em.find(Account.class, id);
+    }
+    
+    @Override
+    public List<Account> getAllPartnerAccounts() {
+        return em.createQuery("SELECT a FROM Account a WHERE a.accountType = :type").setParameter("type", AccountType.PARTNER).getResultList();
     }
 }

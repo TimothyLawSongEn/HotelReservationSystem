@@ -5,6 +5,7 @@
 package ejb.session.stateless;
 
 import entity.Account;
+import java.util.List;
 import javax.ejb.Remote;
 import javax.validation.ConstraintViolationException;
 
@@ -20,5 +21,7 @@ public interface AccountEntitySessionBeanRemote {
     public Account logIn(String username, String password);
     
     public Account findGuestById(long id);
+    
+    public List<Account> getAllPartnerAccounts();
     
 }
