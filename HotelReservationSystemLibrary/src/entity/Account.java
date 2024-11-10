@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
  * @author clara
  */
 @Entity
-public class Guest implements Serializable {
+public class Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -38,10 +38,10 @@ public class Guest implements Serializable {
 //    @OneToMany(mappedBy = "guest")
 //    private List<Booking> bookings = new ArrayList<>();
 
-    public Guest() {
+    public Account() {
     }
 
-    public Guest(String email, String password) {
+    public Account(String email, String password) {
         this.email = email;
         this.password = password;
 //        this.bookings = new ArrayList<>();
@@ -73,10 +73,10 @@ public class Guest implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Guest)) {
+        if (!(object instanceof Account)) {
             return false;
         }
-        Guest other = (Guest) object;
+        Account other = (Account) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

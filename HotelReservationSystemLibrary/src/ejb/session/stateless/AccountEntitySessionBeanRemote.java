@@ -4,7 +4,7 @@
  */
 package ejb.session.stateless;
 
-import entity.Guest;
+import entity.Account;
 import javax.ejb.Remote;
 import javax.validation.ConstraintViolationException;
 
@@ -13,12 +13,12 @@ import javax.validation.ConstraintViolationException;
  * @author clara
  */
 @Remote
-public interface GuestEntitySessionBeanRemote {
+public interface AccountEntitySessionBeanRemote {
     
-    public Guest createGuest(Guest newGuest) throws ConstraintViolationException;
+    public Account createGuest(Account newGuest) throws ConstraintViolationException;
 
-    public Guest logIn(String email, String password);
+    public Account logIn(String email, String password);
     
-    public Guest findGuestById(long id);
+    public Account findGuestById(long id);
     
 }

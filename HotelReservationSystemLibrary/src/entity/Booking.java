@@ -45,7 +45,7 @@ public class Booking implements Serializable {
     
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Guest guest;
+    private Account guest;
     
     @NotNull(message = "CheckedIn cannot be null")
     @Column(nullable = false)
@@ -54,7 +54,7 @@ public class Booking implements Serializable {
     public Booking() {
     }
 
-    public Booking(LocalDate startDate, LocalDate endDate, RoomType roomType, Guest guest) {
+    public Booking(LocalDate startDate, LocalDate endDate, RoomType roomType, Account guest) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.roomType = roomType;
@@ -101,11 +101,11 @@ public class Booking implements Serializable {
         this.allocatedRoom = allocatedRoom;
     }
 
-    public Guest getGuest() {
+    public Account getGuest() {
         return guest;
     }
 
-    public void setGuest(Guest guest) {
+    public void setGuest(Account guest) {
         this.guest = guest;
     }
     

@@ -6,9 +6,8 @@ package hotelreservationsystemmanagementclient;
 
 import ejb.session.singleton.AvailabilitySessionBeanRemote;
 import ejb.session.stateless.BookingEntitySessionBeanRemote;
-import ejb.session.stateless.GuestEntitySessionBeanRemote;
 import entity.Booking;
-import entity.Guest;
+import entity.Account;
 import entity.RoomType;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ import javafx.util.Pair;
 import util.exception.BookingAlreadyCheckedInException;
 import util.exception.BookingNoAllocatedRoomException;
 import util.exception.EntityMissingException;
+import ejb.session.stateless.AccountEntitySessionBeanRemote;
 
 /**
  *
@@ -28,14 +28,14 @@ public class FrontOfficeModule {
 
     private AvailabilitySessionBeanRemote availabilitySessionBeanRemote;
     private BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote;
-    private GuestEntitySessionBeanRemote guestEntitySessionBeanRemote;
+    private AccountEntitySessionBeanRemote accountEntitySessionBeanRemote;
 
     public FrontOfficeModule(AvailabilitySessionBeanRemote availabilitySessionBeanRemote,
                              BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote,
-                             GuestEntitySessionBeanRemote guestEntitySessionBeanRemote) {
+                             AccountEntitySessionBeanRemote guestEntitySessionBeanRemote) {
         this.availabilitySessionBeanRemote = availabilitySessionBeanRemote;
         this.bookingEntitySessionBeanRemote = bookingEntitySessionBeanRemote;
-        this.guestEntitySessionBeanRemote = guestEntitySessionBeanRemote;
+        this.accountEntitySessionBeanRemote = guestEntitySessionBeanRemote;
     }
 
     public void frontOfficeMenu(Scanner scanner) {
@@ -83,7 +83,7 @@ public class FrontOfficeModule {
 
         System.out.print("Enter guestId (or 0 to cancel): ");
         long guestId = scanner.nextLong();
-        Guest guest = guestEntitySessionBeanRemote.findGuestById(guestId);
+        Account guest = accountEntitySessionBeanRemote.findGuestById(guestId);
 
         // Fetch all active bookings for the guest that have not been checked in
         List<Booking> activeBookings = bookingEntitySessionBeanRemote.retrieveActiveBookingsForCheckIn(guestId);
@@ -135,7 +135,7 @@ public class FrontOfficeModule {
 
         System.out.print("Enter guestId (or 0 to cancel): ");
         long guestId = scanner.nextLong();
-        Guest guest = guestEntitySessionBeanRemote.findGuestById(guestId);
+        Account guest = accountEntitySessionBeanRemote.findGuestById(guestId);
 
         // Fetch all checked-in bookings for the guest
         List<Booking> checkedInBookings = bookingEntitySessionBeanRemote.retrieveCheckedInBookings(guestId);

@@ -5,7 +5,7 @@
 package ejb.session.stateless;
 
 import entity.Booking;
-import entity.Guest;
+import entity.Account;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -17,20 +17,20 @@ import javax.validation.ConstraintViolationException;
  * @author clara
  */
 @Stateless
-public class GuestEntitySessionBean implements GuestEntitySessionBeanRemote, GuestEntitySessionBeanLocal {
+public class AccountEntitySessionBean implements AccountEntitySessionBeanRemote, AccountEntitySessionBeanLocal {
 
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
     
     @Override
-    public Guest createGuest(Guest newGuest) throws ConstraintViolationException {
+    public Account createGuest(Account newGuest) throws ConstraintViolationException {
         em.persist(newGuest);
         return newGuest;
     }
     
     @Override
-    public Guest logIn(String email, String password) {
-        Guest guest = em.createQuery("SELECT g FROM Guest g WHERE g.email = :email", Guest.class)
+    public Account logIn(String email, String password) {
+        Account guest = em.createQuery("SELECT g FROM Guest g WHERE g.email = :email", Account.class)
                 .setParameter("email", email)
                 .getSingleResult();
         
@@ -42,7 +42,7 @@ public class GuestEntitySessionBean implements GuestEntitySessionBeanRemote, Gue
     }
     
     @Override
-    public Guest findGuestById(long id) {
-        return em.find(Guest.class, id);
+    public Account findGuestById(long id) {
+        return em.find(Account.class, id);
     }
 }

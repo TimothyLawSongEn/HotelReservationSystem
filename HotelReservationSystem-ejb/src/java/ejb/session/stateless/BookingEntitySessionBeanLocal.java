@@ -5,7 +5,7 @@
 package ejb.session.stateless;
 
 import entity.Booking;
-import entity.Guest;
+import entity.Account;
 import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.Local;
@@ -20,7 +20,7 @@ public interface BookingEntitySessionBeanLocal {
 
     public List<Booking> getAllBookings();
 
-    public List<Booking> getBookingByGuest(Guest guest);
+    public List<Booking> getBookingByGuest(Account guest);
 
     public Booking getBookingById(Long id);
 

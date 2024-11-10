@@ -5,7 +5,7 @@
 package ejb.session.stateless;
 
 import entity.Booking;
-import entity.Guest;
+import entity.Account;
 import java.time.LocalDate;
 import java.util.List;
 import javafx.util.Pair;
@@ -25,7 +25,7 @@ public interface BookingEntitySessionBeanRemote {
 
     public List<Booking> allocateRoomToBookings(LocalDate date);
     
-    public List<Booking> getBookingByGuest(Guest guest);
+    public List<Booking> getBookingByGuest(Account guest);
     
     public Booking getBookingById(Long id);
 

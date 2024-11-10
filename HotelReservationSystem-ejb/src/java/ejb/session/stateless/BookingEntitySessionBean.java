@@ -6,7 +6,7 @@ package ejb.session.stateless;
 
 import ejb.session.singleton.AvailabilitySessionBeanLocal;
 import entity.Booking;
-import entity.Guest;
+import entity.Account;
 import entity.Room;
 import entity.RoomType;
 import java.time.LocalDate;
@@ -39,7 +39,7 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
     @EJB
     RoomEntitySessionBeanLocal roomEntitySessionBeanLocal;
     @EJB
-    GuestEntitySessionBeanLocal guestEntitySessionBeanLocal;
+    AccountEntitySessionBeanLocal guestEntitySessionBeanLocal;
     
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
@@ -70,7 +70,7 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
     }
 
     private Booking createBooking(LocalDate startDate, LocalDate endDate, long roomTypeId, long guestId) throws Exception {
-        Guest guest = guestEntitySessionBeanLocal.findGuestById(guestId);
+        Account guest = guestEntitySessionBeanLocal.findGuestById(guestId);
         if (guest == null) {
             throw new Exception("Guest not found.");
         }
@@ -91,7 +91,7 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
 //        return newBooking;
 //    }
 
-    public List<Booking> getBookingByGuest(Guest guest) {
+    public List<Booking> getBookingByGuest(Account guest) {
         return em.createQuery("SELECT b FROM Booking b WHERE b.guest = :guest", Booking.class)
                 .setParameter("guest", guest)
                 .getResultList();
