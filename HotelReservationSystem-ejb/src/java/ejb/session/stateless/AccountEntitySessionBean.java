@@ -29,9 +29,9 @@ public class AccountEntitySessionBean implements AccountEntitySessionBeanRemote,
     }
     
     @Override
-    public Account logIn(String email, String password) {
-        Account guest = em.createQuery("SELECT g FROM Guest g WHERE g.email = :email", Account.class)
-                .setParameter("email", email)
+    public Account logIn(String username, String password) {
+        Account guest = em.createQuery("SELECT a FROM Account a WHERE a.username = :username", Account.class)
+                .setParameter("username", username)
                 .getSingleResult();
         
         if (guest != null && guest.getPassword().equals(password)) {

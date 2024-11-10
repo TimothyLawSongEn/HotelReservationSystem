@@ -27,9 +27,9 @@ public class Account implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotNull(message = "Email cannot be null")
+    @NotNull(message = "Username cannot be null")
     @Column(nullable = false, unique = true)
-    private String email;
+    private String username;
     
     @NotNull(message = "Password cannot be null")
     @Column(nullable = false)
@@ -42,7 +42,7 @@ public class Account implements Serializable {
     }
 
     public Account(String email, String password) {
-        this.email = email;
+        this.username = email;
         this.password = password;
 //        this.bookings = new ArrayList<>();
     }
@@ -55,8 +55,8 @@ public class Account implements Serializable {
 //        this.id = id;
 //    }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
     public String getPassword() {
@@ -86,6 +86,11 @@ public class Account implements Serializable {
     @Override
     public String toString() {
         return "entity.Guest[ id=" + id + " ]";
+    }
+    
+    public enum AccountType {
+        GUEST,
+        PARTNER,
     }
     
 }

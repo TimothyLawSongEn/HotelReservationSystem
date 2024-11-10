@@ -17,7 +17,7 @@ public interface AccountEntitySessionBeanRemote {
     
     public Account createGuest(Account newGuest) throws ConstraintViolationException;
 
-    public Account logIn(String email, String password);
+    public Account logIn(String username, String password);
     
     public Account findGuestById(long id);
     

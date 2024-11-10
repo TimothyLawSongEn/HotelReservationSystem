@@ -69,13 +69,13 @@ public class MainApp {
     
     public void guestLogIn(Scanner scanner) {
         try {
-            System.out.print("Enter Email Address: ");
-            String email = scanner.nextLine();
+            System.out.print("Enter Username: ");
+            String username = scanner.nextLine();
 
             System.out.print("Enter Password: ");
             String password = scanner.nextLine();
 
-            Account guest = accountEntitySessionBeanRemote.logIn(email, password);
+            Account guest = accountEntitySessionBeanRemote.logIn(username, password);
 
             if (guest != null) {
                 guestMainMenu(scanner, guest);
@@ -89,13 +89,13 @@ public class MainApp {
         try {
             System.out.println("\n --- Registering As Guest ---");
         
-            System.out.print("Enter Email Address: ");
-            String email = scanner.nextLine();
+            System.out.print("Enter Username: ");
+            String username = scanner.nextLine();
 
             System.out.print("Create Password: ");
             String password = scanner.nextLine();
 
-            Account newGuest = new Account(email, password);
+            Account newGuest = new Account(username, password);
             Account persistedGuest = accountEntitySessionBeanRemote.createGuest(newGuest);
 
             System.out.println("Guest Account Successfully Created: " + persistedGuest);
@@ -180,8 +180,6 @@ public class MainApp {
             Booking persistedBooking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, roomTypeId, guest.getId());
 
             System.out.println("Reservation successfully created " + persistedBooking);
-            
-            //TODO: Add room assignment logic for same date bookings made after 2am
             
         } catch (Exception e) {
             System.out.println("Failed to create new reservation");
