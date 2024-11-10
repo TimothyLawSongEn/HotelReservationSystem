@@ -15,7 +15,7 @@ import javax.ejb.Local;
 @Local
 public interface RoomRateEntitySessionBeanLocal {
     
-    public void createRoomRate(RoomRate roomRate);
+    public void persistRoomRate(RoomRate roomRate);
 
     public RoomRate updateRoomRate(RoomRate roomRate);
 

@@ -136,8 +136,8 @@ public class RoomType implements Serializable {
         return rates;
     }
 
-    public void setRates(List<RoomRate> rates) {
-        this.rates = rates;
+    public void addRates(RoomRate rate) {
+        this.rates.add(rate);
     }
     
     public RoomType getNextHigherRoomType() {

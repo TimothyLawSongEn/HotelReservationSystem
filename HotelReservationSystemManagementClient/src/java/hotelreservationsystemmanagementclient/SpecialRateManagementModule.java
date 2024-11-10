@@ -182,7 +182,7 @@ public class SpecialRateManagementModule {
 
             // Create room rate object and persist
             RoomRate newRoomRate = new RoomRate(newRateName, amount, startDate, endDate, rateType, selectedRoomType);
-            roomRateEntitySessionBeanRemote.createRoomRate(newRoomRate);
+            roomRateEntitySessionBeanRemote.persistRoomRate(newRoomRate);
 
             System.out.println("Room Rate created successfully.");
         } catch (Exception e) {

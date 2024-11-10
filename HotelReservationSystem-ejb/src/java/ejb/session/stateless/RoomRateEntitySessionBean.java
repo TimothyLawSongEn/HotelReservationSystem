@@ -25,7 +25,7 @@ public class RoomRateEntitySessionBean implements RoomRateEntitySessionBeanRemot
 
     // Create a new RoomRate
     @Override
-    public void createRoomRate(RoomRate roomRate) {
+    public void persistRoomRate(RoomRate roomRate) {
         em.persist(roomRate);
     }
 

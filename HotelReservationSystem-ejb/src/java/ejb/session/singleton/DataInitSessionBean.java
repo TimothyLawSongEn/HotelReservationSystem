@@ -70,16 +70,19 @@ public class DataInitSessionBean {
         RoomRate standardRoomPromoRate = new RoomRate("s promo", 150.0, LocalDate.of(2024, 12, 1), LocalDate.of(2024, 12, 31), SpecialRateType.PROMO, standardRoomType);
         RoomRate standardRoomPeakRate = new RoomRate("s peak", 250.0, LocalDate.of(2024, 7, 1), LocalDate.of(2024, 8, 31), SpecialRateType.PEAK, standardRoomType);
         // Persist RoomRates using the session bean
-        roomRateEntitySessionBeanLocal.createRoomRate(standardRoomPromoRate);
-        roomRateEntitySessionBeanLocal.createRoomRate(standardRoomPeakRate);
-
+        roomRateEntitySessionBeanLocal.persistRoomRate(standardRoomPromoRate);
+        roomRateEntitySessionBeanLocal.persistRoomRate(standardRoomPeakRate);
+        standardRoomType.addRates(standardRoomPromoRate);
+        standardRoomType.addRates(standardRoomPeakRate);
+        
         // Create RoomRate objects for the Deluxe Room Type
         RoomRate deluxeRoomPromoRate = new RoomRate("d promo", 300.0, LocalDate.of(2024, 12, 1), LocalDate.of(2024, 12, 31), SpecialRateType.PROMO, deluxeRoomType);
         RoomRate deluxeRoomPeakRate = new RoomRate("d peak", 400.0, LocalDate.of(2024, 7, 1), LocalDate.of(2024, 8, 31), SpecialRateType.PEAK, deluxeRoomType);
-
         // Persist RoomRates using the session bean
-        roomRateEntitySessionBeanLocal.createRoomRate(deluxeRoomPromoRate);
-        roomRateEntitySessionBeanLocal.createRoomRate(deluxeRoomPeakRate);
+        roomRateEntitySessionBeanLocal.persistRoomRate(deluxeRoomPromoRate);
+        roomRateEntitySessionBeanLocal.persistRoomRate(deluxeRoomPeakRate);
+        deluxeRoomType.addRates(deluxeRoomPromoRate);
+        deluxeRoomType.addRates(deluxeRoomPeakRate);
 
         // Create some Room objects linked to RoomTypes
         Room room101 = new Room("0101", standardRoomType);

@@ -15,7 +15,7 @@ import javax.ejb.Remote;
 @Remote
 public interface RoomRateEntitySessionBeanRemote {
 
-    public void createRoomRate(RoomRate roomRate);
+    public void persistRoomRate(RoomRate roomRate);
 
     public RoomRate updateRoomRate(RoomRate roomRate);
 
