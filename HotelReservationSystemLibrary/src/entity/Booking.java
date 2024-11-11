@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,27 +30,27 @@ public class Booking implements Serializable {
     
     @NotNull(message = "StartDate cannot be null")
     @Column(nullable = false)
-    private LocalDate startDate; // todo: localdate vs date???
+    private LocalDate startDate; // todo: localdate vs date??? //NOVALUEINXML
     @NotNull(message = "EndDate cannot be null")
     @Column(nullable = false)
-    private LocalDate endDate;
+    private LocalDate endDate; //NOVALUEINXML
  
     @NotNull(message = "RoomType cannot be null")
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private RoomType roomType;
+    private RoomType roomType; //GOTVALUEINXML
 
     @ManyToOne
-    @JoinColumn()
+    @JoinColumn
     private Room allocatedRoom; // can be null, until alloc() is called
     
-    @ManyToOne
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
-    private Guest guest;
+    private Guest guest; //NOVALUEINXML
     
     @NotNull(message = "CheckedIn cannot be null")
     @Column(nullable = false)
-    private Boolean checkedIn = false;
+    private Boolean checkedIn = false; //GOTVALUEINXML
 
     public Booking() {
     }
