@@ -7,11 +7,11 @@ package hotelreservationsystemmanagementclient;
 import ejb.session.singleton.AvailabilitySessionBeanRemote;
 import ejb.session.stateless.BookingEntitySessionBeanRemote;
 import ejb.session.stateless.EmployeeEntitySessionBeanRemote;
-import ejb.session.stateless.GuestEntitySessionBeanRemote;
 import ejb.session.stateless.RoomEntitySessionBeanRemote;
 import ejb.session.stateless.RoomRateEntitySessionBeanRemote;
 import ejb.session.stateless.RoomTypeEntitySessionBeanRemote;
 import javax.ejb.EJB;
+import ejb.session.stateless.AccountEntitySessionBeanRemote;
 
 /**
  *
@@ -26,20 +26,20 @@ public class Main {
     @EJB
     private static RoomRateEntitySessionBeanRemote roomRateEntitySessionBeanRemote;
     @EJB
-    private static EmployeeEntitySessionBeanRemote employeeEntitySessionBean;
+    private static EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote;
     @EJB
     private static AvailabilitySessionBeanRemote availabilitySessionBeanRemote;
     @EJB
     private static BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote;
     @EJB
-    private static GuestEntitySessionBeanRemote guestEntitySessionBeanRemote;
+    private static AccountEntitySessionBeanRemote accountEntitySessionBeanRemote;
     
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args)
     {
-        MainApp mainApp = new MainApp(roomEntitySessionBeanRemote, roomTypeEntitySessionBeanRemote, roomRateEntitySessionBeanRemote, employeeEntitySessionBean, availabilitySessionBeanRemote, bookingEntitySessionBeanRemote, guestEntitySessionBeanRemote);
+        MainApp mainApp = new MainApp(roomEntitySessionBeanRemote, roomTypeEntitySessionBeanRemote, roomRateEntitySessionBeanRemote, employeeEntitySessionBeanRemote, availabilitySessionBeanRemote, bookingEntitySessionBeanRemote, accountEntitySessionBeanRemote);
 //        mainApp.timothyStart();
         mainApp.start();
     }

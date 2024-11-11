@@ -4,7 +4,8 @@
  */
 package ejb.session.stateless;
 
-import entity.Guest;
+import entity.Account;
+import java.util.List;
 import javax.ejb.Local;
 import javax.validation.ConstraintViolationException;
 
@@ -13,12 +14,14 @@ import javax.validation.ConstraintViolationException;
  * @author clara
  */
 @Local
-public interface GuestEntitySessionBeanLocal {
+public interface AccountEntitySessionBeanLocal {
 
-    public Guest createGuest(Guest newGuest) throws ConstraintViolationException;
+    public Account createAccount(Account account) throws ConstraintViolationException;
 
-    public Guest logIn(String email, String password);
+    public Account logIn(String username, String password);
     
-    public Guest findGuestById(long id);
+    public Account findGuestById(long id);
+
+    public List<Account> getAllPartnerAccounts();
     
 }

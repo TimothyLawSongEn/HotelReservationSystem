@@ -6,29 +6,29 @@ package hotelreservationsystemreservationclient;
 
 import ejb.session.singleton.AvailabilitySessionBeanRemote;
 import ejb.session.stateless.BookingEntitySessionBeanRemote;
-import ejb.session.stateless.GuestEntitySessionBeanRemote;
 import entity.Booking;
-import entity.Guest;
+import entity.Account;
 import entity.RoomType;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 import javafx.util.Pair;
+import ejb.session.stateless.AccountEntitySessionBeanRemote;
 
 /**
  *
  * @author clara
  */
 public class MainApp {
-    private GuestEntitySessionBeanRemote guestEntitySessionBeanRemote;
+    private AccountEntitySessionBeanRemote accountEntitySessionBeanRemote;
     private BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote;
     private AvailabilitySessionBeanRemote availabilitySessionBeanRemote;
 
     public MainApp() {
     }
 
-    public MainApp(GuestEntitySessionBeanRemote guestEntitySessionBean, BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote, AvailabilitySessionBeanRemote availabilitySessionBeanRemote) {
-        this.guestEntitySessionBeanRemote = guestEntitySessionBean;
+    public MainApp(AccountEntitySessionBeanRemote guestEntitySessionBean, BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote, AvailabilitySessionBeanRemote availabilitySessionBeanRemote) {
+        this.accountEntitySessionBeanRemote = guestEntitySessionBean;
         this.bookingEntitySessionBeanRemote = bookingEntitySessionBeanRemote;
         this.availabilitySessionBeanRemote = availabilitySessionBeanRemote;
     }
@@ -69,13 +69,13 @@ public class MainApp {
     
     public void guestLogIn(Scanner scanner) {
         try {
-            System.out.print("Enter Email Address: ");
-            String email = scanner.nextLine();
+            System.out.print("Enter Username: ");
+            String username = scanner.nextLine();
 
             System.out.print("Enter Password: ");
             String password = scanner.nextLine();
 
-            Guest guest = guestEntitySessionBeanRemote.logIn(email, password);
+            Account guest = accountEntitySessionBeanRemote.logIn(username, password);
 
             if (guest != null) {
                 guestMainMenu(scanner, guest);
@@ -89,14 +89,17 @@ public class MainApp {
         try {
             System.out.println("\n --- Registering As Guest ---");
         
+            System.out.print("Enter Username: ");
+            String username = scanner.nextLine();
+            
             System.out.print("Enter Email Address: ");
             String email = scanner.nextLine();
 
             System.out.print("Create Password: ");
             String password = scanner.nextLine();
 
-            Guest newGuest = new Guest(email, password);
-            Guest persistedGuest = guestEntitySessionBeanRemote.createGuest(newGuest);
+            Account newGuest = new Account(username, email, password);
+            Account persistedGuest = accountEntitySessionBeanRemote.createAccount(newGuest);
 
             System.out.println("Guest Account Successfully Created: " + persistedGuest);
         } catch (Exception e) {
@@ -104,7 +107,7 @@ public class MainApp {
         }   
     }
     
-    public void guestMainMenu(Scanner scanner, Guest guest) {
+    public void guestMainMenu(Scanner scanner, Account guest) {
         boolean loggedIn = true;
         
         while (loggedIn) {
@@ -136,7 +139,7 @@ public class MainApp {
         }
     }
     
-    public void searchRooms(Scanner scanner, Guest guest) {
+    public void searchRooms(Scanner scanner, Account guest) {
         try {
             System.out.println("\n--- Search Rooms ---");
             System.out.print("Enter Booking Start Date (YYYY-MM-DD): ");
@@ -170,7 +173,7 @@ public class MainApp {
         }
     }
     
-    public void createReservation(Scanner scanner, LocalDate startDate, LocalDate endDate, Guest guest) {
+    public void createReservation(Scanner scanner, LocalDate startDate, LocalDate endDate, Account guest) {
         System.out.println("\n--- Create Reservation ---");
         
         try {
@@ -181,14 +184,12 @@ public class MainApp {
 
             System.out.println("Reservation successfully created " + persistedBooking);
             
-            //TODO: Add room assignment logic for same date bookings made after 2am
-            
         } catch (Exception e) {
             System.out.println("Failed to create new reservation");
         }
     }
     
-    public void viewReservationDetails(Scanner scanner, Guest guest) {
+    public void viewReservationDetails(Scanner scanner, Account guest) {
         System.out.println("\n--- View Reservation Details ---");
         
         System.out.print("Enter Reservation ID: ");
@@ -200,7 +201,7 @@ public class MainApp {
         System.out.println(booking);
     }
     
-    public void viewAllReservations(Scanner scanner, Guest guest) {
+    public void viewAllReservations(Scanner scanner, Account guest) {
         System.out.println("\n--- View All Reservations ---");
         
         List<Booking> bookings = bookingEntitySessionBeanRemote.getBookingByGuest(guest);

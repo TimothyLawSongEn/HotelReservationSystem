@@ -4,7 +4,9 @@
  */
 package hotelreservationsystemmanagementclient;
 
+import ejb.session.stateless.AccountEntitySessionBeanRemote;
 import ejb.session.stateless.EmployeeEntitySessionBeanRemote;
+import entity.Account;
 import entity.Employee;
 import java.util.List;
 import java.util.Scanner;
@@ -15,9 +17,11 @@ import java.util.Scanner;
  */
 public class EmployeePartnerManagementModule {
     private EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote;
+    private AccountEntitySessionBeanRemote accountEntitySessionBeanRemote;
     
-    public EmployeePartnerManagementModule(EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote) {
+    public EmployeePartnerManagementModule(EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote, AccountEntitySessionBeanRemote accountEntitySessionBeanRemote) {
         this.employeeEntitySessionBeanRemote = employeeEntitySessionBeanRemote;
+        this.accountEntitySessionBeanRemote = accountEntitySessionBeanRemote;
     }
     
     void manageEmployeesAndPartners(Scanner scanner) {
@@ -39,6 +43,12 @@ public class EmployeePartnerManagementModule {
                     break;
                 case 2:
                     viewAllEmployees();
+                    break;
+                case 3:
+                    createNewPartner(scanner);
+                    break;
+                case 4:
+                    viewAllPartners();
                     break;
                 case 0:
                     return;
@@ -99,6 +109,37 @@ public class EmployeePartnerManagementModule {
             
         } catch (Exception e) {
             System.out.println("An error occurred while fetching employees: " + e.getMessage());
+        }
+    }
+    
+    // Create New Partner
+    private void createNewPartner(Scanner scanner) {
+        System.out.println("\n--- Creating New Partner ---");
+        
+        System.out.print("Enter Partner Username: ");
+        String username = scanner.nextLine();
+        
+        System.out.print("Enter Partner Password: ");
+        String password = scanner.nextLine();
+        
+        try {
+            Account partner = new Account(username, password);
+            Account persistedPartner = accountEntitySessionBeanRemote.createAccount(partner);
+            
+            System.out.println("Partner account successfully created with Id: " + persistedPartner.getId());
+        } catch (Exception e) {
+            System.out.println("Unable to create partner. Try again");
+        }
+        
+    }
+    
+    // View all partners
+    private void viewAllPartners() {
+        List<Account> accounts = accountEntitySessionBeanRemote.getAllPartnerAccounts();
+        
+        System.out.println("\nAll partner accounts are listed below");
+        for (Account a: accounts) {
+            System.out.println(a);
         }
     }
 }

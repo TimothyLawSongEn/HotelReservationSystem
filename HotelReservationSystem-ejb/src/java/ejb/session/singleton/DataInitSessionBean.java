@@ -5,13 +5,12 @@
 package ejb.session.singleton;
 
 import ejb.session.stateless.EmployeeEntitySessionBeanLocal;
-import ejb.session.stateless.GuestEntitySessionBeanLocal;
 import ejb.session.stateless.RoomEntitySessionBeanLocal;
 import ejb.session.stateless.RoomRateEntitySessionBeanLocal;
 import ejb.session.stateless.RoomTypeEntitySessionBeanLocal;
 import entity.Employee;
 import entity.Employee.EmployeeType;
-import entity.Guest;
+import entity.Account;
 import entity.Room;
 import entity.RoomType;
 import entity.RoomRate;
@@ -23,6 +22,7 @@ import javax.ejb.Startup;
 import java.time.LocalDate;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
+import ejb.session.stateless.AccountEntitySessionBeanLocal;
 
 /**
  *
@@ -54,7 +54,7 @@ public class DataInitSessionBean {
     private AvailabilitySessionBeanLocal availabilitySessionBeanLocal;
     
     @EJB
-    private GuestEntitySessionBeanLocal guestEntitySessionBeanLocal;
+    private AccountEntitySessionBeanLocal accountEntitySessionBeanLocal;
 
     @PostConstruct  // Runs automatically after the bean is created
     public void initializeData() {
@@ -112,7 +112,10 @@ public class DataInitSessionBean {
         
         availabilitySessionBeanLocal.loadRoomTypesAndBookings(); // call after roomtypes and bookings created
         
-        Guest guest1 = new Guest("tommy@gmail.com", "password");
-        guestEntitySessionBeanLocal.createGuest(guest1);
+        Account guest1 = new Account("tommy", "tommy@gmail.com", "password");
+        accountEntitySessionBeanLocal.createAccount(guest1);
+        
+        Account partner = new Account("partner1", "password");
+        accountEntitySessionBeanLocal.createAccount(partner);
     }
 }

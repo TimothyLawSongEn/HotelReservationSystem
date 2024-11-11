@@ -6,9 +6,9 @@ package hotelreservationsystemreservationclient;
 
 import ejb.session.singleton.AvailabilitySessionBeanRemote;
 import ejb.session.stateless.BookingEntitySessionBeanRemote;
-import ejb.session.stateless.GuestEntitySessionBeanRemote;
 import ejb.session.stateless.RoomTypeEntitySessionBeanRemote;
 import javax.ejb.EJB;
+import ejb.session.stateless.AccountEntitySessionBeanRemote;
 
 /**
  *
@@ -17,14 +17,14 @@ import javax.ejb.EJB;
 public class Main {
 
     @EJB
-    private static GuestEntitySessionBeanRemote guestEntitySessionBeanRemote;
+    private static AccountEntitySessionBeanRemote accountEntitySessionBeanRemote;
     @EJB
     private static BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote;
     @EJB
     private static AvailabilitySessionBeanRemote availabilitySessionBeanRemote;
     
     public static void main(String[] args) {
-        MainApp mainApp = new MainApp(guestEntitySessionBeanRemote, bookingEntitySessionBeanRemote, availabilitySessionBeanRemote);
+        MainApp mainApp = new MainApp(accountEntitySessionBeanRemote, bookingEntitySessionBeanRemote, availabilitySessionBeanRemote);
         mainApp.start();
     }    
 }

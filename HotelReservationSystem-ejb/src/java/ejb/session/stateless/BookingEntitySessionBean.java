@@ -6,7 +6,7 @@ package ejb.session.stateless;
 
 import ejb.session.singleton.AvailabilitySessionBeanLocal;
 import entity.Booking;
-import entity.Guest;
+import entity.Account;
 import entity.Room;
 import entity.RoomType;
 import java.time.LocalDate;
@@ -39,7 +39,7 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
     @EJB
     RoomEntitySessionBeanLocal roomEntitySessionBeanLocal;
     @EJB
-    GuestEntitySessionBeanLocal guestEntitySessionBeanLocal;
+    AccountEntitySessionBeanLocal guestEntitySessionBeanLocal;
     
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
@@ -49,7 +49,7 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
     
     // TODO: set rollback with child createBooking method
     @Override
-    public Booking reserveRoomType(LocalDate startDate, LocalDate endDate, long roomTypeId, long guestId) throws Exception {
+    public Booking reserveRoomType(LocalDate startDate, LocalDate endDate, long roomTypeId, long accountId) throws Exception {
         // Increment booked count for the given room type and dates
         try {
             availabilitySessionBeanLocal.incrementBookedCount(startDate, endDate, roomTypeId);
@@ -58,7 +58,7 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
         }
 
         // Create and persist the new booking
-        Booking booking = createBooking(startDate, endDate, roomTypeId, guestId);
+        Booking booking = createBooking(startDate, endDate, roomTypeId, accountId);
         
         // if same day after 2am, allocate room immediately!!
         LocalDate today = LocalDate.now(); LocalTime currentTime = LocalTime.now();
@@ -69,9 +69,9 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
         return booking;
     }
 
-    private Booking createBooking(LocalDate startDate, LocalDate endDate, long roomTypeId, long guestId) throws Exception {
-        Guest guest = guestEntitySessionBeanLocal.findGuestById(guestId);
-        if (guest == null) {
+    private Booking createBooking(LocalDate startDate, LocalDate endDate, long roomTypeId, long accountId) throws Exception {
+        Account account = guestEntitySessionBeanLocal.findGuestById(accountId);
+        if (account == null) {
             throw new Exception("Guest not found.");
         }
 
@@ -80,7 +80,7 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
             throw new Exception("Room type not found.");
         }
 
-        Booking newBooking = new Booking(startDate, endDate, roomType, guest);
+        Booking newBooking = new Booking(startDate, endDate, roomType, account);
         em.persist(newBooking);
         return newBooking;
     }
@@ -91,9 +91,9 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
 //        return newBooking;
 //    }
 
-    public List<Booking> getBookingByGuest(Guest guest) {
-        return em.createQuery("SELECT b FROM Booking b WHERE b.guest = :guest", Booking.class)
-                .setParameter("guest", guest)
+    public List<Booking> getBookingByGuest(Account account) {
+        return em.createQuery("SELECT b FROM Booking b WHERE b.account = :account", Booking.class)
+                .setParameter("account", account)
                 .getResultList();
     }
     
@@ -291,27 +291,27 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
     }
     
     @Override
-    public List<Booking> retrieveActiveBookingsForCheckIn(Long guestId) {
+    public List<Booking> retrieveActiveBookingsForCheckIn(Long accountId) {
         LocalDate today = LocalDate.now();
         return em.createQuery(
-            "SELECT b FROM Booking b WHERE b.guest.id = :guestId AND b.checkedIn = false " +
+            "SELECT b FROM Booking b WHERE b.account.id = :accountId AND b.checkedIn = false " +
             "AND b.startDate <= :today AND :today < b.endDate",
             Booking.class
         )
-        .setParameter("guestId", guestId)
+        .setParameter("accountId", accountId)
         .setParameter("today", today)
         .getResultList();
     }
 
     @Override
-    public List<Booking> retrieveCheckedInBookings(Long guestId) {
+    public List<Booking> retrieveCheckedInBookings(Long accountId) {
         LocalDate today = LocalDate.now();
         return em.createQuery(
-            "SELECT b FROM Booking b WHERE b.guest.id = :guestId AND b.checkedIn = true " +
+            "SELECT b FROM Booking b WHERE b.account.id = :accountId AND b.checkedIn = true " +
             "AND b.startDate <= :today AND :today <= b.endDate",
             Booking.class
         )
-        .setParameter("guestId", guestId)
+        .setParameter("accountId", accountId)
         .setParameter("today", today)
         .getResultList();
     }

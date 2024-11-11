@@ -46,7 +46,7 @@ public class Booking implements Serializable {
     
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
-    private Guest guest; //NOVALUEINXML
+    private Account account;
     
     @NotNull(message = "CheckedIn cannot be null")
     @Column(nullable = false)
@@ -55,11 +55,11 @@ public class Booking implements Serializable {
     public Booking() {
     }
 
-    public Booking(LocalDate startDate, LocalDate endDate, RoomType roomType, Guest guest) {
+    public Booking(LocalDate startDate, LocalDate endDate, RoomType roomType, Account account) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.roomType = roomType;
-        this.guest = guest;
+        this.account = account;
     }
 
     public Long getId() {
@@ -102,12 +102,12 @@ public class Booking implements Serializable {
         this.allocatedRoom = allocatedRoom;
     }
 
-    public Guest getGuest() {
-        return guest;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setGuest(Guest guest) {
-        this.guest = guest;
+    public void setAccount(Account account) {
+        this.account = account;
     }
     
     public boolean isCheckedIn() {
@@ -146,7 +146,7 @@ public class Booking implements Serializable {
                 ", endDate=" + endDate +
                 ", roomType=" + (roomType != null ? roomType.getName() : "null") +
                 ", allocatedRoom=" + (allocatedRoom != null ? allocatedRoom.getRoomNumber() : "null") +
-                ", guest=" + (guest != null ? guest.getId() : "null") +
+                ", account=" + (account != null ? account.getId() : "null") +
                 '}';
     }
 
