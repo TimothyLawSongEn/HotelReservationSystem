@@ -9,6 +9,9 @@ import ejb.session.stateless.BookingEntitySessionBeanLocal;
 import entity.Booking;
 import entity.RoomType;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javafx.util.Pair;
 import javax.ejb.EJB;
@@ -53,8 +56,45 @@ public class HotelReservationSystemWebService {
         LocalDate endDate = LocalDate.parse(endDateStr);
 
         // todo: break nextHigherRoomType, roomtype roomrate field can set to null (xmltransient)
-        return availabilitySessionBeanLocal.getAvailableRoomTypesWithCount(startDate, endDate);
+        List<Pair<RoomType, Integer>> roomtypes = availabilitySessionBeanLocal.getAvailableRoomTypesWithCount(startDate, endDate);
+        return roomtypes;
     }
+    
+    @WebMethod(operationName = "getListOfPair")
+    public List<Pair<Integer, Integer>> getListOfPair() {
+        List<Pair<Integer, Integer>> list = new ArrayList<>();
+        list.add(new Pair<>(1,1));
+        list.add(new Pair<>(2,2));
+        return list;
+    }
+    
+    @WebMethod(operationName = "getListOfPairRt")
+    public List<Pair<RoomType, Integer>> getListOfPairRt() {
+        List<Pair<RoomType, Integer>> list = new ArrayList<>();
+        list.add(new Pair<>(new RoomType("hi", 10.0, 10.0),1));
+        list.add(new Pair<>(new RoomType("bye", 20.0, 20.0),2));
+        return list;
+    }
+    
+    @WebMethod(operationName = "getLocalDate")
+    public LocalDate getLocalDate() {
+        return LocalDate.of(2020, 1, 8);
+    }
+    
+    @WebMethod(operationName = "getnullLocalDate")
+    public LocalDate getnullLocalDate() {
+        return null;
+    }
+    
+    @WebMethod(operationName = "getDate")
+    public Date getDate() {
+        LocalDate localDate = LocalDate.of(2025, 1, 1);
+        // Convert LocalDate to java.util.Date
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return date;
+    }
+    
+    // TODO: get Date, if works, chg all localdate to date
 
     @WebMethod(operationName = "reserveRoom")
     public Booking reserveRoom(
@@ -65,7 +105,8 @@ public class HotelReservationSystemWebService {
     ) throws Exception {
         LocalDate startDate = LocalDate.parse(startDateStr);
         LocalDate endDate = LocalDate.parse(endDateStr);
-        return bookingEntitySessionBeanLocal.reserveRoomType(startDate, endDate, roomTypeId, partnerId);
+        Booking booking = bookingEntitySessionBeanLocal.reserveRoomType(startDate, endDate, roomTypeId, partnerId);
+        return booking;
     }
 
     @WebMethod(operationName = "viewReservationDetails")
