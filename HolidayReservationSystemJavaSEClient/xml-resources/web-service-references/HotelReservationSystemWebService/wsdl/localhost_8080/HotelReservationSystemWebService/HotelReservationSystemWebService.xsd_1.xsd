@@ -2,6 +2,26 @@
 
 <xs:element name="Exception" type="tns:Exception"/>
 
+<xs:element name="getDate" type="tns:getDate"/>
+
+<xs:element name="getDateResponse" type="tns:getDateResponse"/>
+
+<xs:element name="getListOfPair" type="tns:getListOfPair"/>
+
+<xs:element name="getListOfPairResponse" type="tns:getListOfPairResponse"/>
+
+<xs:element name="getListOfPairRt" type="tns:getListOfPairRt"/>
+
+<xs:element name="getListOfPairRtResponse" type="tns:getListOfPairRtResponse"/>
+
+<xs:element name="getLocalDate" type="tns:getLocalDate"/>
+
+<xs:element name="getLocalDateResponse" type="tns:getLocalDateResponse"/>
+
+<xs:element name="getnullLocalDate" type="tns:getnullLocalDate"/>
+
+<xs:element name="getnullLocalDateResponse" type="tns:getnullLocalDateResponse"/>
+
 <xs:element name="hello" type="tns:hello"/>
 
 <xs:element name="helloResponse" type="tns:helloResponse"/>
@@ -39,6 +59,30 @@
 <xs:sequence/>
 </xs:complexType>
 
+<xs:complexType name="getLocalDate">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="getLocalDateResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:localDate" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="localDate" final="extension restriction">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="getListOfPairRt">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="getListOfPairRtResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:pair" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="viewReservationDetails">
 <xs:sequence>
 <xs:element name="reservationId" type="xs:long"/>
@@ -53,12 +97,19 @@
 
 <xs:complexType name="booking">
 <xs:sequence>
+<xs:element name="account" type="tns:account" minOccurs="0"/>
 <xs:element name="allocatedRoom" type="tns:room" minOccurs="0"/>
 <xs:element name="checkedIn" type="xs:boolean"/>
 <xs:element name="endDate" type="tns:localDate" minOccurs="0"/>
-<xs:element name="guest" type="tns:guest" minOccurs="0"/>
 <xs:element name="roomType" type="tns:roomType" minOccurs="0"/>
 <xs:element name="startDate" type="tns:localDate" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="account">
+<xs:sequence>
+<xs:element name="accountType" type="tns:accountType" minOccurs="0"/>
+<xs:element name="email" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -79,28 +130,27 @@
 <xs:element name="nextHigherRoomType" type="tns:roomType" minOccurs="0"/>
 <xs:element name="normalRate" type="xs:double" minOccurs="0"/>
 <xs:element name="publishedRate" type="xs:double" minOccurs="0"/>
-<xs:element name="rates" type="tns:roomRate" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="roomRate">
+<xs:complexType name="getnullLocalDate">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="getnullLocalDateResponse">
 <xs:sequence>
-<xs:element name="amount" type="xs:double" minOccurs="0"/>
-<xs:element name="disabled" type="xs:boolean" minOccurs="0"/>
-<xs:element name="endDate" type="tns:localDate" minOccurs="0"/>
-<xs:element name="name" type="xs:string" minOccurs="0"/>
-<xs:element name="roomType" type="tns:roomType" minOccurs="0"/>
-<xs:element name="specialRateType" type="tns:specialRateType" minOccurs="0"/>
-<xs:element name="startDate" type="tns:localDate" minOccurs="0"/>
+<xs:element name="return" type="tns:localDate" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="localDate" final="extension restriction">
+<xs:complexType name="getDate">
 <xs:sequence/>
 </xs:complexType>
 
-<xs:complexType name="guest">
-<xs:sequence/>
+<xs:complexType name="getDateResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:dateTime" minOccurs="0"/>
+</xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="hello">
@@ -146,10 +196,20 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:simpleType name="specialRateType">
+<xs:complexType name="getListOfPair">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="getListOfPairResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:pair" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="accountType">
 <xs:restriction base="xs:string">
-<xs:enumeration value="PEAK"/>
-<xs:enumeration value="PROMO"/>
+<xs:enumeration value="GUEST"/>
+<xs:enumeration value="PARTNER"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:schema>
