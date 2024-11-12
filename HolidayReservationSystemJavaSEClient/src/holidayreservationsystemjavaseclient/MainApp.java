@@ -5,6 +5,7 @@
 package holidayreservationsystemjavaseclient;
 
 import java.util.Scanner;
+import ws.hors.Account;
 import ws.hors.HotelReservationSystemWebService_Service;
 
 /**
@@ -38,7 +39,7 @@ public class MainApp {
                     partnerLogIn(scanner);
                     break;
                 case 2:
-                    searchRooms(scanner);
+                    searchRooms(scanner, null);
                     break;
                 case 0:
                     System.out.println("Exiting application...");
@@ -55,33 +56,64 @@ public class MainApp {
             System.out.print("Enter Password: ");
             String password = scanner.nextLine();
 
-            System.out.println("kinda working");
+            // To Do: Call partner log in func
+//            Account guest = service.getHotelReservationSystemWebServicePort().logIn(username, password);
 
-//            if (guest != null) {
-//                guestMainMenu(scanner, guest);
+//            if (partner != null) {
+//                partnerMainMenu(scanner, partner);
 //            }
         } catch (Exception e) {
             System.out.println("Invalid Credentials.");
         }
     }
     
-    public void searchRooms(Scanner scanner) {
+    public void searchRooms(Scanner scanner, Account partner) {
         try {
             System.out.println("\n--- Search Rooms ---");
             System.out.print("Enter Booking Start Date (YYYY-MM-DD): ");
-//            LocalDate startDate = LocalDate.parse(scanner.nextLine());
+            String startDate = scanner.nextLine();
 
             System.out.print("Enter Booking End Date (YYYY-MM-DD): ");
-//            LocalDate endDate = LocalDate.parse(scanner.nextLine()); 
+            String endDate = scanner.nextLine(); 
             
             // Show Available Room Types Between Start and End Date
-//            List<Pair<RoomType, Integer>> rooms = availabilitySessionBeanRemote.getAvailableRoomTypesWithCount(startDate, endDate);
-
+            
+//            List<Pair<RoomType, Integer>> rooms = service.getHotelReservationSystemWebServicePort().searchRooms(startDate, endDate);
 //            for (Pair<RoomType, Integer> room:rooms) {
 //                System.out.println(room);
 //            }
+
+            if (partner != null) {
+                System.out.println("Proceed to book room?");
+                System.out.println("1. Yes");
+                System.out.println("2. No");
+                System.out.print("Choose an option: ");
+
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+
+                if (choice == 1) {
+                    createReservation(scanner, startDate, endDate, partner);
+                }
+            }
         } catch (Exception e) {
             System.out.println("An error occurred while searching room");
+        }
+    }
+    
+    public void createReservation(Scanner scanner, String startDate, String endDate, Account partner) {
+        System.out.println("\n--- Create Reservation ---");
+        
+        try {
+            System.out.print("Enter Room Type ID for Reservation: ");
+            Long roomTypeId = Long.parseLong(scanner.nextLine());
+            
+//            Booking persistedBooking = new Booking(startDate, endDate, roomTypeId, partner.getId());
+
+//            System.out.println("Reservation successfully created " + persistedBooking);
+            
+        } catch (Exception e) {
+            System.out.println("Failed to create new reservation");
         }
     }
 }
