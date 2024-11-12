@@ -20,9 +20,9 @@ public interface BookingEntitySessionBeanLocal {
 
     public List<Booking> getAllBookings();
 
-    public List<Booking> getBookingByGuest(Account account);
-
     public Booking getBookingById(Long id);
+    
+    public List<Booking> getBookingsByAccountId(Long accountId);
 
     public List<Booking> allocateRoomToBookings(LocalDate date);
     

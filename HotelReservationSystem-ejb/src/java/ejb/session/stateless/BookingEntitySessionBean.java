@@ -85,15 +85,10 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
         return newBooking;
     }
 
-//    @Override
-//    public Booking createBooking(Booking newBooking) throws ConstraintViolationException {
-//        em.persist(newBooking);
-//        return newBooking;
-//    }
-
-    public List<Booking> getBookingByGuest(Account account) {
-        return em.createQuery("SELECT b FROM Booking b WHERE b.account = :account", Booking.class)
-                .setParameter("account", account)
+    @Override
+    public List<Booking> getBookingsByAccountId(Long accountId) {
+        return em.createQuery("SELECT b FROM Booking b WHERE b.account.id = :accountId", Booking.class)
+                .setParameter("accountId", accountId)
                 .getResultList();
     }
     

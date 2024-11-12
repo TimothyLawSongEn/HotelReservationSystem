@@ -5,13 +5,12 @@
 package ejb.session.ws;
 
 import ejb.session.singleton.AvailabilitySessionBeanLocal;
+import ejb.session.stateless.AccountEntitySessionBeanLocal;
 import ejb.session.stateless.BookingEntitySessionBeanLocal;
+import entity.Account;
 import entity.Booking;
 import entity.RoomType;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javafx.util.Pair;
 import javax.ejb.EJB;
@@ -19,6 +18,8 @@ import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.ejb.Stateless;
+import util.exception.EntityMissingException;
+import util.exception.WrongAccountTypeException;
 
 /**
  *
@@ -28,23 +29,23 @@ import javax.ejb.Stateless;
 @Stateless
 public class HotelReservationSystemWebService {
 
-//    @EJB
-//    private PartnerEntitySessionBeanLocal partnerEntitySessionBeanLocal;
-    
+    @EJB
+    private AccountEntitySessionBeanLocal accountEntitySessionBeanLocal;
     @EJB
     private AvailabilitySessionBeanLocal availabilitySessionBeanLocal;
-    
     @EJB
     private BookingEntitySessionBeanLocal bookingEntitySessionBeanLocal;
-
-//    @WebMethod(operationName = "login")
-//    public String login(@WebParam(name = "username") String username, @WebParam(name = "password") String password) {
-//        return partnerEntitySessionBeanLocal.login(username, password);
-//    }
     
     @WebMethod(operationName = "hello")
     public String hello(@WebParam(name = "name") String txt) {
         return "Hello " + txt + " !";
+    }
+
+    @WebMethod(operationName = "login")
+    public Account login(@WebParam(name = "username") String username, @WebParam(name = "password") String password) {
+        Account account = accountEntitySessionBeanLocal.logIn(username, password);
+        System.out.println(account.getId() +" "+ account.getUsername() +" "+ account.getPassword());
+        return account;
     }
 
     @WebMethod(operationName = "searchRooms")
@@ -60,42 +61,6 @@ public class HotelReservationSystemWebService {
         return roomtypes;
     }
     
-    @WebMethod(operationName = "getListOfPair")
-    public List<Pair<Integer, Integer>> getListOfPair() {
-        List<Pair<Integer, Integer>> list = new ArrayList<>();
-        list.add(new Pair<>(1,1));
-        list.add(new Pair<>(2,2));
-        return list;
-    }
-    
-    @WebMethod(operationName = "getListOfPairRt")
-    public List<Pair<RoomType, Integer>> getListOfPairRt() {
-        List<Pair<RoomType, Integer>> list = new ArrayList<>();
-        list.add(new Pair<>(new RoomType("hi", 10.0, 10.0),1));
-        list.add(new Pair<>(new RoomType("bye", 20.0, 20.0),2));
-        return list;
-    }
-    
-    @WebMethod(operationName = "getLocalDate")
-    public LocalDate getLocalDate() {
-        return LocalDate.of(2020, 1, 8);
-    }
-    
-    @WebMethod(operationName = "getnullLocalDate")
-    public LocalDate getnullLocalDate() {
-        return null;
-    }
-    
-    @WebMethod(operationName = "getDate")
-    public Date getDate() {
-        LocalDate localDate = LocalDate.of(2025, 1, 1);
-        // Convert LocalDate to java.util.Date
-        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        return date;
-    }
-    
-    // TODO: get Date, if works, chg all localdate to date
-
     @WebMethod(operationName = "reserveRoom")
     public Booking reserveRoom(
         @WebParam(name = "startDate") String startDateStr,
@@ -115,12 +80,17 @@ public class HotelReservationSystemWebService {
     }
 
     @WebMethod(operationName = "viewAllReservations")
-    public List<Booking> viewAllReservations() {
-        return bookingEntitySessionBeanLocal.getAllBookings();
+    public List<Booking> viewAllReservationsByPartnerId(@WebParam(name = "accountId") long accountId) throws EntityMissingException, WrongAccountTypeException {
+        Account account = accountEntitySessionBeanLocal.findGuestById(accountId);
+
+        if (account == null) {
+            throw new EntityMissingException("Account with the provided ID does not exist.");
+        }
+
+        if (account.getAccountType() != Account.AccountType.PARTNER) {
+            throw new WrongAccountTypeException("AccountId provided does not belong to a partner account.");
+        }
+
+        return bookingEntitySessionBeanLocal.getBookingsByAccountId(accountId);
     }
-    
-//    @WebMethod(operationName = "viewAllReservations2")
-//    public List<Booking> viewAllReservations(long partnerId) {
-//        return bookingEntitySessionBeanLocal.getAllBookings(partnerId);
-//    }
 }

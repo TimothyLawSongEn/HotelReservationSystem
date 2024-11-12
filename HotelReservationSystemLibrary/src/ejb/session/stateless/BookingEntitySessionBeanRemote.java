@@ -25,9 +25,9 @@ public interface BookingEntitySessionBeanRemote {
 
     public List<Booking> allocateRoomToBookings(LocalDate date);
     
-    public List<Booking> getBookingByGuest(Account account);
-    
     public Booking getBookingById(Long id);
+    
+    public List<Booking> getBookingsByAccountId(Long accountId);
 
     public void checkIn(Long bookingId) throws EntityMissingException, BookingAlreadyCheckedInException, BookingNoAllocatedRoomException;
 

@@ -204,7 +204,7 @@ public class MainApp {
     public void viewAllReservations(Scanner scanner, Account guest) {
         System.out.println("\n--- View All Reservations ---");
         
-        List<Booking> bookings = bookingEntitySessionBeanRemote.getBookingByGuest(guest);
+        List<Booking> bookings = bookingEntitySessionBeanRemote.getBookingsByAccountId(guest.getId());
         
         for (Booking booking:bookings) {
             System.out.println(booking);

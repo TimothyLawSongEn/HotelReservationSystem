@@ -5,8 +5,6 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,14 +12,17 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author clara
  */
 @Entity
+@XmlAccessorType(XmlAccessType.FIELD) // specifies that all fields (except those annotated with @XmlTransient) should be serialized automatically without needing explicit @XmlElement annotations
 public class Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -33,6 +34,7 @@ public class Account implements Serializable {
     @Column(nullable = false, unique = true)
     private String username;
     
+    @XmlTransient
     @NotNull(message = "Password cannot be null")
     @Column(nullable = false)
     private String password;

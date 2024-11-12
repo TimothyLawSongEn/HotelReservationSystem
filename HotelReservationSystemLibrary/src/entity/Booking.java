@@ -15,12 +15,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import util.adapter.LocalDateAdapter;
 
 /**
  *
  * @author timothy
  */
 @Entity
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Booking implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -30,9 +35,11 @@ public class Booking implements Serializable {
     
     @NotNull(message = "StartDate cannot be null")
     @Column(nullable = false)
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate startDate; // todo: localdate vs date??? //NOVALUEINXML
     @NotNull(message = "EndDate cannot be null")
     @Column(nullable = false)
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate endDate; //NOVALUEINXML
  
     @NotNull(message = "RoomType cannot be null")
