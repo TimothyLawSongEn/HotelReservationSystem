@@ -5,11 +5,9 @@
 package ejb.session.singleton;
 
 import ejb.session.stateless.BookingEntitySessionBeanLocal;
-import ejb.session.stateless.RoomCountEntitySessionBeanLocal;
 import ejb.session.stateless.RoomEntitySessionBeanLocal;
 import ejb.session.stateless.RoomTypeEntitySessionBeanLocal;
 import entity.Booking;
-import entity.RoomCount;
 import entity.RoomType;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,11 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javafx.util.Pair;
 import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
+import util.dto.RoomCount;
 import util.exception.InvalidDateRangeException;
 
 /**
@@ -37,8 +35,6 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
     RoomTypeEntitySessionBeanLocal roomTypeEntitySessionBeanLocal;
     @EJB
     BookingEntitySessionBeanLocal bookingEntitySessionBeanLocal;
-    @EJB
-    RoomCountEntitySessionBeanLocal roomCountEntitySessionBeanLocal;
 
     Map<Long, Map<LocalDate, Integer>> roomTypeToBookedCountMap = new HashMap<>(); // map<roomtype id, map<date, bookedcount>>
     

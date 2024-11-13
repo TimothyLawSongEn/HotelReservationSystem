@@ -19,8 +19,8 @@ import util.exception.BookingAlreadyCheckedInException;
 import util.exception.BookingNoAllocatedRoomException;
 import util.exception.EntityMissingException;
 import ejb.session.stateless.AccountEntitySessionBeanRemote;
-import entity.RoomCount;
 import util.client.InputUtils;
+import util.dto.RoomCount;
 
 /**
  *

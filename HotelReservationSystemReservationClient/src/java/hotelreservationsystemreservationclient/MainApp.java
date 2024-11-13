@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 import javafx.util.Pair;
 import ejb.session.stateless.AccountEntitySessionBeanRemote;
-import entity.RoomCount;
+import util.dto.RoomCount;
 
 /**
  *
@@ -154,7 +154,7 @@ public class MainApp {
             
             // Show Available Room Types Between Start and End Date
             List<RoomCount> rooms = availabilitySessionBeanRemote.getAvailableRoomTypesWithCount(startDate, endDate);
-
+            
             for (RoomCount room:rooms) {
                 System.out.println(room.getRoomType());
             }

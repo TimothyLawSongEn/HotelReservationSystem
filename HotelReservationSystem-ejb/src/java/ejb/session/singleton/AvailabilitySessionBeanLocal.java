@@ -4,12 +4,12 @@
  */
 package ejb.session.singleton;
 
-import entity.RoomCount;
 import entity.RoomType;
 import java.time.LocalDate;
 import java.util.List;
 import javafx.util.Pair;
 import javax.ejb.Local;
+import util.dto.RoomCount;
 import util.exception.InvalidDateRangeException;
 
 /**

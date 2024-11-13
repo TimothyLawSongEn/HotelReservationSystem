@@ -9,7 +9,6 @@ import ejb.session.stateless.AccountEntitySessionBeanLocal;
 import ejb.session.stateless.BookingEntitySessionBeanLocal;
 import entity.Account;
 import entity.Booking;
-import entity.RoomCount;
 import entity.RoomType;
 import java.time.LocalDate;
 
@@ -20,6 +19,7 @@ import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.ejb.Stateless;
+import util.dto.RoomCount;
 import util.exception.EntityMissingException;
 import util.exception.InvalidDateRangeException;
 import util.exception.WrongAccountTypeException;

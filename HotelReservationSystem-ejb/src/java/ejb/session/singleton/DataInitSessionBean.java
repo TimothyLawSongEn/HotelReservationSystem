@@ -23,7 +23,6 @@ import java.time.LocalDate;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import ejb.session.stateless.AccountEntitySessionBeanLocal;
-import entity.RoomCount;
 import java.util.List;
 
 /**
