@@ -5,6 +5,7 @@
 package ejb.session.singleton;
 
 import ejb.session.stateless.BookingEntitySessionBeanLocal;
+import ejb.session.stateless.RoomCountEntitySessionBeanLocal;
 import ejb.session.stateless.RoomEntitySessionBeanLocal;
 import ejb.session.stateless.RoomTypeEntitySessionBeanLocal;
 import entity.Booking;
@@ -36,6 +37,8 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
     RoomTypeEntitySessionBeanLocal roomTypeEntitySessionBeanLocal;
     @EJB
     BookingEntitySessionBeanLocal bookingEntitySessionBeanLocal;
+    @EJB
+    RoomCountEntitySessionBeanLocal roomCountEntitySessionBeanLocal;
 
     Map<Long, Map<LocalDate, Integer>> roomTypeToBookedCountMap = new HashMap<>(); // map<roomtype id, map<date, bookedcount>>
     
