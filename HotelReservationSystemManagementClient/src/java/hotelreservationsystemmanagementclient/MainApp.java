@@ -37,7 +37,7 @@ public class MainApp {
         this.roomManagementModule = new RoomManagementModule(roomEntitySessionBeanRemote, roomTypeEntitySessionBeanRemote, bookingEntitySessionBeanRemote);
         this.roomTypeManagementModule = new RoomTypeManagementModule(roomTypeEntitySessionBeanRemote);
         this.specialRateManagementModule = new SpecialRateManagementModule(roomTypeEntitySessionBeanRemote, roomRateEntitySessionBeanRemote);
-        this.frontOfficeModule = new FrontOfficeModule(availabilitySessionBeanRemote, bookingEntitySessionBeanRemote, accountEntitySessionBeanRemote);
+        this.frontOfficeModule = new FrontOfficeModule(availabilitySessionBeanRemote, bookingEntitySessionBeanRemote, accountEntitySessionBeanRemote, roomEntitySessionBeanRemote);
         this.employeePartnerManagementModule = new EmployeePartnerManagementModule(employeeEntitySessionBeanRemote, accountEntitySessionBeanRemote);
     }
     

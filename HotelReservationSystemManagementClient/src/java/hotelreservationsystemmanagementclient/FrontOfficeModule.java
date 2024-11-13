@@ -19,6 +19,7 @@ import util.exception.BookingAlreadyCheckedInException;
 import util.exception.BookingNoAllocatedRoomException;
 import util.exception.EntityMissingException;
 import ejb.session.stateless.AccountEntitySessionBeanRemote;
+import ejb.session.stateless.RoomEntitySessionBeanRemote;
 import util.client.InputUtils;
 
 /**
@@ -30,13 +31,16 @@ public class FrontOfficeModule {
     private AvailabilitySessionBeanRemote availabilitySessionBeanRemote;
     private BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote;
     private AccountEntitySessionBeanRemote accountEntitySessionBeanRemote;
+    private RoomEntitySessionBeanRemote roomEntitySessionBeanRemote;
 
     public FrontOfficeModule(AvailabilitySessionBeanRemote availabilitySessionBeanRemote,
                              BookingEntitySessionBeanRemote bookingEntitySessionBeanRemote,
-                             AccountEntitySessionBeanRemote guestEntitySessionBeanRemote) {
+                             AccountEntitySessionBeanRemote guestEntitySessionBeanRemote,
+                             RoomEntitySessionBeanRemote roomEntitySessionBeanRemote) {
         this.availabilitySessionBeanRemote = availabilitySessionBeanRemote;
         this.bookingEntitySessionBeanRemote = bookingEntitySessionBeanRemote;
         this.accountEntitySessionBeanRemote = guestEntitySessionBeanRemote;
+        this.roomEntitySessionBeanRemote = roomEntitySessionBeanRemote;
     }
 
     public void frontOfficeMenu(Scanner scanner) {
@@ -45,8 +49,9 @@ public class FrontOfficeModule {
             System.out.println("1: Walk-In Search Room");
             System.out.println("2: Check-In Guest");
             System.out.println("3: Check-Out Guest");
-            System.out.println("4: Allocate Bookings");
-            System.out.println("5: Exit");
+            System.out.println("4: allocate bookings");
+            System.out.println("5: update room bookings at checkout time");
+            System.out.println("0: Exit");
 
             int option = InputUtils.readInt(scanner, "Choose an option: ");
 
@@ -64,6 +69,9 @@ public class FrontOfficeModule {
                     allocateBookings(scanner);
                     break;
                 case 5:
+                    updateRoomBookingsAtCheckoutTime(scanner);
+                    break;
+                case 0:
                     System.out.println("Exiting Front Office.");
                     return;
                 default:
@@ -183,6 +191,11 @@ public class FrontOfficeModule {
                 System.out.println(booking);
             }
         }
+    }
+    
+    private void updateRoomBookingsAtCheckoutTime(Scanner scanner) {
+        LocalDate date = InputUtils.readDate(scanner, "Enter date (YYYY-MM-DD): ");
+        roomEntitySessionBeanRemote.updateRoomBookingsAtCheckoutTime(date);
     }
 
     private void walkInSearchRoom(Scanner scanner) {

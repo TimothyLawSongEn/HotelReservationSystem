@@ -35,12 +35,8 @@ public class ScheduledTaskSessionBean {
     }
     
     @Schedule(hour = "12", minute = "0", second = "0", persistent = false)
-    public void updateRoomBookingsAtCheckoutTime() {
-        List<Room> rooms = roomEntitySessionBeanLocal.findAllRooms();
-        for (Room room : rooms) {
-            room.updateBookingsAtCheckoutTime();
-            roomEntitySessionBeanLocal.updateRoom(room);
-        }
+    public void runScheduledRoomBookingsUpdate() {
+        roomEntitySessionBeanLocal.updateRoomBookingsAtCheckoutTime(LocalDate.now());
     }
 
 }
