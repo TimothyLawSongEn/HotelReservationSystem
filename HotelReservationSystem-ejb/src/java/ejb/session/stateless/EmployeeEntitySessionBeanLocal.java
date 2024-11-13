@@ -18,7 +18,7 @@ public interface EmployeeEntitySessionBeanLocal {
 
     public Employee createEmployee(Employee newEmployee) throws ConstraintViolationException;
 
-    public Employee.EmployeeType logIn(Long employeeId, String password);
+    public Employee.EmployeeType logIn(String username, String password);
 
     public List<Employee> viewAllEmployees();
     

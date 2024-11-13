@@ -9,7 +9,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolationException;
 
@@ -33,8 +32,8 @@ public class EmployeeEntitySessionBean implements EmployeeEntitySessionBeanRemot
     }
     
     @Override
-    public Employee.EmployeeType logIn(Long employeeId, String password) {
-        Employee employee = em.find(Employee.class, employeeId);
+    public Employee.EmployeeType logIn(String username, String password) {
+        Employee employee = findEmployeeByUsername(username);
         if (employee != null && employee.getPassword().equals(password)) {
             return employee.getEmployeeType();
         }
@@ -45,5 +44,11 @@ public class EmployeeEntitySessionBean implements EmployeeEntitySessionBeanRemot
     public List<Employee> viewAllEmployees() {
         TypedQuery<Employee> query = em.createQuery("SELECT e FROM Employee e", Employee.class);
         return query.getResultList();
+    }
+    
+    private Employee findEmployeeByUsername(String username) {
+        return em.createQuery("SELECT e FROM Employee e WHERE e.username = :username", Employee.class)
+                .setParameter("username", username)
+                .getSingleResult();
     }
 }

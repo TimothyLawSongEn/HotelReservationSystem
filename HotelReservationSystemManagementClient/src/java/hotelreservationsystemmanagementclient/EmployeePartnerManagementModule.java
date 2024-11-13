@@ -10,6 +10,7 @@ import entity.Account;
 import entity.Employee;
 import java.util.List;
 import java.util.Scanner;
+import util.client.InputUtils;
 
 /**
  *
@@ -89,10 +90,10 @@ public class EmployeePartnerManagementModule {
                 System.out.println("Invalid option. Please try again.");
         }
         
-        System.out.print("Create Password for Employee: ");
-        String password = scanner.nextLine();
+        String username = InputUtils.readString(scanner, "Create Username for Employee: ");
+        String password = InputUtils.readString(scanner, "Create Password for Employee: ");
         
-        Employee newEmployee = new Employee(password, newType);
+        Employee newEmployee = new Employee(username, password, newType);
         Employee persistedEmployee = employeeEntitySessionBeanRemote.createEmployee(newEmployee);
         
         System.out.println("Employee Successfully Created: " + persistedEmployee);
