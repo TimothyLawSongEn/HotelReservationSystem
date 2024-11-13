@@ -47,11 +47,8 @@ public class FrontOfficeModule {
             System.out.println("3: Check-Out Guest");
             System.out.println("4: Allocate Bookings");
             System.out.println("5: Exit");
-            System.out.print("> ");
 
-            int option = scanner.nextInt();
-
-            scanner.nextLine(); // Clear buffer after nextInt()
+            int option = InputUtils.readInt(scanner, "Choose an option: ");
 
             switch (option) {
                 case 1:
@@ -65,7 +62,7 @@ public class FrontOfficeModule {
                     break;
                 case 4:
                     allocateBookings(scanner);
-                    return;
+                    break;
                 case 5:
                     System.out.println("Exiting Front Office.");
                     return;
@@ -82,8 +79,7 @@ public class FrontOfficeModule {
         // allow user to select bookings to checkin (provide select all option)
         // call bookingBean.checkin() (get allocatedRoom field in booking, set room's currBooking field, set booking checkin boolean to true)
 
-        System.out.print("Enter guestId (or 0 to cancel): ");
-        long guestId = scanner.nextLong();
+        long guestId = InputUtils.readLong(scanner, "Enter guestId (or 0 to cancel): ");
         Account guest = accountEntitySessionBeanRemote.findGuestById(guestId);
 
         // Fetch all active bookings for the guest that have not been checked in
@@ -102,7 +98,7 @@ public class FrontOfficeModule {
         System.out.println((activeBookings.size() + 1) + ": Select All");
 
         // Get user selection
-        int selection = scanner.nextInt();
+        int selection = InputUtils.readInt(scanner, "");
         List<Booking> selectedBookings;
         if (selection == activeBookings.size() + 1) { // Select all bookings
             selectedBookings = new ArrayList<>(activeBookings);
@@ -134,8 +130,7 @@ public class FrontOfficeModule {
         // allow user to select bookings to checkout (provide select all option)
         // call bookingBean.checkin() (get allocatedRoom field in booking, set room's currBooking field to null, set booking checkin boolean to false)
 
-        System.out.print("Enter guestId (or 0 to cancel): ");
-        long guestId = scanner.nextLong();
+        long guestId = InputUtils.readLong(scanner, "Enter guestId (or 0 to cancel): ");
         Account guest = accountEntitySessionBeanRemote.findGuestById(guestId);
 
         // Fetch all checked-in bookings for the guest
@@ -154,7 +149,7 @@ public class FrontOfficeModule {
         System.out.println((checkedInBookings.size() + 1) + ": Select All");
 
         // Get user selection
-        int selection = scanner.nextInt();
+        int selection = InputUtils.readInt(scanner, "");
         List<Booking> selectedBookings;
         if (selection == checkedInBookings.size() + 1) { // Select all bookings
             selectedBookings = new ArrayList<>(checkedInBookings);
@@ -175,8 +170,7 @@ public class FrontOfficeModule {
 
     
     private void allocateBookings(Scanner scanner) {
-        System.out.print("Enter date (YYYY-MM-DD): ");
-        LocalDate date = LocalDate.parse(scanner.next());
+        LocalDate date = InputUtils.readDate(scanner, "Enter date (YYYY-MM-DD): ");
 
         List<Booking> allocatedBookings = bookingEntitySessionBeanRemote.allocateRoomToBookings(date);
 
@@ -205,8 +199,7 @@ public class FrontOfficeModule {
                     // Provide option to search again
                     System.out.println("1: Search again");
                     System.out.println("2: Exit");
-                    System.out.print("> ");
-                    int choice = scanner.nextInt();
+                    int choice = InputUtils.readInt(scanner, "> ");
 
                     if (choice == 1) {
                         System.out.println("Searching again...");
@@ -227,13 +220,13 @@ public class FrontOfficeModule {
 
                         System.out.printf("%d: %s (Available: %d) $%.2f\n", i + 1, roomType.getName(), availableCount, roomType.calculateTotalWalkinFee(startDate, endDate));
                     }
+                    System.out.println();
 
                     // Provide option to reserve or search again
                     System.out.println("1: Reserve a room");
                     System.out.println("2: Search again");
                     System.out.println("3: Exit");
-                    System.out.print("> ");
-                    int choice = scanner.nextInt();
+                    int choice = InputUtils.readInt(scanner, "> ");
 
                     if (choice == 1) {
                         // Reserve room option
@@ -259,8 +252,7 @@ public class FrontOfficeModule {
         try {
             int roomTypeChoice;
             while (true) {
-                System.out.print("Enter the number of the room type to reserve (or 0 to cancel): ");
-                roomTypeChoice = scanner.nextInt();
+                roomTypeChoice = InputUtils.readInt(scanner, "Enter the number of the room type to reserve (or 0 to cancel): ");
 
                 if (roomTypeChoice == 0) {
                     System.out.println("Reservation cancelled.");
@@ -274,8 +266,7 @@ public class FrontOfficeModule {
                 }
             }
 
-            System.out.print("Enter guestId (or 0 to cancel): ");
-            long guestId = scanner.nextLong();
+            long guestId = InputUtils.readLong(scanner, "Enter guestId (or 0 to cancel): ");
             if (guestId == 0) {
                 System.out.println("Reservation cancelled.");
                 return;
