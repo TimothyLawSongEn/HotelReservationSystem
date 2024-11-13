@@ -10,7 +10,6 @@ import ws.hors.Account;
 import ws.hors.Booking;
 import ws.hors.HotelReservationSystemWebService_Service;
 import ws.hors.RoomCount;
-import ws.hors.RoomType;
 
 /**
  *
@@ -87,7 +86,7 @@ public class MainApp {
             List<RoomCount> rooms = service.getHotelReservationSystemWebServicePort().searchRooms(startDate, endDate);
 
             for (RoomCount room:rooms) {
-                System.out.println("Room Type: " + room.getRoomType() + ", Available Room Count: " + room.getCount());
+                System.out.println("Room Type: " + room.getRoomType().getName() + ", Available Room Count: " + room.getCount());
             }
 
             if (partner != null) {
