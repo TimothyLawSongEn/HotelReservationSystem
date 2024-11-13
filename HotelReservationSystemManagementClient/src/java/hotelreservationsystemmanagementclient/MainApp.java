@@ -13,6 +13,7 @@ import ejb.session.stateless.RoomTypeEntitySessionBeanRemote;
 import entity.Employee;
 import java.util.Scanner;
 import ejb.session.stateless.AccountEntitySessionBeanRemote;
+import util.client.InputUtils;
 
 /**
  *
@@ -46,10 +47,8 @@ public class MainApp {
             System.out.println("\n--- Hotel Management System ---");
             System.out.println("1. Employee Log In");
             System.out.println("0. Exit");
-            System.out.print("Choose an option: ");
             
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice = InputUtils.readInt(scanner, "> ");
             
             switch (choice) {
                 case 1:
@@ -75,8 +74,7 @@ public class MainApp {
             System.out.println("3. Manage Special Rates");
             System.out.println("4. Front Office");
             System.out.println("0. Exit");
-            System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
+            int choice = InputUtils.readInt(scanner, "> ");
 
             switch (choice) {
                 case 1:
@@ -103,13 +101,10 @@ public class MainApp {
 
     // Employee Log In
     private void employeeLogIn(Scanner scanner) {
-        System.out.print("Enter Employee ID: ");
-        Long employeeId = Long.parseLong(scanner.nextLine());
+        String username = InputUtils.readString(scanner, "Enter Username: ");
+        String password = InputUtils.readString(scanner, "Enter Password: ");
         
-        System.out.print("Enter Password: ");
-        String password = scanner.nextLine();
-        
-        Employee.EmployeeType type = employeeEntitySessionBeanRemote.logIn(employeeId, password);
+        Employee.EmployeeType type = employeeEntitySessionBeanRemote.logIn(username, password);
         
         switch (type) {
             case ALLACCESS:
@@ -145,8 +140,7 @@ public class MainApp {
             System.out.println("4. Front Office");
             System.out.println("5. Manage Employees and Partners");
             System.out.println("0. Log Out");
-            System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
+            int choice = InputUtils.readInt(scanner, "> ");
 
             switch (choice) {
                 case 1:
@@ -181,10 +175,8 @@ public class MainApp {
             System.out.println("\n--- System Admin Menu---");
             System.out.println("1. Manage Employees and Partners");
             System.out.println("0. Log Out");
-            System.out.print("Choose an option: ");
             
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice = InputUtils.readInt(scanner, "> ");
             
             switch (choice) {
                 case 1:
@@ -209,10 +201,8 @@ public class MainApp {
             System.out.println("1. Manage Room");
             System.out.println("2. Manage Room Type");
             System.out.println("0. Log Out");
-            System.out.print("Choose an option: ");
             
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice = InputUtils.readInt(scanner, "> ");
             
             switch (choice) {
                 case 1:
@@ -239,10 +229,8 @@ public class MainApp {
             System.out.println("\n---Sales Manager Menu---");
             System.out.println("1. Manage Special Rates");
             System.out.println("0. Log Out");
-            System.out.print("Choose an option: ");
             
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice = InputUtils.readInt(scanner, "> ");
             
             switch (choice) {
                 case 1:

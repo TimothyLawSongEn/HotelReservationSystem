@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -26,6 +27,11 @@ public class Employee implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @NotNull(message = "Username cannot be null")
+    @Column(nullable = false, unique = true, length = 20)
+    @Size(min = 1, max = 20, message = "Username must be between 1 and 20 characters")
+    private String username;
+        
     @NotNull(message = "Password cannot be null")
     @Column(nullable = false)
     private String password;
@@ -38,7 +44,8 @@ public class Employee implements Serializable {
     public Employee() {
     }
 
-    public Employee(String password, EmployeeType employeeType) {
+    public Employee(String username, String password, EmployeeType employeeType) {
+        this.username = username;
         this.password = password;
         this.employeeType = employeeType;
     }
