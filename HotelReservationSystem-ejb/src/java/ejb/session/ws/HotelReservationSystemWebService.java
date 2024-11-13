@@ -9,6 +9,7 @@ import ejb.session.stateless.AccountEntitySessionBeanLocal;
 import ejb.session.stateless.BookingEntitySessionBeanLocal;
 import entity.Account;
 import entity.Booking;
+import entity.RoomCount;
 import entity.RoomType;
 import java.time.LocalDate;
 
@@ -51,7 +52,7 @@ public class HotelReservationSystemWebService {
     }
 
     @WebMethod(operationName = "searchRooms")
-    public List<Pair<RoomType, Integer>> searchRooms(
+    public List<RoomCount> searchRooms(
         @WebParam(name = "startDate") String startDateStr,
         @WebParam(name = "endDate") String endDateStr)
         throws InvalidDateRangeException {
@@ -60,7 +61,7 @@ public class HotelReservationSystemWebService {
         LocalDate endDate = LocalDate.parse(endDateStr);
 
         // todo: break nextHigherRoomType, roomtype roomrate field can set to null (xmltransient)
-        List<Pair<RoomType, Integer>> roomtypes = availabilitySessionBeanLocal.getAvailableRoomTypesWithCount(startDate, endDate);
+        List<RoomCount> roomtypes = availabilitySessionBeanLocal.getAvailableRoomTypesWithCount(startDate, endDate);
         return roomtypes;
     }
     

@@ -4,6 +4,7 @@
  */
 package ejb.session.singleton;
 
+import entity.RoomCount;
 import entity.RoomType;
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +23,6 @@ public interface AvailabilitySessionBeanLocal {
     
     public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception; // caller: booking bean
     
-    public List<Pair<RoomType, Integer>> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException; // caller: web service
+    public List<RoomCount> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException; // caller: web service
 
 }

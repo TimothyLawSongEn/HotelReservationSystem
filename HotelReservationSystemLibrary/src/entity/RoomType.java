@@ -51,6 +51,9 @@ public class RoomType implements Serializable {
     @Column(nullable = false)
     private Boolean disabled = false;
     
+    @OneToOne(mappedBy = "roomType", cascade = {CascadeType.ALL})
+    private RoomCount roomCount;
+    
 //    @OneToMany(mappedBy = "name")
 //    private RoomType roomType;
 

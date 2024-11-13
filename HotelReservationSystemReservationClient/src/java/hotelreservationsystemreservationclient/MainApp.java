@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 import javafx.util.Pair;
 import ejb.session.stateless.AccountEntitySessionBeanRemote;
+import entity.RoomCount;
 
 /**
  *
@@ -149,10 +150,10 @@ public class MainApp {
             LocalDate endDate = LocalDate.parse(scanner.nextLine()); 
             
             // Show Available Room Types Between Start and End Date
-            List<Pair<RoomType, Integer>> rooms = availabilitySessionBeanRemote.getAvailableRoomTypesWithCount(startDate, endDate);
+            List<RoomCount> rooms = availabilitySessionBeanRemote.getAvailableRoomTypesWithCount(startDate, endDate);
 
-            for (Pair<RoomType, Integer> room:rooms) {
-                System.out.println(room);
+            for (RoomCount room:rooms) {
+                System.out.println(room.getRoomType());
             }
 
             if (guest != null) {

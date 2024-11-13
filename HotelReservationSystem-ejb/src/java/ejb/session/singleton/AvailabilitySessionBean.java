@@ -8,6 +8,7 @@ import ejb.session.stateless.BookingEntitySessionBeanLocal;
 import ejb.session.stateless.RoomEntitySessionBeanLocal;
 import ejb.session.stateless.RoomTypeEntitySessionBeanLocal;
 import entity.Booking;
+import entity.RoomCount;
 import entity.RoomType;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -77,9 +78,9 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
 
     // caller: client during search rooms
     @Override
-    public List<Pair<RoomType, Integer>> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException {
+    public List<RoomCount> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException {
         validateBookingDateRange(startDate, endDate);
-        List<Pair<RoomType, Integer>> availableRoomTypes = new ArrayList<>();
+        List<RoomCount> availableRoomTypes = new ArrayList<>();
 
         // Get all room types
         List<RoomType> roomTypes = roomTypeEntitySessionBeanLocal.findAllRoomTypes();
@@ -112,7 +113,8 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
             }
 
             if (maxOccupied < roomCount) {
-                availableRoomTypes.add(new Pair<>(roomType, roomCount - maxOccupied));
+//                availableRoomTypes.add(new Pair<>(roomType, roomCount - maxOccupied));
+                availableRoomTypes.add(new RoomCount(roomType, roomCount - maxOccupied));
             }
         }
         return availableRoomTypes;
