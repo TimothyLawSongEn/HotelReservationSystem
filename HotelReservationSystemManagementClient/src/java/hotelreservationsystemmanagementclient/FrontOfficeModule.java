@@ -19,6 +19,7 @@ import util.exception.BookingAlreadyCheckedInException;
 import util.exception.BookingNoAllocatedRoomException;
 import util.exception.EntityMissingException;
 import ejb.session.stateless.AccountEntitySessionBeanRemote;
+import util.client.InputUtils;
 
 /**
  *
@@ -192,11 +193,8 @@ public class FrontOfficeModule {
 
     private void walkInSearchRoom(Scanner scanner) {
         while (true) {
-            System.out.print("Enter check-in date (YYYY-MM-DD): ");
-            LocalDate startDate = LocalDate.parse(scanner.next());
-
-            System.out.print("Enter check-out date (YYYY-MM-DD): ");
-            LocalDate endDate = LocalDate.parse(scanner.next());
+            LocalDate startDate = InputUtils.readDate(scanner, "Enter check-in date (YYYY-MM-DD): ");
+            LocalDate endDate = InputUtils.readDate(scanner, "Enter check-out date (YYYY-MM-DD): ");
 
             try {
                 // Call the availability session bean to get available room types and their counts

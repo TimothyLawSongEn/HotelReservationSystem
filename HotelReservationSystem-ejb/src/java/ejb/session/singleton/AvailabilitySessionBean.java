@@ -20,6 +20,7 @@ import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
+import util.exception.InvalidDateRangeException;
 
 /**
  *
@@ -76,7 +77,8 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
 
     // caller: client during search rooms
     @Override
-    public List<Pair<RoomType, Integer>> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) {
+    public List<Pair<RoomType, Integer>> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException {
+        validateBookingDateRange(startDate, endDate);
         List<Pair<RoomType, Integer>> availableRoomTypes = new ArrayList<>();
 
         // Get all room types
@@ -121,7 +123,8 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
     // must be atomic
     @Override
     @Lock(LockType.WRITE)
-    public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception {        
+    public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception {  
+        validateBookingDateRange(startDate, endDate);
         // chk that roomtypeid can be found via roomtypebean
         RoomType roomType = roomTypeEntitySessionBeanLocal.findRoomType(roomTypeId);
         if (roomType == null) {
@@ -153,6 +156,23 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
         for (LocalDate date = startDate; date.isBefore(endDate) ; date = date.plusDays(1)) {
             int bookedCount = roomTypeBookingsMap.getOrDefault(date, 0);
             roomTypeBookingsMap.put(date, bookedCount + 1);
+        }
+    }
+    
+    private void validateBookingDateRange(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException {
+        // 1. Check if startDate or endDate are null
+        if (startDate == null || endDate == null) {
+            throw new InvalidDateRangeException("Start date and end date cannot be null.");
+        }
+
+        // 2. Check if endDate is after startDate
+        if (!endDate.isAfter(startDate)) {
+            throw new InvalidDateRangeException("End date must be after the start date.");
+        }
+
+        // 3. Optional: Check if dates are in the future or at least today
+        if (startDate.isBefore(LocalDate.now()) || endDate.isBefore(LocalDate.now())) {
+            throw new InvalidDateRangeException("Start date and end date must not be in the past.");
         }
     }
     

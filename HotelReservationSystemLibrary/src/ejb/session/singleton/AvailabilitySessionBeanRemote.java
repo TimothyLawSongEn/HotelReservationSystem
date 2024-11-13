@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import javafx.util.Pair;
 import javax.ejb.Remote;
+import util.exception.InvalidDateRangeException;
 
 /**
  *
@@ -17,6 +18,6 @@ import javax.ejb.Remote;
 @Remote
 public interface AvailabilitySessionBeanRemote {
 
-    public List<Pair<RoomType, Integer>> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate);
+    public List<Pair<RoomType, Integer>> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException;
     
 }

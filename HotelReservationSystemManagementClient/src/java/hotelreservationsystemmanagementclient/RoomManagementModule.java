@@ -17,6 +17,7 @@ import javafx.util.Pair;
 import javax.ejb.EJBException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import util.client.InputUtils;
 
 /**
  *
@@ -45,8 +46,7 @@ public class RoomManagementModule {
             System.out.println("5. Delete Room");
             System.out.println("6. Generate Room Allocation Exception Report");
             System.out.println("0. Back to Main Menu");
-            System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
+            int choice = InputUtils.readInt(scanner, "Choose an option: ");
 
             switch (choice) {
                 case 1:
@@ -96,8 +96,7 @@ public class RoomManagementModule {
 
     private void viewRoom(Scanner scanner) {
         try {
-            System.out.print("Enter Room ID to view details: "); // todo: chg to enter roomnum instead of id
-            Long roomId = scanner.nextLong();
+            Long roomId = InputUtils.readLong(scanner, "Enter Room ID to view details: "); // todo: chg to enter roomnum instead of id
             Room room = roomEntitySessionBeanRemote.findRoomById(roomId);
             if (room != null) {
                 System.out.println("\n--- Room Details ---");
@@ -112,10 +111,7 @@ public class RoomManagementModule {
 
     private void createRoom(Scanner scanner) {
         try {
-            // Get room number
-            scanner.nextLine();
-            System.out.print("Enter Room Number: ");
-            String roomNumber = scanner.nextLine().trim();
+            String roomNumber = InputUtils.readString(scanner, "Enter Room Number: ");
 
             // Get non-disabled room types
             System.out.println("Choose a Room Type:");
@@ -131,8 +127,7 @@ public class RoomManagementModule {
                 System.out.printf("%d. %s\n", i + 1, nonDisabledRoomTypes.get(i).getName());
             }
 
-            System.out.print("Select room type by number: ");
-            int roomTypeChoice = scanner.nextInt();
+            int roomTypeChoice = InputUtils.readInt(scanner, "Select room type by number: ");
             RoomType selectedRoomType = nonDisabledRoomTypes.get(roomTypeChoice - 1);
 
             // Create Room
@@ -160,15 +155,12 @@ public class RoomManagementModule {
 
     private void updateRoom(Scanner scanner) {
         try {
-            System.out.print("Enter Room ID to update: ");
-            Long roomId = scanner.nextLong();
-            
-            scanner.nextLine();
+            Long roomId = InputUtils.readLong(scanner, "Enter Room ID to update: ");
+
             Room roomToUpdate = roomEntitySessionBeanRemote.findRoomById(roomId);
             if (roomToUpdate != null) {
                 // Update room number
-                System.out.print("Enter new Room Number (current: " + roomToUpdate.getRoomNumber() + ") or press Enter to skip: ");
-                String newRoomNumber = scanner.nextLine().trim();
+                String newRoomNumber = InputUtils.readString(scanner, "Enter new Room Number (current: " + roomToUpdate.getRoomNumber() + ") or press Enter to skip: ");
                 if (!newRoomNumber.isEmpty()) { // Keep the old value if the user skips
                     roomToUpdate.setRoomNumber(newRoomNumber);
                 }
@@ -179,8 +171,7 @@ public class RoomManagementModule {
                 for (int i = 0; i < nonDisabledRoomTypes.size(); i++) {
                     System.out.printf("%d. %s\n", i + 1, nonDisabledRoomTypes.get(i).getName());
                 }
-                System.out.print("Select room type by number (current: " + roomToUpdate.getRoomType().getName() + ") or press Enter to skip: ");
-                String roomTypeInput = scanner.nextLine().trim();
+                String roomTypeInput = InputUtils.readString(scanner, "Select room type by number (current: " + roomToUpdate.getRoomType().getName() + ") or press Enter to skip: ");
 
                 RoomType selectedRoomType;
                 if (!roomTypeInput.isEmpty()) { // Keep the old value if the user skips
@@ -211,16 +202,14 @@ public class RoomManagementModule {
 
     private void deleteRoom(Scanner scanner) {
         try {
-            System.out.print("Enter Room ID to delete: ");
-            Long roomId = scanner.nextLong();
+            Long roomId = InputUtils.readLong(scanner, "Enter Room ID to delete: ");
 
             // Check if the room exists
             Room room = roomEntitySessionBeanRemote.findRoomById(roomId);
             if (room != null) {
                 // Confirm deletion
                 System.out.println("Room Details: " + room);
-                System.out.print("Are you sure you want to delete this Room? (y/n): ");
-                String confirmation = scanner.next();
+                String confirmation = InputUtils.readString(scanner, "Are you sure you want to delete this Room? (y/n): ");
 
                 if ("y".equalsIgnoreCase(confirmation)) {
                     roomEntitySessionBeanRemote.deleteRoom(roomId);
@@ -239,7 +228,7 @@ public class RoomManagementModule {
     private void generateRoomAllocationExceptionReport(Scanner scanner) {
         try {
             System.out.print("Enter date (YYYY-MM-DD): ");
-            LocalDate date = LocalDate.parse(scanner.next());
+            LocalDate date = InputUtils.readDate(scanner, "Enter date (YYYY-MM-DD): ");
             // Generate the report
             Pair<List<Booking>, List<Booking>> report = bookingEntitySessionBeanRemote.getBookingsWithRoomAllocException(date);
             List<Booking> bookingsWithoutRoom = report.getKey();

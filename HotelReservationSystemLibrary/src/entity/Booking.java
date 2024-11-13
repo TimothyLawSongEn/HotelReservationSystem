@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,16 +37,19 @@ public class Booking implements Serializable {
     @NotNull(message = "StartDate cannot be null")
     @Column(nullable = false)
     @XmlJavaTypeAdapter(LocalDateAdapter.class)
-    private LocalDate startDate; // todo: localdate vs date??? //NOVALUEINXML
+    private LocalDate startDate;
     @NotNull(message = "EndDate cannot be null")
     @Column(nullable = false)
     @XmlJavaTypeAdapter(LocalDateAdapter.class)
-    private LocalDate endDate; //NOVALUEINXML
+    private LocalDate endDate;
+    
+    @AssertTrue(message = "EndDate must be after StartDate")
+    public boolean isValidDateRange() { return endDate.isAfter(startDate);}
  
     @NotNull(message = "RoomType cannot be null")
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private RoomType roomType; //GOTVALUEINXML
+    private RoomType roomType;
 
     @ManyToOne
     @JoinColumn

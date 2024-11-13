@@ -11,6 +11,7 @@ import entity.Account;
 import entity.Booking;
 import entity.RoomType;
 import java.time.LocalDate;
+
 import java.util.List;
 import javafx.util.Pair;
 import javax.ejb.EJB;
@@ -19,6 +20,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.ejb.Stateless;
 import util.exception.EntityMissingException;
+import util.exception.InvalidDateRangeException;
 import util.exception.WrongAccountTypeException;
 
 /**
@@ -51,7 +53,8 @@ public class HotelReservationSystemWebService {
     @WebMethod(operationName = "searchRooms")
     public List<Pair<RoomType, Integer>> searchRooms(
         @WebParam(name = "startDate") String startDateStr,
-        @WebParam(name = "endDate") String endDateStr) {
+        @WebParam(name = "endDate") String endDateStr)
+        throws InvalidDateRangeException {
     
         LocalDate startDate = LocalDate.parse(startDateStr);
         LocalDate endDate = LocalDate.parse(endDateStr);
