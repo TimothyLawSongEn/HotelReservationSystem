@@ -92,7 +92,7 @@ public class EmployeePartnerManagementModule {
         Employee newEmployee = new Employee(username, password, newType);
         Employee persistedEmployee = employeeEntitySessionBeanRemote.createEmployee(newEmployee);
         
-        System.out.println("Employee Successfully Created: " + persistedEmployee);
+        System.out.println("Employee Successfully Created with Id: " + persistedEmployee.getId());
     }
     
     // View all Employees for System Admin
