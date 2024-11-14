@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
 
 /**
  *
@@ -23,6 +24,7 @@ import javax.ejb.Singleton;
  */
 @Singleton
 @LocalBean
+//@Startup
 public class TestDataInitSessionBean {
 
     @EJB
@@ -59,11 +61,11 @@ public class TestDataInitSessionBean {
         employeeEntitySessionBeanLocal.createEmployee(guestOfficer);
         
         // Create some RoomType objects
-        RoomType deluxeRoom = new RoomType("Deluxe Room", 50.0, 100.0);
-        RoomType premierRoom = new RoomType("Premier Room", 100.0, 280.0);
-        RoomType familyRoom = new RoomType("Family Room", 150.0, 300.0);
-        RoomType juniorSuite = new RoomType("Junior Suite", 200.0, 400.0);
-        RoomType grandSuite = new RoomType("Grand Suite", 250.0, 500.0);
+        RoomType deluxeRoom = new RoomType("Deluxe Room", 100.0, 50.0);
+        RoomType premierRoom = new RoomType("Premier Room", 200.0, 100.0);
+        RoomType familyRoom = new RoomType("Family Room", 300.0, 150.0);
+        RoomType juniorSuite = new RoomType("Junior Suite", 400.0, 200.0);
+        RoomType grandSuite = new RoomType("Grand Suite", 500.0, 250.0);
         
         // Persist the RoomTypes using the session bean
         roomTypeEntitySessionBeanLocal.createRoomType(deluxeRoom);
