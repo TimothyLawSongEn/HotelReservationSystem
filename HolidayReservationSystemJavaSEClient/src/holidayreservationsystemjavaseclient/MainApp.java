@@ -10,6 +10,7 @@ import ws.hors.Account;
 import ws.hors.Booking;
 import ws.hors.HotelReservationSystemWebService_Service;
 import ws.hors.RoomCount;
+import ws.hors.RoomType;
 
 /**
  *
@@ -80,8 +81,6 @@ public class MainApp {
 
             System.out.print("Enter Booking End Date (YYYY-MM-DD): ");
             String endDate = scanner.nextLine(); 
-            
-            // Show Available Room Types Between Start and End Date
             
             List<RoomCount> rooms = service.getHotelReservationSystemWebServicePort().searchRooms(startDate, endDate);
 

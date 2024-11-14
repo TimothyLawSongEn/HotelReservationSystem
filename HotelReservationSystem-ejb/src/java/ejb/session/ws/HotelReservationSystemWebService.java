@@ -65,6 +65,18 @@ public class HotelReservationSystemWebService {
         return roomtypes;
     }
     
+    @WebMethod(operationName = "getRoomReservationRate")
+    public double getRoomReservationRate(
+        @WebParam(name = "startDate") String startDateStr,
+        @WebParam(name = "endDate") String endDateStr, 
+        @WebParam(name = "roomTypeId") long roomTypeId 
+    ) throws Exception {
+        LocalDate startDate = LocalDate.parse(startDateStr);
+        LocalDate endDate = LocalDate.parse(endDateStr);
+        double rate = availabilitySessionBeanLocal.calculateReservationFee(roomTypeId, startDate, endDate);
+        return rate;
+    }
+    
     @WebMethod(operationName = "reserveRoom")
     public Booking reserveRoom(
         @WebParam(name = "startDate") String startDateStr,
