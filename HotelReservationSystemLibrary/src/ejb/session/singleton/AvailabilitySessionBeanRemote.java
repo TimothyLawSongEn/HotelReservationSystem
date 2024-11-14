@@ -19,4 +19,5 @@ public interface AvailabilitySessionBeanRemote {
 
     public List<RoomCount> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException;
     
+    public double calculateReservationFee(Long roomTypeId, LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException;
 }

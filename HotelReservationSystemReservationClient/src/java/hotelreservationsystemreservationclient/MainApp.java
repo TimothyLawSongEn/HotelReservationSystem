@@ -156,7 +156,11 @@ public class MainApp {
             List<RoomCount> rooms = availabilitySessionBeanRemote.getAvailableRoomTypesWithCount(startDate, endDate);
             
             for (RoomCount room:rooms) {
-                System.out.println(room.getRoomType());
+                RoomType type = room.getRoomType();
+                double rate = availabilitySessionBeanRemote.calculateReservationFee(type.getId(), startDate, endDate);
+                System.out.println(rate);
+                String output = String.format("Room Type: %s, Reservation Fees: %.2f, Availability: %d", type.getName(), rate, room.getCount());
+                System.out.println(output);
             }
 
             if (guest != null) {
@@ -173,7 +177,7 @@ public class MainApp {
                 }
             }
         } catch (Exception e) {
-            System.out.println("An error occurred while searching room");
+            System.out.println(e);
         }
     }
     

@@ -177,4 +177,13 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
         }
     }
     
+    @Override
+    public double calculateReservationFee(Long roomTypeId, LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException {
+        RoomType roomType = roomTypeEntitySessionBeanLocal.findRoomType(roomTypeId);
+        if (roomType == null) {
+            throw new InvalidDateRangeException("Room type not found");
+        }
+        return roomType.calculateTotalGuestReservationFee(startDate, endDate);
+    }
+    
 }
