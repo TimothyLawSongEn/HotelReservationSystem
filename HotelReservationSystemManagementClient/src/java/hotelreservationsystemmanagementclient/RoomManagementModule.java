@@ -160,6 +160,9 @@ public class RoomManagementModule {
 
             Room roomToUpdate = roomEntitySessionBeanRemote.findRoomById(roomId);
             if (roomToUpdate != null) {
+                System.out.println("\n--- Room Details ---");
+                System.out.printf("Room ID: %d\nRoom Number: %s\nRoom Type: %s\n", roomToUpdate.getId(), roomToUpdate.getRoomNumber(), roomToUpdate.getRoomType().getName());
+                
                 // Update room number
                 String newRoomNumber = InputUtils.readString(scanner, "Enter new Room Number (current: " + roomToUpdate.getRoomNumber() + ") or press Enter to skip: ");
                 if (!newRoomNumber.isEmpty()) { // Keep the old value if the user skips
@@ -210,6 +213,7 @@ public class RoomManagementModule {
             if (room != null) {
                 // Confirm deletion
 //                System.out.println("Room Details: " + room);
+                System.out.println("\n--- Room Details ---");
                 System.out.printf("Room ID: %d\nRoom Number: %s\nRoom Type: %s\n", room.getId(), room.getRoomNumber(), room.getRoomType().getName());
                 String confirmation = InputUtils.readString(scanner, "Are you sure you want to delete this Room? (y/n): ");
 
