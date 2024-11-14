@@ -50,8 +50,8 @@ public class FrontOfficeModule {
             System.out.println("1: Walk-In Search Room");
             System.out.println("2: Check-In Guest");
             System.out.println("3: Check-Out Guest");
-            System.out.println("4: allocate bookings");
-            System.out.println("5: update room bookings at checkout time");
+            System.out.println("4: Allocate bookings");
+            System.out.println("5: Update room bookings at checkout time");
             System.out.println("0: Exit");
 
             int option = InputUtils.readInt(scanner, "> ");
@@ -289,7 +289,7 @@ public class FrontOfficeModule {
             RoomCount selectedRoomTypePair = availableRoomTypes.get(roomTypeChoice - 1);
             Long selectedRoomTypeId = selectedRoomTypePair.getRoomType().getId();
             Booking booking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, selectedRoomTypeId, guestId);
-            System.out.println("Room successfully reserved. \nYour booking details: ");
+            System.out.println("\nRoom successfully reserved. \nYour booking details: ");
             System.out.println("\nBooking Id: " + booking.getId());
             System.out.println("Start Date: " + booking.getStartDate());
             System.out.println("End Date: " + booking.getEndDate());

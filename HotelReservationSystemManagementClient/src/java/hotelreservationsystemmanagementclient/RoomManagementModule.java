@@ -40,11 +40,11 @@ public class RoomManagementModule {
         while (true) {
             System.out.println("\n--- Room Management ---");
             System.out.println("1. View All Rooms");
-            System.out.println("2. View Room");
-            System.out.println("3. Create Room");
-            System.out.println("4. Update Room");
-            System.out.println("5. Delete Room");
-            System.out.println("6. Generate Room Allocation Exception Report");
+//            System.out.println("2. View Room");
+            System.out.println("2. Create Room");
+            System.out.println("3. Update Room");
+            System.out.println("4. Delete Room");
+            System.out.println("5. Generate Room Allocation Exception Report");
             System.out.println("0. Back to Main Menu");
             int choice = InputUtils.readInt(scanner, "Choose an option: ");
 
@@ -52,19 +52,19 @@ public class RoomManagementModule {
                 case 1:
                     viewAllRooms();
                     break;
+//                case 2:
+//                    viewRoom(scanner);
+//                    break;
                 case 2:
-                    viewRoom(scanner);
-                    break;
-                case 3:
                     createRoom(scanner);
                     break;
-                case 4:
+                case 3:
                     updateRoom(scanner);
                     break;
-                case 5:
+                case 4:
                     deleteRoom(scanner);
                     break;
-                case 6:
+                case 5:
                     generateRoomAllocationExceptionReport(scanner);
                     break;
                 case 0:
