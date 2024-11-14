@@ -264,7 +264,6 @@ public class MainApp {
     }
     
     private void guestRelationOfficer(Scanner scanner) {
-        System.out.println("\n--- Guest Relationship Officer Menu ---");
         frontOfficeModule.frontOfficeMenu(scanner);
     }
 }
