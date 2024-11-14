@@ -24,4 +24,8 @@ public interface AccountEntitySessionBeanRemote {
     
     public List<Account> getAllPartnerAccounts();
     
+    public Account logInForGuest(String username, String password);
+    
+    public Account logInForPartner(String username, String password);
+    
 }

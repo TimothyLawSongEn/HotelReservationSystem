@@ -23,5 +23,9 @@ public interface AccountEntitySessionBeanLocal {
     public Account findGuestById(long id);
 
     public List<Account> getAllPartnerAccounts();
+
+    public Account logInForGuest(String username, String password);
+
+    public Account logInForPartner(String username, String password);
     
 }

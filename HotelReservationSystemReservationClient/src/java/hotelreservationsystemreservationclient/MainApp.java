@@ -77,7 +77,7 @@ public class MainApp {
             System.out.print("Enter Password: ");
             String password = scanner.nextLine();
 
-            Account guest = accountEntitySessionBeanRemote.logIn(username, password);
+            Account guest = accountEntitySessionBeanRemote.logInForGuest(username, password);
 
             if (guest != null) {
                 guestMainMenu(scanner, guest);
