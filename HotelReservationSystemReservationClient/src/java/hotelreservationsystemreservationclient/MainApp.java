@@ -44,9 +44,8 @@ public class MainApp {
             System.out.println("2. Register as Guest");
             System.out.println("3. Search Hotel Room");
             System.out.println("0. Exit");
-            System.out.print("Choose an option: ");
             
-            int choice = InputUtils.readInt(scanner, "");
+            int choice = InputUtils.readInt(scanner, "Choose an option: ");
 
             switch (choice) {
                 case 1:
