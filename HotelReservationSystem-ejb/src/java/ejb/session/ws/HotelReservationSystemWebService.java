@@ -46,7 +46,7 @@ public class HotelReservationSystemWebService {
 
     @WebMethod(operationName = "login")
     public Account login(@WebParam(name = "username") String username, @WebParam(name = "password") String password) {
-        Account account = accountEntitySessionBeanLocal.logIn(username, password);
+        Account account = accountEntitySessionBeanLocal.logInForPartner(username, password);
         System.out.println(account.getId() +" "+ account.getUsername() +" "+ account.getPassword());
         return account;
     }
