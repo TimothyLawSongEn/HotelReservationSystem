@@ -55,9 +55,10 @@ public class Room implements Serializable {
         this.roomType = roomType;
     }
     
-    public void updateBookingsAtCheckoutTime() { // if currentBooking.endDate>= TODAY, replace it with room.getExpectedBooking(), set expected to null
-        LocalDate today = LocalDate.now();
-        if (currentBooking != null && (currentBooking.getEndDate().isAfter(today) || currentBooking.getEndDate().isEqual(today))) {
+    public void updateBookingsAtCheckoutTime(LocalDate date) { // if currentBooking.endDate>= TODAY, replace it with room.getExpectedBooking(), set expected to null
+        if (currentBooking == null ||
+                (currentBooking != null 
+                && (currentBooking.getEndDate().isAfter(date) || currentBooking.getEndDate().isEqual(date)))) {
             currentBooking = expectedBooking;
             expectedBooking = null;
         }

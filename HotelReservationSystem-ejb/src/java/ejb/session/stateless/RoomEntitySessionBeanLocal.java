@@ -29,5 +29,7 @@ public interface RoomEntitySessionBeanLocal {
     public int getNonDisabledRoomCountForRoomType(Long roomTypeId);
 
     public List<Room> getAvailableRoomsForRoomTypeAndDate(RoomType roomType, LocalDate date);
+    
+    public void updateRoomBookingsAtCheckoutTime(LocalDate date);
 
 }

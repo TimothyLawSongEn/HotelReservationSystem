@@ -8,6 +8,7 @@ import entity.Room;
 import entity.RoomType;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -84,13 +85,48 @@ public class RoomEntitySessionBean implements RoomEntitySessionBeanRemote, RoomE
     
     @Override
     public List<Room> getAvailableRoomsForRoomTypeAndDate(RoomType roomType, LocalDate date) { // FIXME
-        return em.createQuery("SELECT r FROM Room r WHERE r.roomType = :roomType AND (r.currentBooking IS NULL) AND (r.expectedBooking IS NULL)", Room.class)
-                 .setParameter("roomType", roomType)
-//                 .setParameter("date", date)
-                 .getResultList();
+//        List<Room> list = em.createQuery("SELECT r FROM Room r WHERE r.roomType = :roomType "
+//                + "AND (r.currentBooking IS NULL) "
+//                + "AND (r.expectedBooking IS NULL)", Room.class)
+//                 .setParameter("roomType", roomType)
+//                 .getResultList();
+        // Note: code chunk below doesnt work
+//        List<Room> list = em.createQuery("SELECT r FROM Room r WHERE r.roomType = :roomType "
+//                + "AND (r.currentBooking IS NULL OR r.currentBooking.endDate <= :date) " // TODO: make date comparison work
+//                + "AND (r.expectedBooking IS NULL)", 
+//                Room.class)
+//            .setParameter("roomType", roomType)
+//            .setParameter("date", date)
+//            .getResultList();
+
+        List<Room> rooms = em.createQuery(
+            "SELECT r FROM Room r WHERE r.roomType = :roomType " +
+            "AND r.expectedBooking IS NULL",
+            Room.class)
+        .setParameter("roomType", roomType)
+        .getResultList();
+
+        // Filter rooms based on `currentBooking` criteria
+        List<Room> list = rooms.stream()
+            .filter(room -> room.getCurrentBooking() == null 
+                    || !room.getCurrentBooking().getEndDate().isAfter(date))
+            .collect(Collectors.toList());
         
-    //        query = "SELECT r FROM Room r WHERE r.roomType = :roomType AND " +
-    //                "(r.currentBooking IS NULL OR r.currentBooking.endDate <= :date) AND r.expectedBooking IS NULL" // TODO: make date comparison work
+//        if (list.isEmpty()) {
+//            System.out.println("NO AVAILABLE ROOMS for date:"+date+ ", roomtype:"+roomType);
+//        }
+        
+        return list;
+    }
+    
+    // Caller: ScheduleBean, client for manual update
+    @Override
+    public void updateRoomBookingsAtCheckoutTime(LocalDate date) {
+        List<Room> rooms = findAllRooms();
+        for (Room room : rooms) {
+            room.updateBookingsAtCheckoutTime(date);
+            updateRoom(room);
+        }
     }
 
 }

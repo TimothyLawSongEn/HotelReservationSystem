@@ -5,7 +5,7 @@
 package ejb.session.stateless;
 
 import entity.Room;
-import entity.RoomType;
+import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.Remote;
 import javax.validation.ConstraintViolationException;
@@ -26,5 +26,7 @@ public interface RoomEntitySessionBeanRemote {
     public List<Room> findAllRooms();
 
     public Room findRoomById(Long roomId);
+
+    public void updateRoomBookingsAtCheckoutTime(LocalDate date);
     
 }
