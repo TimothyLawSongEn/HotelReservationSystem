@@ -106,6 +106,11 @@ public class MainApp {
         
         Employee.EmployeeType type = employeeEntitySessionBeanRemote.logIn(username, password);
         
+        if (type == null) {
+            System.out.println("Invalid credentials");
+            return;
+        }
+        
         switch (type) {
             case ALLACCESS:
                 allAccess(scanner);
@@ -123,7 +128,7 @@ public class MainApp {
                 guestRelationOfficer(scanner);
                 break;
             default:
-                System.out.println("Invalid credentials");
+                System.out.println("Unrecognized employee type");
                 break;
         }
     }

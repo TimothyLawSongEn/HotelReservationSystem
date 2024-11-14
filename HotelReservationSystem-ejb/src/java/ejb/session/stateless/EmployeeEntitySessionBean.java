@@ -8,6 +8,7 @@ import entity.Employee;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolationException;
@@ -47,8 +48,12 @@ public class EmployeeEntitySessionBean implements EmployeeEntitySessionBeanRemot
     }
     
     private Employee findEmployeeByUsername(String username) {
-        return em.createQuery("SELECT e FROM Employee e WHERE e.username = :username", Employee.class)
+        try {
+            return em.createQuery("SELECT e FROM Employee e WHERE e.username = :username", Employee.class)
                 .setParameter("username", username)
                 .getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Return null if no employee is found with the given username
+        }
     }
 }
