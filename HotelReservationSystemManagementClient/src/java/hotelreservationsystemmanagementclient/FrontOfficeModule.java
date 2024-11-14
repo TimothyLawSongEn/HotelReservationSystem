@@ -119,7 +119,11 @@ public class FrontOfficeModule {
         for (Booking booking : selectedBookings) {
             try {
                 bookingEntitySessionBeanRemote.checkIn(booking.getId());
-                System.out.println("Checked in booking: " + booking);
+//                System.out.println("\nChecked in booking: " + booking);
+                System.out.println("\nBooking Id: " + booking.getId());
+                System.out.println("Start Date: " + booking.getStartDate());
+                System.out.println("End Date: " + booking.getEndDate());
+                System.out.println("Room Type: " + booking.getRoomType().getName());
                 System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
             } catch (EntityMissingException enfe) {
                 System.out.println(enfe.getMessage());
@@ -170,7 +174,7 @@ public class FrontOfficeModule {
         for (Booking booking : selectedBookings) {
             try {
                 bookingEntitySessionBeanRemote.checkOut(booking.getId());
-                System.out.println("Checked out booking: " + booking);
+                System.out.println("Successfully checked out of room number: " + booking.getAllocatedRoom().getRoomNumber());
             } catch (Exception e) {
                 System.out.println(e);
             }
@@ -296,7 +300,7 @@ public class FrontOfficeModule {
             System.out.println("Room Type: " + booking.getRoomType().getName());
             
             if (booking.getAllocatedRoom() != null) {
-                System.out.println(booking.getAllocatedRoom().getRoomNumber());
+                System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
             }
 
         } catch (Exception e) {

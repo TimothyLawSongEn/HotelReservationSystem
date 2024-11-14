@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 import javafx.util.Pair;
 import ejb.session.stateless.AccountEntitySessionBeanRemote;
+import util.client.InputUtils;
 import util.dto.RoomCount;
 
 /**
@@ -45,8 +46,7 @@ public class MainApp {
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
             
-            int choice = scanner.nextInt();
-            scanner.nextLine(); 
+            int choice = InputUtils.readInt(scanner, "> ");
 
             switch (choice) {
                 case 1:
@@ -71,11 +71,8 @@ public class MainApp {
     
     public void guestLogIn(Scanner scanner) {
         try {
-            System.out.print("Enter Username: ");
-            String username = scanner.nextLine();
-
-            System.out.print("Enter Password: ");
-            String password = scanner.nextLine();
+            String username = InputUtils.readString(scanner, "Enter Username: ");
+            String password = InputUtils.readString(scanner, "Enter Password: ");
 
             Account guest = accountEntitySessionBeanRemote.logInForGuest(username, password);
 
@@ -91,14 +88,9 @@ public class MainApp {
         try {
             System.out.println("\n --- Registering As Guest ---");
         
-            System.out.print("Enter Username: ");
-            String username = scanner.nextLine();
-            
-            System.out.print("Enter Email Address: ");
-            String email = scanner.nextLine();
-
-            System.out.print("Create Password: ");
-            String password = scanner.nextLine();
+            String username = InputUtils.readString(scanner, "Create Username: ");
+            String email = InputUtils.readString(scanner, "Enter Email Address: ");
+            String password = InputUtils.readString(scanner, "Create Password: ");
 
             Account newGuest = new Account(username, email, password);
             Account persistedGuest = accountEntitySessionBeanRemote.createAccount(newGuest);
@@ -146,11 +138,8 @@ public class MainApp {
     public void searchRooms(Scanner scanner, Account guest) {
         try {
             System.out.println("\n--- Search Rooms ---");
-            System.out.print("Enter Booking Start Date (YYYY-MM-DD): ");
-            LocalDate startDate = LocalDate.parse(scanner.nextLine());
-
-            System.out.print("Enter Booking End Date (YYYY-MM-DD): ");
-            LocalDate endDate = LocalDate.parse(scanner.nextLine()); 
+            LocalDate startDate = InputUtils.readDate(scanner, "Enter Start Date (YYYY-MM-DD): ");
+            LocalDate endDate = InputUtils.readDate(scanner, "Enter End Date (YYYY-MM-DD): ");
             
             // Show Available Room Types Between Start and End Date
             List<RoomCount> rooms = availabilitySessionBeanRemote.getAvailableRoomTypesWithCount(startDate, endDate);
@@ -158,25 +147,23 @@ public class MainApp {
             for (RoomCount room:rooms) {
                 RoomType type = room.getRoomType();
                 double rate = availabilitySessionBeanRemote.calculateReservationFee(type.getId(), startDate, endDate);
-                String output = String.format("Room Type: %s, Reservation Fees: %.2f, Availability: %d", type.getName(), rate, room.getCount());
+                String output = String.format("Room ID: %d, Room Type: %s, Reservation Fees: %.2f, Availability: %d", type.getId(), type.getName(), rate, room.getCount());
                 System.out.println(output);
             }
 
             if (guest != null) {
-                System.out.println("Proceed to book room?");
-                System.out.println("1. Yes");
-                System.out.println("2. No");
+                String confirmation = InputUtils.readString(scanner, "Proceed to book room? (y/n): ");
                 System.out.print("Choose an option: ");
 
-                int choice = scanner.nextInt();
-                scanner.nextLine();
-
-                if (choice == 1) {
+                if ("y".equalsIgnoreCase(confirmation)) {
                     createReservation(scanner, startDate, endDate, guest);
+                    System.out.println("Reservation successfully made.");
+                } else {
+                    System.out.println("Reservation canceled.");
                 }
             }
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("An error occurred while reserving room " + e.getMessage());
         }
     }
     
@@ -184,8 +171,7 @@ public class MainApp {
         System.out.println("\n--- Create Reservation ---");
         
         try {
-            System.out.print("Enter Room Type ID for Reservation: ");
-            Long roomTypeId = Long.parseLong(scanner.nextLine());
+            Long roomTypeId = InputUtils.readLong(scanner, "Enter Room Type ID for Reservation: ");
             
             Booking persistedBooking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, roomTypeId, guest.getId());
 
@@ -199,13 +185,19 @@ public class MainApp {
     public void viewReservationDetails(Scanner scanner, Account guest) {
         System.out.println("\n--- View Reservation Details ---");
         
-        System.out.print("Enter Reservation ID: ");
-        Long bookingId = Long.parseLong(scanner.nextLine());
+        Long bookingId = InputUtils.readLong(scanner, "Enter Reservation ID: ");
         
         Booking booking = bookingEntitySessionBeanRemote.getBookingById(bookingId);
         
         System.out.println("\n--- Booking Details Can Be Found Below ---");
-        System.out.println(booking);
+        System.out.println("\nBooking Id: " + booking.getId());
+        System.out.println("Start Date: " + booking.getStartDate());
+        System.out.println("End Date: " + booking.getEndDate());
+        System.out.println("Room Type: " + booking.getRoomType().getName());
+
+        if (booking.getAllocatedRoom() != null) {
+            System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
+        }
     }
     
     public void viewAllReservations(Scanner scanner, Account guest) {
@@ -213,8 +205,20 @@ public class MainApp {
         
         List<Booking> bookings = bookingEntitySessionBeanRemote.getBookingsByAccountId(guest.getId());
         
-        for (Booking booking:bookings) {
-            System.out.println(booking);
+        if (bookings.size() > 0) {
+            for (Booking booking:bookings) {
+                System.out.println("\nBooking Id: " + booking.getId());
+                System.out.println("Start Date: " + booking.getStartDate());
+                System.out.println("End Date: " + booking.getEndDate());
+                System.out.println("Room Type: " + booking.getRoomType().getName());
+
+                if (booking.getAllocatedRoom() != null) {
+                    System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
+                }
+            }    
+        } else {
+            System.out.println("No Reservation Placed");
         }
+        
     }
 }
