@@ -14,14 +14,14 @@ import entity.Room;
 import entity.RoomType;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
+import javax.ejb.Singleton;
 
 /**
  *
  * @author clara
  */
-@Stateless
+@Singleton
 @LocalBean
 public class TestDataInitSessionBean {
 
