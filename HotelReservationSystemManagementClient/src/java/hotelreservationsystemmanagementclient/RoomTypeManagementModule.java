@@ -154,23 +154,23 @@ public class RoomTypeManagementModule {
                 roomType.setName(newRoomTypeName);
             }
 
-            String newNormalRate = InputUtils.readString(scanner, "Enter new Normal Rate (leave blank to keep current): ");
-            if (!newNormalRate.isEmpty()) {
-                try {
-                    roomType.setNormalRate(Double.parseDouble(newNormalRate));
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid input for Normal Rate. Keeping the current value.");
-                }
-            }
-
-            String newPublishedRate = InputUtils.readString(scanner, "Enter new Published Rate (leave blank to keep current): ");
-            if (!newPublishedRate.isEmpty()) {
-                try {
-                    roomType.setPublishedRate(Double.parseDouble(newPublishedRate));
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid input for Published Rate. Keeping the current value.");
-                }
-            }
+//            String newNormalRate = InputUtils.readString(scanner, "Enter new Normal Rate (leave blank to keep current): ");
+//            if (!newNormalRate.isEmpty()) {
+//                try {
+//                    roomType.setNormalRate(Double.parseDouble(newNormalRate));
+//                } catch (NumberFormatException e) {
+//                    System.out.println("Invalid input for Normal Rate. Keeping the current value.");
+//                }
+//            }
+//
+//            String newPublishedRate = InputUtils.readString(scanner, "Enter new Published Rate (leave blank to keep current): ");
+//            if (!newPublishedRate.isEmpty()) {
+//                try {
+//                    roomType.setPublishedRate(Double.parseDouble(newPublishedRate));
+//                } catch (NumberFormatException e) {
+//                    System.out.println("Invalid input for Published Rate. Keeping the current value.");
+//                }
+//            }
 
             // Update the room type
             RoomType updatedRoomType = roomTypeEntitySessionBeanRemote.updateRoomType(roomType);

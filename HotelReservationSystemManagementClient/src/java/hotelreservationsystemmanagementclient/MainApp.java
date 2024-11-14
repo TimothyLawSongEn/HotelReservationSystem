@@ -24,6 +24,7 @@ public class MainApp {
     
     private RoomManagementModule roomManagementModule;
     private RoomTypeManagementModule roomTypeManagementModule;
+    private NonSpecialRateManagementModule nonSpecialRateManagementModule;
     private SpecialRateManagementModule specialRateManagementModule;
     private FrontOfficeModule frontOfficeModule;
     private EmployeePartnerManagementModule employeePartnerManagementModule;
@@ -36,6 +37,7 @@ public class MainApp {
         
         this.roomManagementModule = new RoomManagementModule(roomEntitySessionBeanRemote, roomTypeEntitySessionBeanRemote, bookingEntitySessionBeanRemote);
         this.roomTypeManagementModule = new RoomTypeManagementModule(roomTypeEntitySessionBeanRemote);
+        this.nonSpecialRateManagementModule = new NonSpecialRateManagementModule(roomTypeEntitySessionBeanRemote);
         this.specialRateManagementModule = new SpecialRateManagementModule(roomTypeEntitySessionBeanRemote, roomRateEntitySessionBeanRemote);
         this.frontOfficeModule = new FrontOfficeModule(availabilitySessionBeanRemote, bookingEntitySessionBeanRemote, accountEntitySessionBeanRemote, roomEntitySessionBeanRemote);
         this.employeePartnerManagementModule = new EmployeePartnerManagementModule(employeeEntitySessionBeanRemote, accountEntitySessionBeanRemote);
@@ -237,13 +239,17 @@ public class MainApp {
         
         while (loggedIn) {
             System.out.println("\n---Sales Manager Menu---");
-            System.out.println("1. Manage Special Rates");
+            System.out.println("1. Manage Non-Special Rates [PUBLISHED, NORMAL]");
+            System.out.println("2. Manage Special Rates [PROMO, PEAK]");
             System.out.println("0. Log Out");
             
             int choice = InputUtils.readInt(scanner, "> ");
             
             switch (choice) {
                 case 1:
+                    nonSpecialRateManagementModule.manageNonSpecialRates(scanner);
+                    break;
+                case 2:
                     specialRateManagementModule.manageSpecialRates(scanner);
                     break;
                 case 0:

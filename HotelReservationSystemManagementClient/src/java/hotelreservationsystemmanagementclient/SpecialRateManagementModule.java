@@ -152,7 +152,7 @@ public class SpecialRateManagementModule {
             for (int i = 0; i < roomTypes.size(); i++) {
                 System.out.printf("%d: %s\n", i + 1, roomTypes.get(i).getName());
             }
-            int roomTypeIndex = InputUtils.readInt(scanner, "") - 1;
+            int roomTypeIndex = InputUtils.readInt(scanner, "> ") - 1;
             RoomType selectedRoomType = roomTypes.get(roomTypeIndex);
 
             // Get rate type
