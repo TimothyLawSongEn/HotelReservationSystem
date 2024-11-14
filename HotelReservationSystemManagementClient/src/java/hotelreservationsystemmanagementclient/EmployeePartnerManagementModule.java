@@ -131,9 +131,13 @@ public class EmployeePartnerManagementModule {
     private void viewAllPartners() {
         List<Account> accounts = accountEntitySessionBeanRemote.getAllPartnerAccounts();
         
-        System.out.println("\nAll partner accounts are listed below");
-        for (Account a: accounts) {
-            System.out.println(a);
+        if (accounts.size() > 0) {
+            System.out.println("\nAll partner accounts are listed below");
+            for (Account a: accounts) {
+                System.out.println("Partner Account Id: " + a.getId() + ", Partner Username: " + a.getUsername());
+            }    
+        } else {
+            System.out.println("No partner accounts were created.");
         }
     }
 }
