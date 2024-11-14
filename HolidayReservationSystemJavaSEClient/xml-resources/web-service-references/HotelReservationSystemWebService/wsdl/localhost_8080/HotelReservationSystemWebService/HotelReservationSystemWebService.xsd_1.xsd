@@ -8,6 +8,10 @@
 
 <xs:element name="WrongAccountTypeException" type="tns:WrongAccountTypeException"/>
 
+<xs:element name="getRoomReservationRate" type="tns:getRoomReservationRate"/>
+
+<xs:element name="getRoomReservationRateResponse" type="tns:getRoomReservationRateResponse"/>
+
 <xs:element name="hello" type="tns:hello"/>
 
 <xs:element name="helloResponse" type="tns:helloResponse"/>
@@ -54,6 +58,7 @@
 
 <xs:complexType name="roomType">
 <xs:sequence>
+<xs:element name="id" type="xs:long"/>
 <xs:element name="disabled" type="xs:boolean"/>
 <xs:element name="name" type="xs:string" minOccurs="0"/>
 <xs:element name="nextHigherRoomType" type="tns:roomType" minOccurs="0"/>
@@ -147,6 +152,26 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="getRoomReservationRate">
+<xs:sequence>
+<xs:element name="startDate" type="xs:string" minOccurs="0"/>
+<xs:element name="endDate" type="xs:string" minOccurs="0"/>
+<xs:element name="roomTypeId" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getRoomReservationRateResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:double"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="Exception">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="reserveRoom">
 <xs:sequence>
 <xs:element name="startDate" type="xs:string" minOccurs="0"/>
@@ -159,12 +184,6 @@
 <xs:complexType name="reserveRoomResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:booking" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="Exception">
-<xs:sequence>
-<xs:element name="message" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 

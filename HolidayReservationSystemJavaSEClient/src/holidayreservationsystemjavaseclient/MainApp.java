@@ -85,7 +85,11 @@ public class MainApp {
             List<RoomCount> rooms = service.getHotelReservationSystemWebServicePort().searchRooms(startDate, endDate);
 
             for (RoomCount room:rooms) {
-                System.out.println("Room Type: " + room.getRoomType().getName() + ", Available Room Count: " + room.getCount());
+                RoomType type = room.getRoomType();
+                int count = room.getCount();
+                double rate = service.getHotelReservationSystemWebServicePort().getRoomReservationRate(startDate, endDate, type.getId());
+                String output = String.format("Room Type: %s, Room Rate: %.2f, Available Rooms: %d", type.getName(), rate, count);
+                System.out.println(output);
             }
 
             if (partner != null) {

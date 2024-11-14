@@ -16,14 +16,17 @@
 <message name="WrongAccountTypeException">
 <part name="fault" element="tns:WrongAccountTypeException"/>
 </message>
-<message name="searchRooms">
-<part name="parameters" element="tns:searchRooms"/>
+<message name="hello">
+<part name="parameters" element="tns:hello"/>
 </message>
-<message name="searchRoomsResponse">
-<part name="parameters" element="tns:searchRoomsResponse"/>
+<message name="helloResponse">
+<part name="parameters" element="tns:helloResponse"/>
 </message>
-<message name="InvalidDateRangeException">
-<part name="fault" element="tns:InvalidDateRangeException"/>
+<message name="login">
+<part name="parameters" element="tns:login"/>
+</message>
+<message name="loginResponse">
+<part name="parameters" element="tns:loginResponse"/>
 </message>
 <message name="reserveRoom">
 <part name="parameters" element="tns:reserveRoom"/>
@@ -40,17 +43,20 @@
 <message name="viewReservationDetailsResponse">
 <part name="parameters" element="tns:viewReservationDetailsResponse"/>
 </message>
-<message name="hello">
-<part name="parameters" element="tns:hello"/>
+<message name="getRoomReservationRate">
+<part name="parameters" element="tns:getRoomReservationRate"/>
 </message>
-<message name="helloResponse">
-<part name="parameters" element="tns:helloResponse"/>
+<message name="getRoomReservationRateResponse">
+<part name="parameters" element="tns:getRoomReservationRateResponse"/>
 </message>
-<message name="login">
-<part name="parameters" element="tns:login"/>
+<message name="searchRooms">
+<part name="parameters" element="tns:searchRooms"/>
 </message>
-<message name="loginResponse">
-<part name="parameters" element="tns:loginResponse"/>
+<message name="searchRoomsResponse">
+<part name="parameters" element="tns:searchRoomsResponse"/>
+</message>
+<message name="InvalidDateRangeException">
+<part name="fault" element="tns:InvalidDateRangeException"/>
 </message>
 <portType name="HotelReservationSystemWebService">
 <operation name="viewAllReservations">
@@ -59,10 +65,13 @@
 <fault message="tns:EntityMissingException" name="EntityMissingException" wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewAllReservations/Fault/EntityMissingException"/>
 <fault message="tns:WrongAccountTypeException" name="WrongAccountTypeException" wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewAllReservations/Fault/WrongAccountTypeException"/>
 </operation>
-<operation name="searchRooms">
-<input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/searchRoomsRequest" message="tns:searchRooms"/>
-<output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/searchRoomsResponse" message="tns:searchRoomsResponse"/>
-<fault message="tns:InvalidDateRangeException" name="InvalidDateRangeException" wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/searchRooms/Fault/InvalidDateRangeException"/>
+<operation name="hello">
+<input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/helloRequest" message="tns:hello"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/helloResponse" message="tns:helloResponse"/>
+</operation>
+<operation name="login">
+<input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/loginRequest" message="tns:login"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/loginResponse" message="tns:loginResponse"/>
 </operation>
 <operation name="reserveRoom">
 <input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/reserveRoomRequest" message="tns:reserveRoom"/>
@@ -73,13 +82,15 @@
 <input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewReservationDetailsRequest" message="tns:viewReservationDetails"/>
 <output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewReservationDetailsResponse" message="tns:viewReservationDetailsResponse"/>
 </operation>
-<operation name="hello">
-<input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/helloRequest" message="tns:hello"/>
-<output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/helloResponse" message="tns:helloResponse"/>
+<operation name="getRoomReservationRate">
+<input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/getRoomReservationRateRequest" message="tns:getRoomReservationRate"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/getRoomReservationRateResponse" message="tns:getRoomReservationRateResponse"/>
+<fault message="tns:Exception" name="Exception" wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/getRoomReservationRate/Fault/Exception"/>
 </operation>
-<operation name="login">
-<input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/loginRequest" message="tns:login"/>
-<output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/loginResponse" message="tns:loginResponse"/>
+<operation name="searchRooms">
+<input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/searchRoomsRequest" message="tns:searchRooms"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/searchRoomsResponse" message="tns:searchRoomsResponse"/>
+<fault message="tns:InvalidDateRangeException" name="InvalidDateRangeException" wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/searchRooms/Fault/InvalidDateRangeException"/>
 </operation>
 </portType>
 <binding name="HotelReservationSystemWebServicePortBinding" type="tns:HotelReservationSystemWebService">
@@ -99,7 +110,7 @@
 <soap:fault name="WrongAccountTypeException" use="literal"/>
 </fault>
 </operation>
-<operation name="searchRooms">
+<operation name="hello">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -107,9 +118,15 @@
 <output>
 <soap:body use="literal"/>
 </output>
-<fault name="InvalidDateRangeException">
-<soap:fault name="InvalidDateRangeException" use="literal"/>
-</fault>
+</operation>
+<operation name="login">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
 </operation>
 <operation name="reserveRoom">
 <soap:operation soapAction=""/>
@@ -132,7 +149,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="hello">
+<operation name="getRoomReservationRate">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -140,8 +157,11 @@
 <output>
 <soap:body use="literal"/>
 </output>
+<fault name="Exception">
+<soap:fault name="Exception" use="literal"/>
+</fault>
 </operation>
-<operation name="login">
+<operation name="searchRooms">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -149,6 +169,9 @@
 <output>
 <soap:body use="literal"/>
 </output>
+<fault name="InvalidDateRangeException">
+<soap:fault name="InvalidDateRangeException" use="literal"/>
+</fault>
 </operation>
 </binding>
 <service name="HotelReservationSystemWebService">

@@ -158,7 +158,6 @@ public class MainApp {
             for (RoomCount room:rooms) {
                 RoomType type = room.getRoomType();
                 double rate = availabilitySessionBeanRemote.calculateReservationFee(type.getId(), startDate, endDate);
-                System.out.println(rate);
                 String output = String.format("Room Type: %s, Reservation Fees: %.2f, Availability: %d", type.getName(), rate, room.getCount());
                 System.out.println(output);
             }
