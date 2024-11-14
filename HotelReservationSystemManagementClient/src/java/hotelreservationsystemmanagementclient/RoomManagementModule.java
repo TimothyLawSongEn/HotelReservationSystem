@@ -209,7 +209,8 @@ public class RoomManagementModule {
             Room room = roomEntitySessionBeanRemote.findRoomById(roomId);
             if (room != null) {
                 // Confirm deletion
-                System.out.println("Room Details: " + room);
+//                System.out.println("Room Details: " + room);
+                System.out.printf("Room ID: %d\nRoom Number: %s\nRoom Type: %s\n", room.getId(), room.getRoomNumber(), room.getRoomType().getName());
                 String confirmation = InputUtils.readString(scanner, "Are you sure you want to delete this Room? (y/n): ");
 
                 if ("y".equalsIgnoreCase(confirmation)) {
@@ -228,7 +229,7 @@ public class RoomManagementModule {
     
     private void generateRoomAllocationExceptionReport(Scanner scanner) {
         try {
-            System.out.print("Enter date (YYYY-MM-DD): ");
+//            System.out.print("Enter date (YYYY-MM-DD): ");
             LocalDate date = InputUtils.readDate(scanner, "Enter date (YYYY-MM-DD): ");
             // Generate the report
             Pair<List<Booking>, List<Booking>> report = bookingEntitySessionBeanRemote.getBookingsWithRoomAllocException(date);
