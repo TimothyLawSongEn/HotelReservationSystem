@@ -55,6 +55,7 @@ public class RoomTypeManagementModule {
                     return;
                 default:
                     System.out.println("Invalid option. Please try again.");
+                    break;
             }
         }
     }

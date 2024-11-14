@@ -53,6 +53,7 @@ public class EmployeePartnerManagementModule {
                     return;
                 default:
                     System.out.println("Invalid option. Please try again.");
+                    break;
             }
         }
     }
@@ -84,6 +85,7 @@ public class EmployeePartnerManagementModule {
                 break;
             default:
                 System.out.println("Invalid option. Please try again.");
+                break;
         }
         
         String username = InputUtils.readString(scanner, "Create Username for Employee: ");

@@ -60,6 +60,7 @@ public class MainApp {
                     return;
                 default:
                     System.out.println("Invalid option. Please try again.");
+                    break;
             }
         }
     }
@@ -95,6 +96,7 @@ public class MainApp {
                     return;
                 default:
                     System.out.println("Invalid option. Please try again.");
+                    break;
             }
         }
     }
@@ -168,6 +170,7 @@ public class MainApp {
                     return;
                 default:
                     System.out.println("Invalid option. Please try again.");
+                    break;
             }
         }
     }
@@ -193,6 +196,7 @@ public class MainApp {
                     break;
                 default:
                     System.out.println("Invalid option. Please try again.");
+                    break;
             }
         }
     }
@@ -222,6 +226,7 @@ public class MainApp {
                     break;
                 default:
                     System.out.println("Invalid option. Please try again.");
+                    break;
             }
         }
     }
@@ -247,6 +252,7 @@ public class MainApp {
                     break;
                 default:
                     System.out.println("Invalid option. Please try again.");
+                    break;
             }
         }
     }
