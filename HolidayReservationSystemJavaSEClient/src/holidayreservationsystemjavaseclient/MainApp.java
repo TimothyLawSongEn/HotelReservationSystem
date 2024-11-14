@@ -88,7 +88,7 @@ public class MainApp {
                 RoomType type = room.getRoomType();
                 int count = room.getCount();
                 double rate = service.getHotelReservationSystemWebServicePort().getRoomReservationRate(startDate, endDate, type.getId());
-                String output = String.format("Room Type: %s, Room Rate: %.2f, Available Rooms: %d", type.getName(), rate, count);
+                String output = String.format("Room ID: %d, Room Type: %s, Room Rate: %.2f, Available Rooms: %d", type.getId(), type.getName(), rate, count);
                 System.out.println(output);
             }
 
