@@ -5,7 +5,6 @@
 package holidayreservationsystemjavaseclient;
 
 import ws.hors.HotelReservationSystemWebService_Service;
-
 /**
  *
  * @author clara

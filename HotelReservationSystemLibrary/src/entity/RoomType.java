@@ -11,6 +11,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  *
@@ -21,6 +22,7 @@ public class RoomType implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // Primary Key
+    @XmlElement(required = true)
     private Long id;
 
     @NotNull(message = "RoomType name cannot be null")

@@ -15,11 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javafx.util.Pair;
 import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
+import util.dto.RoomCount;
 import util.exception.InvalidDateRangeException;
 
 /**
@@ -77,9 +77,9 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
 
     // caller: client during search rooms
     @Override
-    public List<Pair<RoomType, Integer>> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException {
+    public List<RoomCount> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException {
         validateBookingDateRange(startDate, endDate);
-        List<Pair<RoomType, Integer>> availableRoomTypes = new ArrayList<>();
+        List<RoomCount> availableRoomTypes = new ArrayList<>();
 
         // Get all room types
         List<RoomType> roomTypes = roomTypeEntitySessionBeanLocal.findAllRoomTypes();
@@ -112,7 +112,8 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
             }
 
             if (maxOccupied < roomCount) {
-                availableRoomTypes.add(new Pair<>(roomType, roomCount - maxOccupied));
+//                availableRoomTypes.add(new Pair<>(roomType, roomCount - maxOccupied));
+                availableRoomTypes.add(new RoomCount(roomType, roomCount - maxOccupied));
             }
         }
         return availableRoomTypes;
@@ -174,6 +175,15 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
         if (startDate.isBefore(LocalDate.now()) || endDate.isBefore(LocalDate.now())) {
             throw new InvalidDateRangeException("Start date and end date must not be in the past.");
         }
+    }
+    
+    @Override
+    public double calculateReservationFee(Long roomTypeId, LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException {
+        RoomType roomType = roomTypeEntitySessionBeanLocal.findRoomType(roomTypeId);
+        if (roomType == null) {
+            throw new InvalidDateRangeException("Room type not found");
+        }
+        return roomType.calculateTotalGuestReservationFee(startDate, endDate);
     }
     
 }

@@ -19,6 +19,7 @@ import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.ejb.Stateless;
+import util.dto.RoomCount;
 import util.exception.EntityMissingException;
 import util.exception.InvalidDateRangeException;
 import util.exception.WrongAccountTypeException;
@@ -51,7 +52,7 @@ public class HotelReservationSystemWebService {
     }
 
     @WebMethod(operationName = "searchRooms")
-    public List<Pair<RoomType, Integer>> searchRooms(
+    public List<RoomCount> searchRooms(
         @WebParam(name = "startDate") String startDateStr,
         @WebParam(name = "endDate") String endDateStr)
         throws InvalidDateRangeException {
@@ -60,8 +61,20 @@ public class HotelReservationSystemWebService {
         LocalDate endDate = LocalDate.parse(endDateStr);
 
         // todo: break nextHigherRoomType, roomtype roomrate field can set to null (xmltransient)
-        List<Pair<RoomType, Integer>> roomtypes = availabilitySessionBeanLocal.getAvailableRoomTypesWithCount(startDate, endDate);
+        List<RoomCount> roomtypes = availabilitySessionBeanLocal.getAvailableRoomTypesWithCount(startDate, endDate);
         return roomtypes;
+    }
+    
+    @WebMethod(operationName = "getRoomReservationRate")
+    public double getRoomReservationRate(
+        @WebParam(name = "startDate") String startDateStr,
+        @WebParam(name = "endDate") String endDateStr, 
+        @WebParam(name = "roomTypeId") long roomTypeId 
+    ) throws Exception {
+        LocalDate startDate = LocalDate.parse(startDateStr);
+        LocalDate endDate = LocalDate.parse(endDateStr);
+        double rate = availabilitySessionBeanLocal.calculateReservationFee(roomTypeId, startDate, endDate);
+        return rate;
     }
     
     @WebMethod(operationName = "reserveRoom")

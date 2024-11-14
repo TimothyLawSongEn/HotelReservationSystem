@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import javafx.util.Pair;
 import javax.ejb.Local;
+import util.dto.RoomCount;
 import util.exception.InvalidDateRangeException;
 
 /**
@@ -22,6 +23,8 @@ public interface AvailabilitySessionBeanLocal {
     
     public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception; // caller: booking bean
     
-    public List<Pair<RoomType, Integer>> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException; // caller: web service
+    public List<RoomCount> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException; // caller: web service
+
+    public double calculateReservationFee(Long roomTypeId, LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException;
 
 }

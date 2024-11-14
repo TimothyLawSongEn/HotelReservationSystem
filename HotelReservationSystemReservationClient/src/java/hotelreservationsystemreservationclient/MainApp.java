@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 import javafx.util.Pair;
 import ejb.session.stateless.AccountEntitySessionBeanRemote;
+import util.dto.RoomCount;
 
 /**
  *
@@ -63,6 +64,7 @@ public class MainApp {
                     return;
                 default:
                     System.out.println("Invalid option. Please try again.");
+                    break;
             }
         }
     }
@@ -134,7 +136,9 @@ public class MainApp {
                 case 0:
                     System.out.println("Logging out...");
                     loggedIn = false;
-                    
+                default:
+                    System.out.println("Invalid option. Please try again.");
+                    break;    
             }
         }
     }
@@ -149,10 +153,13 @@ public class MainApp {
             LocalDate endDate = LocalDate.parse(scanner.nextLine()); 
             
             // Show Available Room Types Between Start and End Date
-            List<Pair<RoomType, Integer>> rooms = availabilitySessionBeanRemote.getAvailableRoomTypesWithCount(startDate, endDate);
-
-            for (Pair<RoomType, Integer> room:rooms) {
-                System.out.println(room);
+            List<RoomCount> rooms = availabilitySessionBeanRemote.getAvailableRoomTypesWithCount(startDate, endDate);
+            
+            for (RoomCount room:rooms) {
+                RoomType type = room.getRoomType();
+                double rate = availabilitySessionBeanRemote.calculateReservationFee(type.getId(), startDate, endDate);
+                String output = String.format("Room Type: %s, Reservation Fees: %.2f, Availability: %d", type.getName(), rate, room.getCount());
+                System.out.println(output);
             }
 
             if (guest != null) {
@@ -169,7 +176,7 @@ public class MainApp {
                 }
             }
         } catch (Exception e) {
-            System.out.println("An error occurred while searching room");
+            System.out.println(e);
         }
     }
     

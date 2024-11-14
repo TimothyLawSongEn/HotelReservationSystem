@@ -4,11 +4,10 @@
  */
 package ejb.session.singleton;
 
-import entity.RoomType;
 import java.time.LocalDate;
 import java.util.List;
-import javafx.util.Pair;
 import javax.ejb.Remote;
+import util.dto.RoomCount;
 import util.exception.InvalidDateRangeException;
 
 /**
@@ -18,6 +17,7 @@ import util.exception.InvalidDateRangeException;
 @Remote
 public interface AvailabilitySessionBeanRemote {
 
-    public List<Pair<RoomType, Integer>> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException;
+    public List<RoomCount> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException;
     
+    public double calculateReservationFee(Long roomTypeId, LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException;
 }

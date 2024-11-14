@@ -21,6 +21,7 @@ import util.exception.EntityMissingException;
 import ejb.session.stateless.AccountEntitySessionBeanRemote;
 import ejb.session.stateless.RoomEntitySessionBeanRemote;
 import util.client.InputUtils;
+import util.dto.RoomCount;
 
 /**
  *
@@ -205,7 +206,7 @@ public class FrontOfficeModule {
 
             try {
                 // Call the availability session bean to get available room types and their counts
-                List<Pair<RoomType, Integer>> availableRoomTypes = availabilitySessionBeanRemote.getAvailableRoomTypesWithCount(startDate, endDate);
+                List<RoomCount> availableRoomTypes = availabilitySessionBeanRemote.getAvailableRoomTypesWithCount(startDate, endDate);
 
                 if (availableRoomTypes.isEmpty()) {
                     System.out.println("No available rooms for the given dates.");
@@ -227,9 +228,9 @@ public class FrontOfficeModule {
                     // Display the available room types and their counts
                     System.out.println("Available room types:");
                     for (int i = 0; i < availableRoomTypes.size(); i++) {
-                        Pair<RoomType, Integer> roomTypePair = availableRoomTypes.get(i);
-                        RoomType roomType = roomTypePair.getKey();
-                        int availableCount = roomTypePair.getValue();
+                        RoomCount roomTypePair = availableRoomTypes.get(i);
+                        RoomType roomType = roomTypePair.getRoomType();
+                        int availableCount = roomTypePair.getCount();
 
                         System.out.printf("%d: %s (Available: %d) $%.2f\n", i + 1, roomType.getName(), availableCount, roomType.calculateTotalWalkinFee(startDate, endDate));
                     }
@@ -261,7 +262,7 @@ public class FrontOfficeModule {
         }
     }
 
-    private void reserveRoomType(List<Pair<RoomType, Integer>> availableRoomTypes, LocalDate startDate, LocalDate endDate, Scanner scanner) {
+    private void reserveRoomType(List<RoomCount> availableRoomTypes, LocalDate startDate, LocalDate endDate, Scanner scanner) {
         try {
             int roomTypeChoice;
             while (true) {
@@ -285,8 +286,8 @@ public class FrontOfficeModule {
                 return;
             }
 
-            Pair<RoomType, Integer> selectedRoomTypePair = availableRoomTypes.get(roomTypeChoice - 1);
-            Long selectedRoomTypeId = selectedRoomTypePair.getKey().getId();
+            RoomCount selectedRoomTypePair = availableRoomTypes.get(roomTypeChoice - 1);
+            Long selectedRoomTypeId = selectedRoomTypePair.getRoomType().getId();
             Booking booking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, selectedRoomTypeId, guestId);
             System.out.println("Room successfully reserved. Your booking details: " + booking);
 
