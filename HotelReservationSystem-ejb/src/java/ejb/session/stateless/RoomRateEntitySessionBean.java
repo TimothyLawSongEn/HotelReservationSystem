@@ -5,6 +5,7 @@
 package ejb.session.stateless;
 
 import entity.RoomRate;
+import entity.RoomType;
 import java.time.LocalDate;
 
 import javax.ejb.Stateless;
@@ -29,6 +30,7 @@ public class RoomRateEntitySessionBean implements RoomRateEntitySessionBeanRemot
     public void persistRoomRate(RoomRate roomRate) throws InvalidDateRangeException {
         validateRoomRateDateRange(roomRate.getStartDate(), roomRate.getEndDate());
         em.persist(roomRate);
+        roomRate.getRoomType().addRates(roomRate);
     }
 
     // Update an existing RoomRate
@@ -44,7 +46,11 @@ public class RoomRateEntitySessionBean implements RoomRateEntitySessionBeanRemot
     public void deleteRoomRate(Long roomRateId) {
         RoomRate roomRate = em.find(RoomRate.class, roomRateId);
         if (roomRate != null) {
-            em.remove(roomRate);
+            RoomType roomType = roomRate.getRoomType(); // Assuming RoomRate has a reference to RoomType
+            if (roomType != null) {
+                roomType.removeRate(roomRate); // Remove from RoomType's side
+            }
+            em.remove(roomRate); // Remove RoomRate from database
         }
     }
 

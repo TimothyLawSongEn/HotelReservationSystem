@@ -42,7 +42,7 @@ public class RoomType implements Serializable {
     @Column(nullable = false, precision = 11, scale = 2)  // Mandatory normal rate
     private Double normalRate;
 
-    @OneToMany(mappedBy = "roomType", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "roomType", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<RoomRate> rates = new ArrayList<>();  // List for peak and promo rates
     
     @OneToOne
@@ -85,12 +85,16 @@ public class RoomType implements Serializable {
 
         for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
             Double dailyRate = normalRate;
+            System.out.println("CALCULATING");
             for (RoomRate rate : rates) {
+                System.out.print("rate: ");
+                System.out.println(rate);
                 if (!rate.getDisabled() && rate.isWithinPeriod(date)) {
                     if (rate.getSpecialRateType().equals(RoomRate.SpecialRateType.PROMO)) {
                         dailyRate = rate.getAmount();
                         break;  // Promo rate has the highest precedence
                     } else if (rate.getSpecialRateType().equals(RoomRate.SpecialRateType.PEAK)) {
+                        System.out.println("PEAKK");
                         dailyRate = rate.getAmount();
                     }
                 }
@@ -140,6 +144,10 @@ public class RoomType implements Serializable {
 
     public void addRates(RoomRate rate) {
         this.rates.add(rate);
+    }
+    
+    public void removeRate(RoomRate rate) {
+        this.rates.remove(rate);
     }
     
     public RoomType getNextHigherRoomType() {

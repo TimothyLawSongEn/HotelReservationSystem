@@ -20,6 +20,7 @@ import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import util.dto.RoomCount;
+import util.exception.EntityMissingException;
 import util.exception.InvalidDateRangeException;
 
 /**
@@ -178,10 +179,10 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
     }
     
     @Override
-    public double calculateReservationFee(Long roomTypeId, LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException {
+    public double calculateReservationFee(Long roomTypeId, LocalDate startDate, LocalDate endDate) throws EntityMissingException {
         RoomType roomType = roomTypeEntitySessionBeanLocal.findRoomType(roomTypeId);
         if (roomType == null) {
-            throw new InvalidDateRangeException("Room type not found");
+            throw new EntityMissingException("Room type not found");
         }
         return roomType.calculateTotalGuestReservationFee(startDate, endDate);
     }

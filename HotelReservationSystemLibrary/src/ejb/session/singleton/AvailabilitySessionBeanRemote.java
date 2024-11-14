@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.Remote;
 import util.dto.RoomCount;
+import util.exception.EntityMissingException;
 import util.exception.InvalidDateRangeException;
 
 /**
@@ -19,5 +20,5 @@ public interface AvailabilitySessionBeanRemote {
 
     public List<RoomCount> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException;
     
-    public double calculateReservationFee(Long roomTypeId, LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException;
+    public double calculateReservationFee(Long roomTypeId, LocalDate startDate, LocalDate endDate) throws EntityMissingException;
 }
