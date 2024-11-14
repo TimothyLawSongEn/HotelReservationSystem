@@ -46,7 +46,7 @@ public class MainApp {
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
             
-            int choice = InputUtils.readInt(scanner, "> ");
+            int choice = InputUtils.readInt(scanner, "");
 
             switch (choice) {
                 case 1:
@@ -175,7 +175,15 @@ public class MainApp {
             
             Booking persistedBooking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, roomTypeId, guest.getId());
 
-            System.out.println("Reservation successfully created " + persistedBooking);
+//            System.out.println("Reservation successfully created " + persistedBooking);
+            System.out.println("\nBooking Id: " + persistedBooking.getId());
+            System.out.println("Start Date: " + persistedBooking.getStartDate());
+            System.out.println("End Date: " + persistedBooking.getEndDate());
+            System.out.println("Room Type: " + persistedBooking.getRoomType().getName());
+
+            if (persistedBooking.getAllocatedRoom() != null) {
+                System.out.println("Allocated Room: " + persistedBooking.getAllocatedRoom().getRoomNumber());
+            }
             
         } catch (Exception e) {
             System.out.println("Failed to create new reservation");
@@ -189,14 +197,18 @@ public class MainApp {
         
         Booking booking = bookingEntitySessionBeanRemote.getBookingById(bookingId);
         
-        System.out.println("\n--- Booking Details Can Be Found Below ---");
-        System.out.println("\nBooking Id: " + booking.getId());
-        System.out.println("Start Date: " + booking.getStartDate());
-        System.out.println("End Date: " + booking.getEndDate());
-        System.out.println("Room Type: " + booking.getRoomType().getName());
+        if (booking.getAccount().getId().equals(guest.getId())) {
+            System.out.println("\n--- Booking Details Can Be Found Below ---");
+            System.out.println("\nBooking Id: " + booking.getId());
+            System.out.println("Start Date: " + booking.getStartDate());
+            System.out.println("End Date: " + booking.getEndDate());
+            System.out.println("Room Type: " + booking.getRoomType().getName());
 
-        if (booking.getAllocatedRoom() != null) {
-            System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
+            if (booking.getAllocatedRoom() != null) {
+                System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
+            }
+        } else {
+            System.out.println("\nInvalid Booking Id");
         }
     }
     
