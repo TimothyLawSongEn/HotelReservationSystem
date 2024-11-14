@@ -9,6 +9,7 @@ import entity.RoomType;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import util.client.InputUtils;
 
 /**
  *
@@ -32,8 +33,7 @@ public class RoomTypeManagementModule {
             System.out.println("4. Update RoomType");
             System.out.println("5. Delete RoomType");
             System.out.println("0. Back to Main Menu");
-            System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
+            int choice = InputUtils.readInt(scanner, "> ");
 
             switch (choice) {
                 case 1:
@@ -86,8 +86,7 @@ public class RoomTypeManagementModule {
 
     private void viewRoomType(Scanner scanner) {
         try {
-            System.out.print("Enter Room Type ID to view: ");
-            Long roomTypeId = scanner.nextLong();
+            Long roomTypeId = InputUtils.readLong(scanner, "Enter Room Type ID to view: ");
             RoomType roomType = roomTypeEntitySessionBeanRemote.findRoomType(roomTypeId);
 
             if (roomType != null) {
@@ -102,10 +101,8 @@ public class RoomTypeManagementModule {
 
     private void createRoomType(Scanner scanner) {
         try {
-            scanner.nextLine();
             // Collect room type details
-            System.out.print("Enter new room type name: ");
-            String roomTypeName = scanner.nextLine().trim();
+            String roomTypeName = InputUtils.readString(scanner, "Enter new room type name: ");
             
             // Add input validation if needed
             if (roomTypeName.isEmpty()) {
@@ -113,11 +110,9 @@ public class RoomTypeManagementModule {
                 return;
             }
 
-            System.out.print("Enter normal rate: ");
-            double normalRate = scanner.nextDouble();
+            double normalRate = InputUtils.readDouble(scanner, "Enter normal rate: ");
 
-            System.out.print("Enter published rate: ");
-            double publishedRate = scanner.nextDouble();
+            double publishedRate = InputUtils.readDouble(scanner, "Enter published rate: ");
 
             // Create the RoomType object and associated rates
             RoomType newRoomType = new RoomType(roomTypeName, normalRate, publishedRate);
@@ -126,9 +121,6 @@ public class RoomTypeManagementModule {
             roomTypeEntitySessionBeanRemote.createRoomType(newRoomType);
 
             System.out.println("Room type created successfully!");
-        } catch (InputMismatchException e) {
-            System.out.println("Invalid input. Please enter valid numeric values for rates.");
-            scanner.nextLine(); // Consume the invalid input
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
         }
@@ -140,8 +132,7 @@ public class RoomTypeManagementModule {
             viewAllRoomTypes();
 
             // Prompt for RoomType ID to update
-            System.out.print("Enter Room Type ID to update: ");
-            Long roomTypeId = scanner.nextLong();
+            Long roomTypeId = InputUtils.readLong(scanner, "Enter Room Type ID to update: ");
 
             // Fetch the room type to update
             RoomType roomType = roomTypeEntitySessionBeanRemote.findRoomType(roomTypeId);
@@ -157,15 +148,12 @@ public class RoomTypeManagementModule {
             System.out.println("Current Published Rate: " + roomType.getPublishedRate());
 
             // Prompt for new values, allowing user to skip by pressing Enter
-            scanner.nextLine();
-            System.out.print("Enter new Room Type name (leave blank to keep current): ");
-            String newRoomTypeName = scanner.nextLine().trim();
+            String newRoomTypeName = InputUtils.readString(scanner, "Enter new Room Type name (leave blank to keep current): ");
             if (!newRoomTypeName.isEmpty()) {
                 roomType.setName(newRoomTypeName);
             }
 
-            System.out.print("Enter new Normal Rate (leave blank to keep current): ");
-            String newNormalRate = scanner.nextLine().trim();
+            String newNormalRate = InputUtils.readString(scanner, "Enter new Normal Rate (leave blank to keep current): ");
             if (!newNormalRate.isEmpty()) {
                 try {
                     roomType.setNormalRate(Double.parseDouble(newNormalRate));
@@ -174,8 +162,7 @@ public class RoomTypeManagementModule {
                 }
             }
 
-            System.out.print("Enter new Published Rate (leave blank to keep current): ");
-            String newPublishedRate = scanner.nextLine().trim();
+            String newPublishedRate = InputUtils.readString(scanner, "Enter new Published Rate (leave blank to keep current): ");
             if (!newPublishedRate.isEmpty()) {
                 try {
                     roomType.setPublishedRate(Double.parseDouble(newPublishedRate));
@@ -197,8 +184,7 @@ public class RoomTypeManagementModule {
 
     private void deleteRoomType(Scanner scanner) {
         try {
-            System.out.print("Enter Room Type ID to delete: ");
-            Long roomTypeId = scanner.nextLong();
+            Long roomTypeId = InputUtils.readLong(scanner, "Enter Room Type ID to delete: ");
 
             // Fetch the room type to delete
             RoomType roomType = roomTypeEntitySessionBeanRemote.findRoomType(roomTypeId);
@@ -212,8 +198,7 @@ public class RoomTypeManagementModule {
             System.out.println("Room Type Details: " + roomType);
 
             // Confirm deletion
-            System.out.print("Are you sure you want to delete this Room Type? (y/n): ");
-            String confirmation = scanner.next();
+            String confirmation = InputUtils.readString(scanner, "Are you sure you want to delete this Room Type? (y/n): ");
 
             if ("y".equalsIgnoreCase(confirmation)) {
                 RoomType deletedRoomType = roomTypeEntitySessionBeanRemote.deleteRoomType(roomTypeId);

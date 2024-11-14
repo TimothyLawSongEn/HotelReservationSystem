@@ -7,6 +7,7 @@ package ejb.session.stateless;
 import entity.RoomRate;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.InvalidDateRangeException;
 
 /**
  *
@@ -15,9 +16,9 @@ import javax.ejb.Local;
 @Local
 public interface RoomRateEntitySessionBeanLocal {
     
-    public void persistRoomRate(RoomRate roomRate);
+    public void persistRoomRate(RoomRate roomRate) throws InvalidDateRangeException;
 
-    public RoomRate updateRoomRate(RoomRate roomRate);
+    public RoomRate updateRoomRate(RoomRate roomRate) throws InvalidDateRangeException;
 
     public void deleteRoomRate(Long roomRateId);
 

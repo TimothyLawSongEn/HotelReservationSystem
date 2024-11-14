@@ -5,13 +5,14 @@
 package ejb.session.stateless;
 
 import entity.RoomRate;
+import java.time.LocalDate;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import util.exception.InvalidDateRangeException;
 
 /**
  *
@@ -25,14 +26,16 @@ public class RoomRateEntitySessionBean implements RoomRateEntitySessionBeanRemot
 
     // Create a new RoomRate
     @Override
-    public void persistRoomRate(RoomRate roomRate) {
+    public void persistRoomRate(RoomRate roomRate) throws InvalidDateRangeException {
+        validateRoomRateDateRange(roomRate.getStartDate(), roomRate.getEndDate());
         em.persist(roomRate);
     }
 
     // Update an existing RoomRate
     @Override
-    public RoomRate updateRoomRate(RoomRate roomRate) {
+    public RoomRate updateRoomRate(RoomRate roomRate) throws InvalidDateRangeException {
         // todo: ensure roomrate id exists
+        validateRoomRateDateRange(roomRate.getStartDate(), roomRate.getEndDate());
         return em.merge(roomRate);
     }
 
@@ -56,5 +59,22 @@ public class RoomRateEntitySessionBean implements RoomRateEntitySessionBeanRemot
     public List<RoomRate> findAllRoomRates() {
         TypedQuery<RoomRate> query = em.createQuery("SELECT rr FROM RoomRate rr", RoomRate.class);
         return query.getResultList();
+    }
+    
+    private void validateRoomRateDateRange(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException {
+        // 1. Check if startDate or endDate are null
+        if (startDate == null || endDate == null) {
+            throw new InvalidDateRangeException("Start date and end date cannot be null.");
+        }
+
+        // 2. Check if endDate is after startDate
+        if (endDate.isBefore(startDate)) {
+            throw new InvalidDateRangeException("End date cannot be before Start date.");
+        }
+
+        // 3. Optional: Check if dates are in the future or at least today
+        if (startDate.isBefore(LocalDate.now()) || endDate.isBefore(LocalDate.now())) {
+            throw new InvalidDateRangeException("Start date and end date must not be in the past.");
+        }
     }
 }

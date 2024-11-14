@@ -54,7 +54,7 @@ public class FrontOfficeModule {
             System.out.println("5: update room bookings at checkout time");
             System.out.println("0: Exit");
 
-            int option = InputUtils.readInt(scanner, "Choose an option: ");
+            int option = InputUtils.readInt(scanner, "> ");
 
             switch (option) {
                 case 1:

@@ -11,6 +11,7 @@ import entity.RoomType;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
+import util.client.InputUtils;
 
 /**
  *
@@ -35,8 +36,7 @@ public class SpecialRateManagementModule {
             System.out.println("4. Update Special Rate");
             System.out.println("5. Delete Special Rate");
             System.out.println("0. Back to Main Menu");
-            System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
+            int choice = InputUtils.readInt(scanner, "> ");
 
             switch (choice) {
                 case 1:
@@ -122,8 +122,7 @@ public class SpecialRateManagementModule {
     // View a specific room rate by ID
     private void viewSpecialRate(Scanner scanner) {
         try {
-            System.out.print("Enter Room Rate ID: ");
-            Long roomRateId = scanner.nextLong();
+            Long roomRateId = InputUtils.readLong(scanner, "Enter Room Rate ID: ");
             RoomRate roomRate = roomRateEntitySessionBeanRemote.findRoomRate(roomRateId);
 
             if (roomRate != null) {
@@ -152,7 +151,7 @@ public class SpecialRateManagementModule {
             for (int i = 0; i < roomTypes.size(); i++) {
                 System.out.printf("%d: %s\n", i + 1, roomTypes.get(i).getName());
             }
-            int roomTypeIndex = scanner.nextInt() - 1;
+            int roomTypeIndex = InputUtils.readInt(scanner, "") - 1;
             RoomType selectedRoomType = roomTypes.get(roomTypeIndex);
 
             // Get rate type
@@ -161,24 +160,15 @@ public class SpecialRateManagementModule {
                 System.out.println("Rate type selection failed.");
                 return;
             }
-            
-            scanner.nextLine();
-            System.out.print("Enter name: ");
-            String newRateName = scanner.nextLine().trim();
+
+            String newRateName = InputUtils.readString(scanner, "Enter name: ");
             
             // Get amount
-            System.out.print("Enter amount: ");
-            double amount = scanner.nextDouble();
-            scanner.nextLine();
+            double amount = InputUtils.readDouble(scanner, "Enter amount: ");
 
             // Get period (start date and end date)
-            System.out.print("Enter start date (yyyy-mm-dd): ");
-            String startDateStr = scanner.next();
-            LocalDate startDate = LocalDate.parse(startDateStr);
-
-            System.out.print("Enter end date (yyyy-mm-dd): ");
-            String endDateStr = scanner.next();
-            LocalDate endDate = LocalDate.parse(endDateStr);
+            LocalDate startDate = InputUtils.readDate(scanner, "Enter start date (yyyy-mm-dd): ");
+            LocalDate endDate = InputUtils.readDate(scanner, "Enter end date (yyyy-mm-dd): ");
 
             // Create room rate object and persist
             RoomRate newRoomRate = new RoomRate(newRateName, amount, startDate, endDate, rateType, selectedRoomType);
@@ -200,8 +190,7 @@ public class SpecialRateManagementModule {
             System.out.println((i + 1) + ". " + rateTypes[i].name());
         }
 
-        System.out.print("Please select a rate type (1-" + rateTypes.length + "): ");
-        int choice = scanner.nextInt();
+        int choice = InputUtils.readInt(scanner, "Please select a rate type (1-" + rateTypes.length + "): ");
 
         if (choice < 1 || choice > rateTypes.length) {
             System.out.println("Invalid choice, please select a valid rate type.");
@@ -217,26 +206,21 @@ public class SpecialRateManagementModule {
     // Update a room rate
     private void updateSpecialRate(Scanner scanner) {
         try {
-            System.out.print("Enter Room Rate ID to update: ");
-            Long roomRateId = scanner.nextLong();
+            Long roomRateId = InputUtils.readLong(scanner, "Enter Room Rate ID to update: ");
             RoomRate roomRate = roomRateEntitySessionBeanRemote.findRoomRate(roomRateId);
 
             if (roomRate != null) {
-                scanner.nextLine();
-                System.out.print("Enter new amount (or press Enter to keep current): ");
-                String newAmountStr = scanner.nextLine().trim();
+                String newAmountStr = InputUtils.readString(scanner, "Enter new amount (or press Enter to keep current): ");
                 if (!newAmountStr.isEmpty()) {
                     roomRate.setAmount(Double.parseDouble(newAmountStr));
                 }
 
-                System.out.print("Enter new start date (yyyy-mm-dd) (or press Enter to keep current): ");
-                String newStartDateStr = scanner.nextLine().trim();
+                String newStartDateStr = InputUtils.readString(scanner, "Enter new start date (yyyy-mm-dd) (or press Enter to keep current): ");
                 if (!newStartDateStr.isEmpty()) {
                     roomRate.setStartDate(LocalDate.parse(newStartDateStr));
                 }
 
-                System.out.print("Enter new end date (yyyy-mm-dd) (or press Enter to keep current): ");
-                String newEndDateStr = scanner.nextLine().trim();
+                String newEndDateStr = InputUtils.readString(scanner, "Enter new end date (yyyy-mm-dd) (or press Enter to keep current): ");
                 if (!newEndDateStr.isEmpty()) {
                     roomRate.setEndDate(LocalDate.parse(newEndDateStr));
                 }
@@ -255,15 +239,13 @@ public class SpecialRateManagementModule {
     // Delete room rate by ID
     private void deleteSpecialRate(Scanner scanner) {
         try {
-            System.out.print("Enter Room Rate ID to delete: ");
-            Long roomRateId = scanner.nextLong();
+            Long roomRateId = InputUtils.readLong(scanner, "Enter Room Rate ID to delete: ");
 
             RoomRate roomRate = roomRateEntitySessionBeanRemote.findRoomRate(roomRateId);
 
             if (roomRate != null) {
                 // Confirm deletion
-                System.out.print("Are you sure you want to delete this Room Rate? (y/n): ");
-                String confirmation = scanner.next();
+                String confirmation = InputUtils.readString(scanner, "Are you sure you want to delete this Room Rate? (y/n): ");
 
                 if ("y".equalsIgnoreCase(confirmation)) {
                     roomRateEntitySessionBeanRemote.deleteRoomRate(roomRateId);

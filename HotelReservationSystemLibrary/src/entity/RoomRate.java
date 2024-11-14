@@ -3,6 +3,7 @@ package entity;
 import java.io.Serializable;
 import java.time.LocalDate;
 import javax.persistence.*;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -39,6 +40,9 @@ public class RoomRate implements Serializable {
     @NotNull(message = "End date cannot be null")
     @Column(nullable = false)
     private LocalDate endDate;
+    
+    @AssertTrue(message = "StartDate must not be before EndDate")
+    public boolean isValidDateRange() { return !startDate.isAfter(endDate);}
 
     @Enumerated(EnumType.STRING)
     private SpecialRateType specialRateType;  // e.g., Peak, Promo

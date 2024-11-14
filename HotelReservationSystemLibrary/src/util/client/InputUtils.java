@@ -25,7 +25,21 @@ public class InputUtils {
                 return num;
             } else {
                 System.out.println("Invalid input. Please enter a valid long value.");
-                scanner.next(); // Consume the invalid input
+                scanner.nextLine(); // Clear the entire invalid input line
+            }
+        }
+    }
+    
+    public static double readDouble(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            if (scanner.hasNextDouble()) {
+                double num = scanner.nextDouble();
+                scanner.nextLine(); // Clear the newline character after reading the number
+                return num;
+            } else {
+                System.out.println("Invalid input. Please enter a valid double value.");
+                scanner.nextLine(); // Clear the entire invalid input line
             }
         }
     }
@@ -40,7 +54,7 @@ public class InputUtils {
                 return num;
             } else {
                 System.out.println("Invalid input. Please enter a valid integer.");
-                scanner.next(); // Consume the invalid input
+                scanner.nextLine(); // Clear the entire invalid input line
             }
         }
     }
@@ -65,8 +79,7 @@ public class InputUtils {
 
         while (true) {
             System.out.print(prompt);
-            String input = scanner.next();
-            scanner.nextLine();
+            String input = scanner.nextLine().trim();
             try {
                 // Try to parse the input string into a LocalDate
                 return LocalDate.parse(input, formatter);

@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import ejb.session.stateless.AccountEntitySessionBeanLocal;
-import java.util.List;
+import util.exception.InvalidDateRangeException;
 
 /**
  *
@@ -67,23 +67,28 @@ public class DataInitSessionBean {
         roomTypeEntitySessionBeanLocal.createRoomType(deluxeRoomType);
         standardRoomType.setNextHigherRoomType(deluxeRoomType);
 
-        // Create RoomRate objects for the Standard Room Type
-        RoomRate standardRoomPromoRate = new RoomRate("s promo", 150.0, LocalDate.of(2024, 12, 1), LocalDate.of(2024, 12, 31), SpecialRateType.PROMO, standardRoomType);
-        RoomRate standardRoomPeakRate = new RoomRate("s peak", 250.0, LocalDate.of(2024, 7, 1), LocalDate.of(2024, 8, 31), SpecialRateType.PEAK, standardRoomType);
-        // Persist RoomRates using the session bean
-        roomRateEntitySessionBeanLocal.persistRoomRate(standardRoomPromoRate);
-        roomRateEntitySessionBeanLocal.persistRoomRate(standardRoomPeakRate);
-        standardRoomType.addRates(standardRoomPromoRate);
-        standardRoomType.addRates(standardRoomPeakRate);
-        
-        // Create RoomRate objects for the Deluxe Room Type
-        RoomRate deluxeRoomPromoRate = new RoomRate("d promo", 300.0, LocalDate.of(2024, 12, 1), LocalDate.of(2024, 12, 31), SpecialRateType.PROMO, deluxeRoomType);
-        RoomRate deluxeRoomPeakRate = new RoomRate("d peak", 400.0, LocalDate.of(2024, 7, 1), LocalDate.of(2024, 8, 31), SpecialRateType.PEAK, deluxeRoomType);
-        // Persist RoomRates using the session bean
-        roomRateEntitySessionBeanLocal.persistRoomRate(deluxeRoomPromoRate);
-        roomRateEntitySessionBeanLocal.persistRoomRate(deluxeRoomPeakRate);
-        deluxeRoomType.addRates(deluxeRoomPromoRate);
-        deluxeRoomType.addRates(deluxeRoomPeakRate);
+        try {
+            // Create RoomRate objects for the Standard Room Type
+            RoomRate standardRoomPromoRate = new RoomRate("s promo", 150.0, LocalDate.of(2024, 12, 1), LocalDate.of(2024, 12, 31), SpecialRateType.PROMO, standardRoomType);
+            RoomRate standardRoomPeakRate = new RoomRate("s peak", 250.0, LocalDate.of(2025, 7, 1), LocalDate.of(2025, 8, 31), SpecialRateType.PEAK, standardRoomType);
+            // Persist RoomRates using the session bean
+            roomRateEntitySessionBeanLocal.persistRoomRate(standardRoomPromoRate);
+            standardRoomType.addRates(standardRoomPromoRate);
+            roomRateEntitySessionBeanLocal.persistRoomRate(standardRoomPeakRate);
+            standardRoomType.addRates(standardRoomPeakRate);
+
+            // Create RoomRate objects for the Deluxe Room Type
+            RoomRate deluxeRoomPromoRate = new RoomRate("d promo", 300.0, LocalDate.of(2024, 12, 1), LocalDate.of(2024, 12, 31), SpecialRateType.PROMO, deluxeRoomType);
+            RoomRate deluxeRoomPeakRate = new RoomRate("d peak", 400.0, LocalDate.of(2025, 7, 1), LocalDate.of(2025, 8, 31), SpecialRateType.PEAK, deluxeRoomType);
+            // Persist RoomRates using the session bean
+            roomRateEntitySessionBeanLocal.persistRoomRate(deluxeRoomPromoRate);
+            deluxeRoomType.addRates(deluxeRoomPromoRate);
+            roomRateEntitySessionBeanLocal.persistRoomRate(deluxeRoomPeakRate);
+            deluxeRoomType.addRates(deluxeRoomPeakRate);
+        } catch (InvalidDateRangeException ide) {
+            System.out.println("ERROR WHILE CREATING ROOMRATE");
+            System.out.println(ide); // thrown from persistRoomRate
+        }
 
         // Create some Room objects linked to RoomTypes
         Room room101 = new Room("0101", standardRoomType);
@@ -100,22 +105,22 @@ public class DataInitSessionBean {
         Employee opsManager = new Employee("opsman", "password", EmployeeType.OPSMANAGER);
         Employee salesManager = new Employee("salesman", "password", EmployeeType.SALESMANAGER);
         Employee guestOfficer = new Employee("guestoff", "password", EmployeeType.GUESTRELATIONOFFICER);
-        
+
         // Persist system admin using session bean
         employeeEntitySessionBeanLocal.createEmployee(allAccess);
         employeeEntitySessionBeanLocal.createEmployee(systemAdmin);
         employeeEntitySessionBeanLocal.createEmployee(opsManager);
         employeeEntitySessionBeanLocal.createEmployee(salesManager);
         employeeEntitySessionBeanLocal.createEmployee(guestOfficer);
-        
+
         // You can add more initialization logic here if needed
         System.out.println("Data initialization complete.");
-        
+
         availabilitySessionBeanLocal.loadRoomTypesAndBookings(); // call after roomtypes and bookings created
-        
+
         Account guest1 = new Account("tommy", "tommy@gmail.com", "password");
         accountEntitySessionBeanLocal.createAccount(guest1);
-        
+
         Account partner = new Account("partner1", "password");
         accountEntitySessionBeanLocal.createAccount(partner);
     }

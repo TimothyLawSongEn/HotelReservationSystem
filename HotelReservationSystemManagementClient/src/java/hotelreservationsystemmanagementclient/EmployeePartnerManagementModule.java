@@ -33,10 +33,8 @@ public class EmployeePartnerManagementModule {
             System.out.println("3. Create New Partner");
             System.out.println("4. View All Partners");
             System.out.println("0. Back to Main Menu");
-            System.out.print("Choose an option: ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice = InputUtils.readInt(scanner, "> ");
 
             switch (choice) {
                 case 1:
@@ -66,10 +64,8 @@ public class EmployeePartnerManagementModule {
         System.out.println("2. Create New Operations Manager");
         System.out.println("3. Create New Sales Manager");
         System.out.println("4. Create New Guest Relation Manager");
-        System.out.print("Choose an option: ");
         
-        int choice = scanner.nextInt();
-        scanner.nextLine();
+        int choice = InputUtils.readInt(scanner, "> ");
         
         Employee.EmployeeType newType = null;
         
@@ -116,12 +112,9 @@ public class EmployeePartnerManagementModule {
     // Create New Partner
     private void createNewPartner(Scanner scanner) {
         System.out.println("\n--- Creating New Partner ---");
-        
-        System.out.print("Enter Partner Username: ");
-        String username = scanner.nextLine();
-        
-        System.out.print("Enter Partner Password: ");
-        String password = scanner.nextLine();
+
+        String username = InputUtils.readString(scanner, "Enter Partner Username: ");
+        String password = InputUtils.readString(scanner, "Enter Partner Password: ");
         
         try {
             Account partner = new Account(username, password);
