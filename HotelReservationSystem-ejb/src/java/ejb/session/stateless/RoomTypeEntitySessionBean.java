@@ -83,14 +83,35 @@ public class RoomTypeEntitySessionBean implements RoomTypeEntitySessionBeanRemot
     // Find a RoomType by ID
     @Override
     public RoomType findRoomType(Long roomTypeId) {
-        return em.find(RoomType.class, roomTypeId);
+//        return em.find(RoomType.class, roomTypeId);
+        List<RoomRate> rates = em.createQuery(
+            "SELECT r FROM RoomRate r WHERE r.roomType.id = :roomTypeId", 
+            RoomRate.class)
+            .setParameter("roomTypeId", roomTypeId)
+            .getResultList();
+
+        RoomType type = em.find(RoomType.class, roomTypeId);
+        if (type == null || type.isDisabled()) {
+            return null;
+        }
+        
+        // Force a refresh to ensure we get the latest data
+        em.refresh(type);
+        return type;
     }
 
     // Get all RoomTypes
     @Override
     public List<RoomType> findAllRoomTypes() {
-        TypedQuery<RoomType> query = em.createQuery("SELECT rt FROM RoomType rt", RoomType.class);
-        return query.getResultList();
+        //  TypedQuery<RoomType> query = em.createQuery("SELECT rt FROM RoomType rt", RoomType.class);
+        //  return query.getResultList();
+        return em.createQuery(
+            "SELECT DISTINCT rt FROM RoomType rt " +
+            "LEFT JOIN FETCH rt.rates " +
+            "WHERE rt.disabled = false " +
+            "ORDER BY rt.id ASC", 
+            RoomType.class)
+            .getResultList();
     }
     
     @Override
