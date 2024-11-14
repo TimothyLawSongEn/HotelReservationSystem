@@ -93,16 +93,15 @@ public class MainApp {
             }
 
             if (partner != null) {
-                System.out.println("Proceed to book room?");
-                System.out.println("1. Yes");
-                System.out.println("2. No");
-                System.out.print("Choose an option: ");
+                System.out.print("Proceed to book room? (y/n) :");
 
-                int choice = scanner.nextInt();
-                scanner.nextLine();
+                String confirmation = scanner.nextLine().trim();
 
-                if (choice == 1) {
+                if ("y".equalsIgnoreCase(confirmation)) {
                     createReservation(scanner, startDate, endDate, partner);
+                    System.out.println("Booking successfully made");
+                } else {
+                    System.out.println("Booking canceled.");
                 }
             }
         } catch (Exception e) {
@@ -111,10 +110,10 @@ public class MainApp {
     }
     
     public void createReservation(Scanner scanner, String startDate, String endDate, Account partner) {
-        System.out.println("\n--- Create Reservation ---");
+        System.out.println("\n--- Create Booking ---");
         
         try {
-            System.out.print("Enter Room Type ID for Reservation: ");
+            System.out.print("Enter Room Type ID for Booking: ");
             Long roomTypeId = Long.parseLong(scanner.nextLine());
             
             // To Do: Check if it reference the partner or guest id
@@ -123,7 +122,7 @@ public class MainApp {
             System.out.println("Room successfully booked");
             
         } catch (Exception e) {
-            System.out.println("Failed to create new reservation");
+            System.out.println("Failed to create new Booking");
         }
     }
     
@@ -133,8 +132,8 @@ public class MainApp {
         while (loggedIn) {
             System.out.println("\n--- Holiday Reservation System ---");
             System.out.println("1. Search Hotel Rooms");
-            System.out.println("2. View My Reservation Details");
-            System.out.println("3. View All My Reservations");
+            System.out.println("2. View My Booking Details");
+            System.out.println("3. View All My Booking");
             System.out.println("0. Log Out");
             System.out.print("Choose an option: ");
             
@@ -146,7 +145,7 @@ public class MainApp {
                     searchRooms(scanner, partner);
                     break;
                 case 2:
-                    viewReservationDetails(scanner);
+                    viewReservationDetails(scanner, partner);
                     break;
                 case 3:
                     viewAllReservations(scanner, partner);
@@ -154,6 +153,7 @@ public class MainApp {
                 case 0:
                     System.out.println("Logging out...");
                     loggedIn = false;
+                    return;
                 default:
                     System.out.println("Invalid option. Please try again.");
                     break;
@@ -161,24 +161,43 @@ public class MainApp {
         }
     }
     
-    public void viewReservationDetails(Scanner scanner) {
-        System.out.println("\n--- View Reservation Details ---");
+    public void viewReservationDetails(Scanner scanner, Account partner) {
+        System.out.println("\n--- View Booking Details ---");
         
-        System.out.print("Enter Reservation ID: ");
+        System.out.print("Enter Booking ID: ");
         Long bookingId = Long.parseLong(scanner.nextLine());
         
-        service.getHotelReservationSystemWebServicePort().viewReservationDetails(bookingId);
+        Booking booking = service.getHotelReservationSystemWebServicePort().viewReservationDetails(bookingId);
+        
+        if (booking.getAccount().getId().equals(partner.getId())) {
+            System.out.println("\nBooking Details: ");
+            System.out.println("Booking Id: " + booking.getId());
+            System.out.println("Start Date: " + booking.getStartDate());
+            System.out.println("End Date: " + booking.getEndDate());
+            System.out.println("Room Type: " + booking.getRoomType().getName());
+        } else {
+            System.out.println("Invalid booking Id");
+        }
     }
     
     public void viewAllReservations(Scanner scanner, Account partner) {
-        System.out.println("\n--- View All Reservations ---");
+        System.out.println("\n--- View All Booking ---");
         
         try {
             List<Booking> bookings = service.getHotelReservationSystemWebServicePort().viewAllReservations(partner.getId());
             
-            for (Booking booking:bookings) {
-                System.out.println(booking);
+            if (bookings.size() > 0) {
+                for (Booking booking:bookings) {
+                    System.out.println("\nBooking Details: ");
+                    System.out.println("Booking Id: " + booking.getId());
+                    System.out.println("Start Date: " + booking.getStartDate());
+                    System.out.println("End Date: " + booking.getEndDate());
+                    System.out.println("Room Type: " + booking.getRoomType().getName());
+                }
+            } else {
+                System.out.println("No bookings made");
             }
+            
         } catch (Exception e) {
             System.out.println("An error happened. Try again");
         }

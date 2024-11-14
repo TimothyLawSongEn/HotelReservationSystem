@@ -95,7 +95,7 @@ public class MainApp {
             Account newGuest = new Account(username, email, password);
             Account persistedGuest = accountEntitySessionBeanRemote.createAccount(newGuest);
 
-            System.out.println("Guest Account Successfully Created: " + persistedGuest);
+            System.out.println("Guest Account Successfully Created with Id: " + persistedGuest.getId());
         } catch (Exception e) {
             System.out.println("Could not create account. Try again");
         }   
@@ -153,7 +153,6 @@ public class MainApp {
 
             if (guest != null) {
                 String confirmation = InputUtils.readString(scanner, "Proceed to book room? (y/n): ");
-                System.out.print("Choose an option: ");
 
                 if ("y".equalsIgnoreCase(confirmation)) {
                     createReservation(scanner, startDate, endDate, guest);
@@ -197,19 +196,24 @@ public class MainApp {
         
         Booking booking = bookingEntitySessionBeanRemote.getBookingById(bookingId);
         
-        if (booking.getAccount().getId().equals(guest.getId())) {
-            System.out.println("\n--- Booking Details Can Be Found Below ---");
-            System.out.println("\nBooking Id: " + booking.getId());
-            System.out.println("Start Date: " + booking.getStartDate());
-            System.out.println("End Date: " + booking.getEndDate());
-            System.out.println("Room Type: " + booking.getRoomType().getName());
+        try {
+            if (booking.getAccount().getId().equals(guest.getId())) {
+                System.out.println("\n--- Booking Details Can Be Found Below ---");
+                System.out.println("Booking Id: " + booking.getId());
+                System.out.println("Start Date: " + booking.getStartDate());
+                System.out.println("End Date: " + booking.getEndDate());
+                System.out.println("Room Type: " + booking.getRoomType().getName());
 
-            if (booking.getAllocatedRoom() != null) {
-                System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
+                if (booking.getAllocatedRoom() != null) {
+                    System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
+                }
+            } else {
+                System.out.println("\nInvalid Booking Id");
             }
-        } else {
+        } catch (Exception e) {
             System.out.println("\nInvalid Booking Id");
         }
+        
     }
     
     public void viewAllReservations(Scanner scanner, Account guest) {
