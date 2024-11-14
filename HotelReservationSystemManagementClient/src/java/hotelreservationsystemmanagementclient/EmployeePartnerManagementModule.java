@@ -103,7 +103,7 @@ public class EmployeePartnerManagementModule {
             List<Employee> employees = employeeEntitySessionBeanRemote.viewAllEmployees();
             
             for (Employee e:employees) {
-                System.out.println(e);
+                System.out.println("Employee Id: " + e.getId() + ", Employee Type: " + e.getEmployeeType());
             }
             
         } catch (Exception e) {
