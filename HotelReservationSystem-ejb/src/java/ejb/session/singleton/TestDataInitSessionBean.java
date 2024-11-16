@@ -68,11 +68,11 @@ public class TestDataInitSessionBean {
         RoomType grandSuite = new RoomType("Grand Suite", 500.0, 250.0);
         
         // Persist the RoomTypes using the session bean
-        roomTypeEntitySessionBeanLocal.createRoomType(deluxeRoom);
-        roomTypeEntitySessionBeanLocal.createRoomType(premierRoom);
-        roomTypeEntitySessionBeanLocal.createRoomType(familyRoom);
-        roomTypeEntitySessionBeanLocal.createRoomType(juniorSuite);
-        roomTypeEntitySessionBeanLocal.createRoomType(grandSuite);
+        roomTypeEntitySessionBeanLocal.persistRoomType(deluxeRoom);
+        roomTypeEntitySessionBeanLocal.persistRoomType(premierRoom);
+        roomTypeEntitySessionBeanLocal.persistRoomType(familyRoom);
+        roomTypeEntitySessionBeanLocal.persistRoomType(juniorSuite);
+        roomTypeEntitySessionBeanLocal.persistRoomType(grandSuite);
         
         // Set Next Higher Room Type
         deluxeRoom.setNextHigherRoomType(premierRoom);

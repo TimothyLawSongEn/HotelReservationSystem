@@ -5,7 +5,6 @@
 package ejb.session.stateless;
 
 import entity.Room;
-import entity.RoomRate;
 import entity.RoomType;
 
 import javax.ejb.Stateless;
@@ -13,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 
 /**
  *
@@ -26,7 +26,19 @@ public class RoomTypeEntitySessionBean implements RoomTypeEntitySessionBeanRemot
 
     // Create a new RoomType
     @Override
-    public RoomType createRoomType(RoomType roomType) {
+    public RoomType persistRoomType(RoomType roomType) {
+        em.persist(roomType);
+        em.flush();
+        return roomType;
+    }
+    
+    @Override
+    public RoomType persistRoomType(RoomType roomType, long nextHigherRoomTypeId) {
+        RoomType nextHigherRoomType = findRoomType(nextHigherRoomTypeId);
+        if (nextHigherRoomType == null) {
+            throw new EntityNotFoundException("Next Higher Room Type of id" + nextHigherRoomTypeId + " does not exist.");
+        }
+        roomType.setNextHigherRoomType(nextHigherRoomType);
         em.persist(roomType);
         em.flush();
         return roomType;
@@ -84,11 +96,12 @@ public class RoomTypeEntitySessionBean implements RoomTypeEntitySessionBeanRemot
     @Override
     public RoomType findRoomType(Long roomTypeId) {
 //        return em.find(RoomType.class, roomTypeId);
-        List<RoomRate> rates = em.createQuery(
-            "SELECT r FROM RoomRate r WHERE r.roomType.id = :roomTypeId", 
-            RoomRate.class)
-            .setParameter("roomTypeId", roomTypeId)
-            .getResultList();
+
+//        List<RoomRate> rates = em.createQuery(
+//            "SELECT r FROM RoomRate r WHERE r.roomType.id = :roomTypeId", 
+//            RoomRate.class)
+//            .setParameter("roomTypeId", roomTypeId)
+//            .getResultList();
 
         RoomType type = em.find(RoomType.class, roomTypeId);
         if (type == null || type.isDisabled()) {
