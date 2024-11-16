@@ -24,7 +24,7 @@ import javax.ejb.Startup;
  */
 @Singleton
 @LocalBean
-//@Startup
+@Startup
 public class TestDataInitSessionBean {
 
     @EJB

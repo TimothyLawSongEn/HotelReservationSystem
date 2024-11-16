@@ -20,7 +20,7 @@ public interface AvailabilitySessionBeanLocal {
     
     public void loadRoomTypesAndBookings(); // caller: data init bean
     
-    public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception; // caller: booking bean
+    public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId, int numRooms) throws Exception; // caller: booking bean
     
     public List<RoomCount> getAvailableRoomTypesWithCount(LocalDate startDate, LocalDate endDate) throws InvalidDateRangeException; // caller: web service
 

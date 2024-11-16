@@ -270,8 +270,7 @@ public class FrontOfficeModule {
         try {
             int roomTypeChoice;
             while (true) {
-                roomTypeChoice = InputUtils.readInt(scanner, "Enter the number of the room type to reserve (or 0 to cancel): ");
-
+                roomTypeChoice = InputUtils.readInt(scanner, "Enter room type to reserve (Enter the number associated with that roomtype, or 0 to cancel): ");
                 if (roomTypeChoice == 0) {
                     System.out.println("Reservation cancelled.");
                     return;
@@ -283,25 +282,47 @@ public class FrontOfficeModule {
                     break;
                 }
             }
-
+            
+            RoomCount selectedRoomTypePair = availableRoomTypes.get(roomTypeChoice - 1);
+            int availableCount = selectedRoomTypePair.getCount();
+            int numRooms = InputUtils.readInt(scanner, "Enter number of rooms [Available: " + availableCount + "] (or 0 to cancel): ");
+            if (numRooms == 0) {
+                System.out.println("Reservation cancelled.");
+                return;
+            }
+            if (numRooms < 0) {
+                System.out.println("Invalid number of rooms. Reservation cancelled.");
+                return;
+            }
+            if (numRooms > availableCount) {
+                System.out.println("Exceeded room availability. Reservation cancelled.");
+                return;
+            }
+            
             long guestId = InputUtils.readLong(scanner, "Enter guestId (or 0 to cancel): ");
             if (guestId == 0) {
                 System.out.println("Reservation cancelled.");
                 return;
             }
 
-            RoomCount selectedRoomTypePair = availableRoomTypes.get(roomTypeChoice - 1);
-            Long selectedRoomTypeId = selectedRoomTypePair.getRoomType().getId();
-            Booking booking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, selectedRoomTypeId, guestId);
-            System.out.println("\nRoom successfully reserved. \nYour booking details: ");
-            System.out.println("\nBooking Id: " + booking.getId());
-            System.out.println("Start Date: " + booking.getStartDate());
-            System.out.println("End Date: " + booking.getEndDate());
-            System.out.println("Room Type: " + booking.getRoomType().getName());
             
-            if (booking.getAllocatedRoom() != null) {
-                System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
+            Long selectedRoomTypeId = selectedRoomTypePair.getRoomType().getId();
+            List<Booking> bookings = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, selectedRoomTypeId, numRooms, guestId);
+            System.out.println("\nRoom successfully reserved. \nYour booking details: ");
+            
+            for (Booking booking : bookings) {
+                System.out.println("\nBooking Id: " + booking.getId());
+                System.out.println("Start Date: " + booking.getStartDate());
+                System.out.println("End Date: " + booking.getEndDate());
+                System.out.println("Room Type: " + booking.getRoomType().getName());
+            
+                if (booking.getAllocatedRoom() != null) {
+                    System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
+                } else {
+                    System.out.println("Room not allocated yet.");
+                }
             }
+
 
         } catch (Exception e) {
             System.out.println("Failed to reserve room: " + e.getMessage());

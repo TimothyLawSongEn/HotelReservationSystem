@@ -78,16 +78,16 @@ public class HotelReservationSystemWebService {
     }
     
     @WebMethod(operationName = "reserveRoom")
-    public Booking reserveRoom(
+    public List<Booking> reserveRoom(
         @WebParam(name = "startDate") String startDateStr,
         @WebParam(name = "endDate") String endDateStr, 
         @WebParam(name = "roomTypeId") long roomTypeId, 
+        @WebParam(name = "numRooms") int numRooms, 
         @WebParam(name = "partnerId") long partnerId
     ) throws Exception {
         LocalDate startDate = LocalDate.parse(startDateStr);
         LocalDate endDate = LocalDate.parse(endDateStr);
-        Booking booking = bookingEntitySessionBeanLocal.reserveRoomType(startDate, endDate, roomTypeId, partnerId);
-        return booking;
+        return bookingEntitySessionBeanLocal.reserveRoomType(startDate, endDate, roomTypeId, numRooms, partnerId);
     }
 
     @WebMethod(operationName = "viewReservationDetails")

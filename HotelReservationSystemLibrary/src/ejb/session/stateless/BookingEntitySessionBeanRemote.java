@@ -21,8 +21,8 @@ import util.exception.EntityMissingException;
 @Remote
 public interface BookingEntitySessionBeanRemote {
 
-    public Booking reserveRoomType(LocalDate startDate, LocalDate endDate, long roomTypeId, long guestId) throws Exception;
-
+    public List<Booking> reserveRoomType(LocalDate startDate, LocalDate endDate, long roomTypeId, int numRooms, long accountId) throws Exception;
+    
     public List<Booking> allocateRoomToBookings(LocalDate date);
     
     public Booking getBookingById(Long id);
