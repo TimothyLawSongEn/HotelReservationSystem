@@ -299,12 +299,24 @@ public class FrontOfficeModule {
                 return;
             }
             
-            long guestId = InputUtils.readLong(scanner, "Enter guestId (or 0 to cancel): ");
-            if (guestId == 0) {
-                System.out.println("Reservation cancelled.");
-                return;
+            long guestId;
+            while (true) {
+                String strInput = InputUtils.readString(scanner, "Is guest a registered user? (y/n) ");
+                
+                if ("n".equals(strInput)) {
+                    guestId = registerGuest(scanner);
+                    break;
+                } else if ("y".equals(strInput)) {
+                    guestId = InputUtils.readLong(scanner, "Enter guestId (or 0 to cancel): ");
+                    if (guestId == 0) {
+                        System.out.println("Reservation cancelled.");
+                        return;
+                    }
+                    break;
+                } else {
+                    System.out.println("Invalid input. Try again.");
+                }
             }
-
             
             Long selectedRoomTypeId = selectedRoomTypePair.getRoomType().getId();
             List<Booking> bookings = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, selectedRoomTypeId, numRooms, guestId);
@@ -326,6 +338,25 @@ public class FrontOfficeModule {
 
         } catch (Exception e) {
             System.out.println("Failed to reserve room: " + e.getMessage());
+        }
+    }
+    
+    private long registerGuest(Scanner scanner) {
+        try {
+            System.out.println("\n --- Registering Guest ---");
+        
+            String username = InputUtils.readString(scanner, "Create Username: ");
+            String email = InputUtils.readString(scanner, "Enter Email Address: ");
+            String password = InputUtils.readString(scanner, "Create Password: ");
+
+            Account newGuest = new Account(username, email, password);
+            Account persistedGuest = accountEntitySessionBeanRemote.createAccount(newGuest);
+
+            System.out.println("Guest Account Successfully Created with Id: " + persistedGuest.getId());
+            return persistedGuest.getId();
+        } catch (Exception e) {
+            System.out.println("Could not create account. Try again");
+            throw e;
         }
     }
 }
