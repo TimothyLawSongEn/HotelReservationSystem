@@ -115,13 +115,47 @@ public class MainApp {
         try {
             System.out.print("Enter Room Type ID for Booking: ");
             Long roomTypeId = Long.parseLong(scanner.nextLine());
+            double rate = service.getHotelReservationSystemWebServicePort().getRoomReservationRate(startDate, endDate, roomTypeId);
             
-            System.out.print("Enter the total number of rooms for booking: ");
-            int num = scanner.nextInt();
+            System.out.print("Enter number of rooms (or 0 to cancel): ");
+            int numRooms = scanner.nextInt();
             scanner.nextLine();
             
-            // To Do: Check if it reference the partner or guest id
-            service.getHotelReservationSystemWebServicePort().reserveRoom(startDate, endDate, roomTypeId, num, partner.getId());
+            if (numRooms == 0) {
+                System.out.println("Reservation cancelled.");
+                return;
+            }
+            if (numRooms < 0) {
+                System.out.println("Invalid number of rooms. Reservation cancelled.");
+                return;
+            }
+            
+            System.out.printf("Total Booking Fees: $%.2f%n", rate*numRooms);
+            
+            System.out.print("Continue to book room? (y/n) :");
+
+                String confirmation = scanner.nextLine().trim();
+
+                if ("y".equalsIgnoreCase(confirmation)) {
+                    List<Booking> bookings = service.getHotelReservationSystemWebServicePort().reserveRoom(startDate, endDate, roomTypeId, numRooms, partner.getId());
+                    
+                    System.out.println("\nRoom successfully reserved. \nYour booking details: ");
+
+                for (Booking booking : bookings) {
+                    System.out.println("\nBooking Id: " + booking.getId());
+                    System.out.println("Start Date: " + booking.getStartDate());
+                    System.out.println("End Date: " + booking.getEndDate());
+                    System.out.println("Room Type: " + booking.getRoomType().getName());
+
+                    if (booking.getAllocatedRoom() != null) {
+                        System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
+                    } else {
+                        System.out.println("Room not allocated yet.");
+                    }
+                }
+                } else {
+                    System.out.println("Booking canceled.");
+                }
             
             System.out.println("Room successfully booked");
             

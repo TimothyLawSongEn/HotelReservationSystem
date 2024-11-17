@@ -155,7 +155,7 @@ public class MainApp {
 
                 if ("y".equalsIgnoreCase(confirmation)) {
                     createReservation(scanner, startDate, endDate, guest);
-                    System.out.println("Reservation successfully made.");
+//                    System.out.println("Reservation successfully made.");
                 } else {
                     System.out.println("Reservation canceled.");
                 }
@@ -170,6 +170,7 @@ public class MainApp {
         
         try {
             Long roomTypeId = InputUtils.readLong(scanner, "Enter Room Type ID for Reservation: ");
+            double rate = availabilitySessionBeanRemote.calculateReservationFee(roomTypeId, startDate, endDate);
             
             int numRooms = InputUtils.readInt(scanner, "Enter number of rooms (or 0 to cancel): ");
             if (numRooms == 0) {
@@ -181,23 +182,30 @@ public class MainApp {
                 return;
             }
             
-            List<Booking> persistedBookings = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, roomTypeId, numRooms, guest.getId());
+            System.out.printf("Total Booking Fees: $%.2f%n", rate*numRooms);
+            
+            String confirmation = InputUtils.readString(scanner, "Continue to book room? (y/n): ");
+            
+            if ("y".equalsIgnoreCase(confirmation)) {
+                List<Booking> persistedBookings = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, roomTypeId, numRooms, guest.getId());
 
-            System.out.println("\nRoom successfully reserved. \nYour booking details: ");
-            
-            for (Booking booking : persistedBookings) {
-                System.out.println("\nBooking Id: " + booking.getId());
-                System.out.println("Start Date: " + booking.getStartDate());
-                System.out.println("End Date: " + booking.getEndDate());
-                System.out.println("Room Type: " + booking.getRoomType().getName());
-            
-                if (booking.getAllocatedRoom() != null) {
-                    System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
-                } else {
-                    System.out.println("Room not allocated yet.");
+                System.out.println("\nRoom successfully reserved. \nYour booking details: ");
+
+                for (Booking booking : persistedBookings) {
+                    System.out.println("\nBooking Id: " + booking.getId());
+                    System.out.println("Start Date: " + booking.getStartDate());
+                    System.out.println("End Date: " + booking.getEndDate());
+                    System.out.println("Room Type: " + booking.getRoomType().getName());
+
+                    if (booking.getAllocatedRoom() != null) {
+                        System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
+                    } else {
+                        System.out.println("Room not allocated yet.");
+                    }
                 }
+            } else {
+                System.out.println("Reservation canceled.");
             }
-            
         } catch (Exception e) {
             System.out.println("Failed to create new reservation");
         }
