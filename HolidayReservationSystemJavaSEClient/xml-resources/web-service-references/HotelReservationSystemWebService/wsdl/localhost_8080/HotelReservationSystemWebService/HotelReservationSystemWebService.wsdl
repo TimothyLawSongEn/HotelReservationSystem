@@ -4,6 +4,30 @@
 <xsd:import namespace="http://ws.session.ejb/" schemaLocation="http://localhost:8080/HotelReservationSystemWebService/HotelReservationSystemWebService?xsd=1"/>
 </xsd:schema>
 </types>
+<message name="viewAllReservations">
+<part name="parameters" element="tns:viewAllReservations"/>
+</message>
+<message name="viewAllReservationsResponse">
+<part name="parameters" element="tns:viewAllReservationsResponse"/>
+</message>
+<message name="EntityMissingException">
+<part name="fault" element="tns:EntityMissingException"/>
+</message>
+<message name="WrongAccountTypeException">
+<part name="fault" element="tns:WrongAccountTypeException"/>
+</message>
+<message name="login">
+<part name="parameters" element="tns:login"/>
+</message>
+<message name="loginResponse">
+<part name="parameters" element="tns:loginResponse"/>
+</message>
+<message name="hello">
+<part name="parameters" element="tns:hello"/>
+</message>
+<message name="helloResponse">
+<part name="parameters" element="tns:helloResponse"/>
+</message>
 <message name="searchRooms">
 <part name="parameters" element="tns:searchRooms"/>
 </message>
@@ -34,31 +58,21 @@
 <message name="viewReservationDetailsResponse">
 <part name="parameters" element="tns:viewReservationDetailsResponse"/>
 </message>
-<message name="login">
-<part name="parameters" element="tns:login"/>
-</message>
-<message name="loginResponse">
-<part name="parameters" element="tns:loginResponse"/>
-</message>
-<message name="hello">
-<part name="parameters" element="tns:hello"/>
-</message>
-<message name="helloResponse">
-<part name="parameters" element="tns:helloResponse"/>
-</message>
-<message name="viewAllReservations">
-<part name="parameters" element="tns:viewAllReservations"/>
-</message>
-<message name="viewAllReservationsResponse">
-<part name="parameters" element="tns:viewAllReservationsResponse"/>
-</message>
-<message name="EntityMissingException">
-<part name="fault" element="tns:EntityMissingException"/>
-</message>
-<message name="WrongAccountTypeException">
-<part name="fault" element="tns:WrongAccountTypeException"/>
-</message>
 <portType name="HotelReservationSystemWebService">
+<operation name="viewAllReservations">
+<input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewAllReservationsRequest" message="tns:viewAllReservations"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewAllReservationsResponse" message="tns:viewAllReservationsResponse"/>
+<fault message="tns:EntityMissingException" name="EntityMissingException" wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewAllReservations/Fault/EntityMissingException"/>
+<fault message="tns:WrongAccountTypeException" name="WrongAccountTypeException" wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewAllReservations/Fault/WrongAccountTypeException"/>
+</operation>
+<operation name="login">
+<input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/loginRequest" message="tns:login"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/loginResponse" message="tns:loginResponse"/>
+</operation>
+<operation name="hello">
+<input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/helloRequest" message="tns:hello"/>
+<output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/helloResponse" message="tns:helloResponse"/>
+</operation>
 <operation name="searchRooms">
 <input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/searchRoomsRequest" message="tns:searchRooms"/>
 <output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/searchRoomsResponse" message="tns:searchRoomsResponse"/>
@@ -78,23 +92,42 @@
 <input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewReservationDetailsRequest" message="tns:viewReservationDetails"/>
 <output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewReservationDetailsResponse" message="tns:viewReservationDetailsResponse"/>
 </operation>
-<operation name="login">
-<input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/loginRequest" message="tns:login"/>
-<output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/loginResponse" message="tns:loginResponse"/>
-</operation>
-<operation name="hello">
-<input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/helloRequest" message="tns:hello"/>
-<output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/helloResponse" message="tns:helloResponse"/>
-</operation>
-<operation name="viewAllReservations">
-<input wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewAllReservationsRequest" message="tns:viewAllReservations"/>
-<output wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewAllReservationsResponse" message="tns:viewAllReservationsResponse"/>
-<fault message="tns:EntityMissingException" name="EntityMissingException" wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewAllReservations/Fault/EntityMissingException"/>
-<fault message="tns:WrongAccountTypeException" name="WrongAccountTypeException" wsam:Action="http://ws.session.ejb/HotelReservationSystemWebService/viewAllReservations/Fault/WrongAccountTypeException"/>
-</operation>
 </portType>
 <binding name="HotelReservationSystemWebServicePortBinding" type="tns:HotelReservationSystemWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<operation name="viewAllReservations">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="EntityMissingException">
+<soap:fault name="EntityMissingException" use="literal"/>
+</fault>
+<fault name="WrongAccountTypeException">
+<soap:fault name="WrongAccountTypeException" use="literal"/>
+</fault>
+</operation>
+<operation name="login">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="hello">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
 <operation name="searchRooms">
 <soap:operation soapAction=""/>
 <input>
@@ -139,39 +172,6 @@
 <output>
 <soap:body use="literal"/>
 </output>
-</operation>
-<operation name="login">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="hello">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="viewAllReservations">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="EntityMissingException">
-<soap:fault name="EntityMissingException" use="literal"/>
-</fault>
-<fault name="WrongAccountTypeException">
-<soap:fault name="WrongAccountTypeException" use="literal"/>
-</fault>
 </operation>
 </binding>
 <service name="HotelReservationSystemWebService">

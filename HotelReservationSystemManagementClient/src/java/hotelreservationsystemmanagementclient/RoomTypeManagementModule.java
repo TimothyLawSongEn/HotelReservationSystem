@@ -128,7 +128,7 @@ public class RoomTypeManagementModule {
             }
             
             // Create the RoomType object and associated rates
-            RoomType newRoomType = new RoomType(roomTypeName, normalRate, publishedRate);
+            RoomType newRoomType = new RoomType(roomTypeName, publishedRate, normalRate);
             
             if (nextHigherRoomTypeId == 0) {
                 roomTypeEntitySessionBeanRemote.persistRoomType(newRoomType);

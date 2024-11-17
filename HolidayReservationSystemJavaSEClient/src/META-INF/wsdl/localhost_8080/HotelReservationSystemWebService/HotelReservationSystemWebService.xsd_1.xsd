@@ -177,13 +177,14 @@
 <xs:element name="startDate" type="xs:string" minOccurs="0"/>
 <xs:element name="endDate" type="xs:string" minOccurs="0"/>
 <xs:element name="roomTypeId" type="xs:long"/>
+<xs:element name="numRooms" type="xs:int"/>
 <xs:element name="partnerId" type="xs:long"/>
 </xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="reserveRoomResponse">
 <xs:sequence>
-<xs:element name="return" type="tns:booking" minOccurs="0"/>
+<xs:element name="return" type="tns:booking" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 
