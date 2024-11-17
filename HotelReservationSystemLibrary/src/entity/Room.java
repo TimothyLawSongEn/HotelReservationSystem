@@ -43,7 +43,11 @@ public class Room implements Serializable {
     
     @NotNull(message = "Disabled flag cannot be null")
     @Column(nullable = false)
-    private Boolean disabled = false; // todo: add getter setter etc!!!
+    private Boolean disabled = false;
+    
+    @NotNull(message = "Available flag cannot be null")
+    @Column(nullable = false)
+    private Boolean available = true;
 
     // No-args constructor
     public Room() {
@@ -53,6 +57,13 @@ public class Room implements Serializable {
     public Room(String roomNumber, RoomType roomType) {
         this.roomNumber = roomNumber;
         this.roomType = roomType;
+        // available true by default
+    }
+    
+    public Room(String roomNumber, RoomType roomType, boolean available) {
+        this.roomNumber = roomNumber;
+        this.roomType = roomType;
+        this.available = available;
     }
     
     public void updateBookingsAtCheckoutTime(LocalDate date) { // if currentBooking.endDate>= TODAY, replace it with room.getExpectedBooking(), set expected to null
@@ -111,6 +122,14 @@ public class Room implements Serializable {
 
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
+    }
+
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
     }
 
     @Override
