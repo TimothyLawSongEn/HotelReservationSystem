@@ -171,16 +171,31 @@ public class MainApp {
         try {
             Long roomTypeId = InputUtils.readLong(scanner, "Enter Room Type ID for Reservation: ");
             
-            Booking persistedBooking = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, roomTypeId, guest.getId());
+            int numRooms = InputUtils.readInt(scanner, "Enter number of rooms (or 0 to cancel): ");
+            if (numRooms == 0) {
+                System.out.println("Reservation cancelled.");
+                return;
+            }
+            if (numRooms < 0) {
+                System.out.println("Invalid number of rooms. Reservation cancelled.");
+                return;
+            }
+            
+            List<Booking> persistedBookings = bookingEntitySessionBeanRemote.reserveRoomType(startDate, endDate, roomTypeId, numRooms, guest.getId());
 
-//            System.out.println("Reservation successfully created " + persistedBooking);
-            System.out.println("\nBooking Id: " + persistedBooking.getId());
-            System.out.println("Start Date: " + persistedBooking.getStartDate());
-            System.out.println("End Date: " + persistedBooking.getEndDate());
-            System.out.println("Room Type: " + persistedBooking.getRoomType().getName());
-
-            if (persistedBooking.getAllocatedRoom() != null) {
-                System.out.println("Allocated Room: " + persistedBooking.getAllocatedRoom().getRoomNumber());
+            System.out.println("\nRoom successfully reserved. \nYour booking details: ");
+            
+            for (Booking booking : persistedBookings) {
+                System.out.println("\nBooking Id: " + booking.getId());
+                System.out.println("Start Date: " + booking.getStartDate());
+                System.out.println("End Date: " + booking.getEndDate());
+                System.out.println("Room Type: " + booking.getRoomType().getName());
+            
+                if (booking.getAllocatedRoom() != null) {
+                    System.out.println("Allocated Room: " + booking.getAllocatedRoom().getRoomNumber());
+                } else {
+                    System.out.println("Room not allocated yet.");
+                }
             }
             
         } catch (Exception e) {

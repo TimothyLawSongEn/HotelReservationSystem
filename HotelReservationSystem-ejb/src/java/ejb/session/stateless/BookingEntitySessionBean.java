@@ -49,24 +49,30 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
     
     // TODO: set rollback with child createBooking method
     @Override
-    public Booking reserveRoomType(LocalDate startDate, LocalDate endDate, long roomTypeId, long accountId) throws Exception {
+    public List<Booking> reserveRoomType(LocalDate startDate, LocalDate endDate, long roomTypeId, int numRooms, long accountId) throws Exception {
         // Increment booked count for the given room type and dates
         try {
-            availabilitySessionBeanLocal.incrementBookedCount(startDate, endDate, roomTypeId);
+            availabilitySessionBeanLocal.incrementBookedCount(startDate, endDate, roomTypeId, numRooms);
         } catch (Exception e) {
             throw new Exception("Failed to increment booked count: " + e.getMessage());
         }
-
-        // Create and persist the new booking
-        Booking booking = createBooking(startDate, endDate, roomTypeId, accountId);
         
-        // if same day after 2am, allocate room immediately!!
-        LocalDate today = LocalDate.now(); LocalTime currentTime = LocalTime.now();
-        LocalTime twoAM = LocalTime.of(2, 0); // 2:00 AM
-        if (booking.getStartDate().isEqual(today) && currentTime.isAfter(twoAM)) {
-            allocateRoomToBooking(booking);
+        List<Booking> bookings = new ArrayList<>();
+        for (int i = 0 ; i < numRooms ; i++) {
+            // Create and persist the new booking
+            Booking booking = createBooking(startDate, endDate, roomTypeId, accountId);
+
+            // if same day after 2am, allocate room immediately!!
+            LocalDate today = LocalDate.now(); LocalTime currentTime = LocalTime.now();
+            LocalTime twoAM = LocalTime.of(2, 0); // 2:00 AM
+            if (booking.getStartDate().isEqual(today) && currentTime.isAfter(twoAM)) {
+                allocateRoomToBooking(booking);
+            }
+            
+            bookings.add(booking);
         }
-        return booking;
+
+        return bookings;
     }
 
     private Booking createBooking(LocalDate startDate, LocalDate endDate, long roomTypeId, long accountId) throws Exception {

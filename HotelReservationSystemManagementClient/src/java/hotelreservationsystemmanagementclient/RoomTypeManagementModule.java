@@ -114,13 +114,28 @@ public class RoomTypeManagementModule {
             double normalRate = InputUtils.readDouble(scanner, "Enter normal rate: ");
 
             double publishedRate = InputUtils.readDouble(scanner, "Enter published rate: ");
-
+            
+            viewAllRoomTypes();
+            int nextHigherRoomTypeId;
+            while (true) {
+                nextHigherRoomTypeId = InputUtils.readInt(scanner, "Enter id of next higher room type (0 if no higher room type): ");
+                
+                if (nextHigherRoomTypeId < 0) {
+                    System.out.println("Invalid id. Try again.");
+                } else {
+                    break;
+                }
+            }
+            
             // Create the RoomType object and associated rates
             RoomType newRoomType = new RoomType(roomTypeName, normalRate, publishedRate);
-
-            // Call the session bean to persist the new RoomType
-            roomTypeEntitySessionBeanRemote.createRoomType(newRoomType);
-
+            
+            if (nextHigherRoomTypeId == 0) {
+                roomTypeEntitySessionBeanRemote.persistRoomType(newRoomType);
+            } else {
+                roomTypeEntitySessionBeanRemote.persistRoomType(newRoomType, nextHigherRoomTypeId);
+            }
+            
             System.out.println("Room type created successfully!");
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());

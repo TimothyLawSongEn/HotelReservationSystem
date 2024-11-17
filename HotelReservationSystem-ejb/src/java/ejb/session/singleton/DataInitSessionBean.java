@@ -63,8 +63,8 @@ public class DataInitSessionBean {
         RoomType standardRoomType = new RoomType("Standard Room", 200.0, 180.0);
         RoomType deluxeRoomType = new RoomType("Deluxe Room", 350.0, 320.0);
         // Persist the RoomTypes using the session bean
-        roomTypeEntitySessionBeanLocal.createRoomType(standardRoomType);
-        roomTypeEntitySessionBeanLocal.createRoomType(deluxeRoomType);
+        roomTypeEntitySessionBeanLocal.persistRoomType(standardRoomType);
+        roomTypeEntitySessionBeanLocal.persistRoomType(deluxeRoomType);
         standardRoomType.setNextHigherRoomType(deluxeRoomType);
 
         try {

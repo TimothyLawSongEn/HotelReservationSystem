@@ -19,6 +19,8 @@ import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import util.dto.RoomCount;
 import util.exception.EntityMissingException;
 import util.exception.InvalidDateRangeException;
@@ -125,7 +127,8 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
     // must be atomic
     @Override
     @Lock(LockType.WRITE)
-    public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId) throws Exception {  
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void incrementBookedCount(LocalDate startDate, LocalDate endDate, long roomTypeId, int numRooms) throws Exception {  
         validateBookingDateRange(startDate, endDate);
         // chk that roomtypeid can be found via roomtypebean
         RoomType roomType = roomTypeEntitySessionBeanLocal.findRoomType(roomTypeId);
@@ -144,8 +147,9 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
         // First check if all dates are available
         for (LocalDate date = startDate; date.isBefore(endDate) ; date = date.plusDays(1)) {
             int bookedCount = roomTypeBookingsMap.getOrDefault(date, 0);
+            int newBookedCount = bookedCount + numRooms;
 
-            if (bookedCount >= roomCount) {
+            if (newBookedCount > roomCount) {
                 unavailableDates.add(date);
             }
         }
@@ -157,7 +161,7 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
         // If all dates are available, increment the counts
         for (LocalDate date = startDate; date.isBefore(endDate) ; date = date.plusDays(1)) {
             int bookedCount = roomTypeBookingsMap.getOrDefault(date, 0);
-            roomTypeBookingsMap.put(date, bookedCount + 1);
+            roomTypeBookingsMap.put(date, bookedCount + numRooms);
         }
     }
     

@@ -15,7 +15,9 @@ import javax.ejb.Remote;
 @Remote
 public interface RoomTypeEntitySessionBeanRemote {
 
-    public RoomType createRoomType(RoomType roomType);
+    public RoomType persistRoomType(RoomType roomType);
+
+    public RoomType persistRoomType(RoomType roomType, long nextHigherRoomTypeId);
 
     public RoomType updateRoomType(RoomType roomType);
 
