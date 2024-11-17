@@ -76,15 +76,15 @@ public class RoomEntitySessionBean implements RoomEntitySessionBeanRemote, RoomE
     }
 
     @Override
-    public int getNonDisabledRoomCountForRoomType(Long roomTypeId) {
-        Query query = em.createQuery("SELECT COUNT(r) FROM Room r WHERE r.roomType.id = :roomTypeId AND r.disabled = FALSE");
+    public int getAvailableNonDisabledRoomCountForRoomType(Long roomTypeId) {
+        Query query = em.createQuery("SELECT COUNT(r) FROM Room r WHERE r.roomType.id = :roomTypeId AND r.available = TRUE AND r.disabled = FALSE");
         query.setParameter("roomTypeId", roomTypeId);
 
         return ((Long) query.getSingleResult()).intValue();
     }
     
     @Override
-    public List<Room> getAvailableRoomsForRoomTypeAndDate(RoomType roomType, LocalDate date) { // FIXME
+    public List<Room> getAvailableNonDisabledRoomsForRoomTypeAndDate(RoomType roomType, LocalDate date) { // FIXME
 //        List<Room> list = em.createQuery("SELECT r FROM Room r WHERE r.roomType = :roomType "
 //                + "AND (r.currentBooking IS NULL) "
 //                + "AND (r.expectedBooking IS NULL)", Room.class)
@@ -101,7 +101,8 @@ public class RoomEntitySessionBean implements RoomEntitySessionBeanRemote, RoomE
 
         List<Room> rooms = em.createQuery(
             "SELECT r FROM Room r WHERE r.roomType = :roomType " +
-            "AND r.expectedBooking IS NULL",
+            "AND r.expectedBooking IS NULL " +
+            "AND r.available = TRUE AND r.disabled = FALSE",
             Room.class)
         .setParameter("roomType", roomType)
         .getResultList();

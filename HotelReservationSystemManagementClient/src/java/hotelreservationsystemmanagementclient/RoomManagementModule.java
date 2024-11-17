@@ -130,9 +130,23 @@ public class RoomManagementModule {
 
             int roomTypeChoice = InputUtils.readInt(scanner, "Select room type by number: ");
             RoomType selectedRoomType = nonDisabledRoomTypes.get(roomTypeChoice - 1);
-
+            
+            boolean available;
+            while (true) {
+                String strInput = InputUtils.readString(scanner, "Enter room status ('y' for available, 'n' for not): ");
+                if ("y".equals(strInput)) {
+                    available = true;
+                    break;
+                } else if ("n".equals(strInput)) {
+                    available = false;
+                    break;
+                } else {
+                    System.out.println("Invalid input. Try again.");
+                }
+            }
+            
             // Create Room
-            Room newRoom = new Room(roomNumber, selectedRoomType);
+            Room newRoom = new Room(roomNumber, selectedRoomType, available);
 
             // Try to create the room
             Room createdRoom = roomEntitySessionBeanRemote.createRoom(newRoom);
@@ -182,6 +196,11 @@ public class RoomManagementModule {
                     int roomTypeChoice = Integer.parseInt(roomTypeInput);
                     selectedRoomType = nonDisabledRoomTypes.get(roomTypeChoice - 1);
                     roomToUpdate.setRoomType(selectedRoomType);
+                }
+                
+                String strInput = InputUtils.readString(scanner, "Change room type to " + (roomToUpdate.getAvailable() ? "UNavailable" : "Available") + "? (enter 'y' to change or press Enter to skip): ");
+                if ("y".equals(strInput)) {
+                    roomToUpdate.setAvailable(!roomToUpdate.getAvailable());
                 }
 
                 // Apply changes

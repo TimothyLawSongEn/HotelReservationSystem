@@ -95,7 +95,7 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
             roomTypeToBookedCountMap.computeIfAbsent(roomTypeId, k -> new HashMap<>()); // add roomtypeid into map if absent
             Map<LocalDate, Integer> bookedCountMap = roomTypeToBookedCountMap.get(roomTypeId);
 
-            int roomCount = roomEntitySessionBeanLocal.getNonDisabledRoomCountForRoomType(roomTypeId);
+            int roomCount = roomEntitySessionBeanLocal.getAvailableNonDisabledRoomCountForRoomType(roomTypeId);
             int maxOccupied = 0;
 
             // Fetch RoomType entity using roomTypeId
@@ -139,7 +139,7 @@ public class AvailabilitySessionBean implements AvailabilitySessionBeanRemote, A
         roomTypeToBookedCountMap.computeIfAbsent(roomTypeId, k -> new HashMap<>()); // add roomtypeid into map if absent
         Map<LocalDate, Integer> roomTypeBookingsMap = roomTypeToBookedCountMap.get(roomTypeId);
 
-        int roomCount = roomEntitySessionBeanLocal.getNonDisabledRoomCountForRoomType(roomTypeId);
+        int roomCount = roomEntitySessionBeanLocal.getAvailableNonDisabledRoomCountForRoomType(roomTypeId);
 
         // Store unavailable dates if any
         List<LocalDate> unavailableDates = new ArrayList<>();
