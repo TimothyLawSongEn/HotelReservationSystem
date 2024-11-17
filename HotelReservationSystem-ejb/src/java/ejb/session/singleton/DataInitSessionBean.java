@@ -36,7 +36,7 @@ import util.exception.InvalidDateRangeException;
  */
 @Singleton
 @LocalBean
-@Startup  // Ensures this bean is initialized on application startup
+//@Startup  // Ensures this bean is initialized on application startup
 public class DataInitSessionBean {
 
     @EJB
