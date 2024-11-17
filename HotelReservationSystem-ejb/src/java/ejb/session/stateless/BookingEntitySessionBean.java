@@ -50,13 +50,6 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
     // TODO: set rollback with child createBooking method
     @Override
     public List<Booking> reserveRoomType(LocalDate startDate, LocalDate endDate, long roomTypeId, int numRooms, long accountId) throws Exception {
-        // Increment booked count for the given room type and dates
-        try {
-            availabilitySessionBeanLocal.incrementBookedCount(startDate, endDate, roomTypeId, numRooms);
-        } catch (Exception e) {
-            throw new Exception("Failed to increment booked count: " + e.getMessage());
-        }
-        
         List<Booking> bookings = new ArrayList<>();
         for (int i = 0 ; i < numRooms ; i++) {
             // Create and persist the new booking
@@ -70,6 +63,13 @@ public class BookingEntitySessionBean implements BookingEntitySessionBeanRemote,
             }
             
             bookings.add(booking);
+        }
+        
+        // Increment booked count for the given room type and dates. Note: shifted to bottom as cant be auto rollbacked
+        try {
+            availabilitySessionBeanLocal.incrementBookedCount(startDate, endDate, roomTypeId, numRooms);
+        } catch (Exception e) {
+            throw new Exception("Failed to increment booked count: " + e.getMessage());
         }
 
         return bookings;
