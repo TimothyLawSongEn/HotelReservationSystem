@@ -116,8 +116,12 @@ public class MainApp {
             System.out.print("Enter Room Type ID for Booking: ");
             Long roomTypeId = Long.parseLong(scanner.nextLine());
             
+            System.out.print("Enter the total number of rooms for booking: ");
+            int num = scanner.nextInt();
+            scanner.nextLine();
+            
             // To Do: Check if it reference the partner or guest id
-            service.getHotelReservationSystemWebServicePort().reserveRoom(startDate, endDate, roomTypeId, partner.getId());
+            service.getHotelReservationSystemWebServicePort().reserveRoom(startDate, endDate, roomTypeId, num, partner.getId());
             
             System.out.println("Room successfully booked");
             
