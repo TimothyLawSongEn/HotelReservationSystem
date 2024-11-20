@@ -28,8 +28,6 @@ The backend consists of a single EJB module with these primary functions impleme
 - **CRUD Operations:**
   - Manage `Guest`, `Staff`, and `Third-Party Providers`.
   - Role-based differentiation for staff ensures only authorized personnel can perform sensitive operations.
-- **Validation:**
-  - Bean Validation ensures all data (e.g., guest details) meets business requirements.
 
 ### 2. Room Management
 - **CRUD Operations:**
