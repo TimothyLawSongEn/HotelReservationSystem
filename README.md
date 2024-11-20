@@ -17,6 +17,12 @@ For detailed Project Specifications and Use Case descriptions: [Project Specific
 - **Additional Features:**
   - Bean Validation (JSR-380) ensures all data (e.g., guest details) meets business requirements
   - Scheduled Methods for automated tasks (e.g. automated room allocation at 2am daily)
+ 
+---
+
+## Overall Architecture
+
+![image](https://github.com/user-attachments/assets/8cec74e4-8a90-4b6e-b956-d6bdc324b826)
 
 ---
 
