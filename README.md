@@ -112,6 +112,16 @@ The backend consists of a single EJB module with these primary functions impleme
 
 ---
 
+## Future Code improvements
+- **Inheritance (Parent class for Guest and Partner) [Table per concrete class strategy]**
+  - Ability to have both shared and seperate methods
+- **Only unidirectional associations (esp for roomrate in roomtype)**
+  - Reduce chance of bugs with bidirectional associations
+- **Backend calculation of booking rate instead of client-side**
+  - Client-side calculation inefficient since it requires list of rates to be sent to client side before being filtered and added.
+
+---
+
 ## Future Enhancements
 - **REST API Support:**
   - Introduce RESTful endpoints to complement SOAP for modern integrations.
